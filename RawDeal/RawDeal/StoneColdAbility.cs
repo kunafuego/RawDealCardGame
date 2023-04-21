@@ -7,13 +7,22 @@ class StoneColdAbility : SuperstarAbility
 
     public override void UseEffect(Player playerPlayingRound)
     {
-        playerPlayingRound.MovesCardFromArsenalToHandInDrawSegment();
-        View.SayThatPlayerDrawCards(playerPlayingRound.Superstar.Name, 1);
-        
-        List<Card> handCardsObjectsToShow = playerPlayingRound.GetCardsToShow(CardSet.Hand);
+        DrawCardFromArsenalToHand(playerPlayingRound);
+        ChooseAndMoveCardFromHandToArsenal(playerPlayingRound);
+    }
+
+    private void DrawCardFromArsenalToHand(Player playerDrawingCard)
+    {
+        playerDrawingCard.MovesCardFromArsenalToHandInDrawSegment();
+        View.SayThatPlayerDrawCards(playerDrawingCard.Superstar.Name, 1);
+    }
+
+    private void ChooseAndMoveCardFromHandToArsenal(Player playerGettingCardBack)
+    {
+        List<Card> handCardsObjectsToShow = playerGettingCardBack.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerPlayingRound.Superstar.Name, stringsOfHandCards);
-        playerPlayingRound.MoveCardFromHandToArsenal(handCardsObjectsToShow[handCardIndex]);   
+        int handCardIndex = View.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerGettingCardBack.Superstar.Name, stringsOfHandCards);
+        playerGettingCardBack.MoveCardFromHandToArsenal(handCardsObjectsToShow[handCardIndex]);   
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)

@@ -7,10 +7,15 @@ class TheRockAbility : SuperstarAbility
 
     public override void UseEffect(Player playerPlayingRound)
     {
-        List<Card> cardsObjectsToShow = playerPlayingRound.GetCardsToShow(CardSet.RingsidePile);
+        RecoverCard(playerPlayingRound);
+    }
+
+    private void RecoverCard(Player playerThatWillRecoverCard)
+    {
+        List<Card> cardsObjectsToShow = playerThatWillRecoverCard.GetCardsToShow(CardSet.RingsidePile);
         List<string> stringsOfRingsidePileCards = GetRCardsToShowAsString(cardsObjectsToShow);
-        int cardIndex = View.AskPlayerToSelectCardsToRecover(playerPlayingRound.Superstar.Name, 1, stringsOfRingsidePileCards);
-        playerPlayingRound.MoveCardFromRingsideToArsenal(cardsObjectsToShow[cardIndex]);
+        int cardIndex = View.AskPlayerToSelectCardsToRecover(playerThatWillRecoverCard.Superstar.Name, 1, stringsOfRingsidePileCards);
+        playerThatWillRecoverCard.MoveCardFromRingsideToArsenal(cardsObjectsToShow[cardIndex]);
     }
 
     private List<string> GetRCardsToShowAsString(List<Card> cardsObjectsToShow)
