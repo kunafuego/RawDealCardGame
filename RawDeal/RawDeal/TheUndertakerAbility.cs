@@ -32,7 +32,7 @@ class TheUndertakerAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        if (player.HasMoreThanOneCardInHand())
+        if (player.HasMoreThanOneCard(CardSet.Hand))
         {
         return true;
         }

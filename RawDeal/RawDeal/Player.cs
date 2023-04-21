@@ -5,22 +5,28 @@ public class Player
 {
     private Superstar _superstar;
     private int _fortitude;
+    private Dictionary<CardSet, Deck> _cardSetToDeck; 
     private Deck _arsenal;
     private Deck _ringSide;
     private Deck _ringArea;
     private Deck _hand;
     
-    public Deck Arsenal{get {return _arsenal ;}}
-
     public Superstar Superstar{ get { return _superstar; }}
-    public Deck Hand{ get { return _hand; }}
 
     public Player()
     {
     _ringArea = new Deck(new List<Card>());
     _hand = new Deck(new List<Card>());
     _ringSide = new Deck(new List<Card>());
+    _arsenal = new Deck(new List<Card>());
     _fortitude = 0;
+    _cardSetToDeck = new Dictionary<CardSet, Deck>
+    {
+        {CardSet.Hand,   _hand},
+        {CardSet.RingArea, _ringArea},
+        {CardSet.RingsidePile, _ringSide},
+        {CardSet.Arsenal, _arsenal}
+    };
     }
 
     public void UpdateFortitude()
@@ -41,6 +47,7 @@ public class Player
     {
         _arsenal = arsenal;
     }
+    
     public void DrawCardsFromArsenalToHand()
     {
         List<Card> removableCards = new List<Card>();
@@ -49,7 +56,11 @@ public class Player
             Card cardToPass = _arsenal.Cards[i - 1];
             removableCards.Add(cardToPass);
         }
+        MoveManyCardsFromArsenalToHand(removableCards);
+    }
 
+    private void MoveManyCardsFromArsenalToHand(List<Card> removableCards)
+    {
         foreach (Card card in removableCards)
         {
             _hand.AddCard(card);
@@ -94,31 +105,35 @@ public class Player
         return cardsToShow;
     }
 
+ 
     public List<Play> GetAvailablePlays()
     {
         List<Play> playsThatCanBePlayed = new List<Play>();
         foreach (Card card in _hand.Cards)
         {
-            if (card.Fortitude <= _fortitude)
+            if (CanPlayCard(card))
             {
-                foreach (string type in card.Types)
-                {
-                    if (type != "Reversal")
-                    {
-                        Play play = new Play(card, type);
-                        playsThatCanBePlayed.Add(play);
-                    }
-                }
+                AddPlayablePlays(card, playsThatCanBePlayed);
             }
         }
         return playsThatCanBePlayed;
     }
 
-    public void CardGoesToRingArea(Play play)
+    private bool CanPlayCard(Card card)
     {
-        Card cardToMove = play.Card;
-        _hand.RemoveCard(cardToMove);
-        _ringArea.AddCard(cardToMove);
+        return card.Fortitude <= _fortitude;
+    }
+
+    private void AddPlayablePlays(Card card, List<Play> playsThatCanBePlayed)
+    {
+        foreach (string type in card.Types)
+        {
+            if (type != "Reversal")
+            {
+                Play play = new Play(card, type);
+                playsThatCanBePlayed.Add(play);
+            }
+        }
     }
 
     public Card ReceivesDamage()
@@ -129,19 +144,21 @@ public class Player
         return cardToRemove;
     }
 
-    public bool HasCardsInRingside()
+    public bool HasCards(CardSet deckToCheck)
     {
-        return _ringSide.HasCards();
+        Deck cardsToCheck = _cardSetToDeck[deckToCheck];
+        return cardsToCheck.HasCards();
     }
-
-    public bool HasCardsInHand()
-    {
-        return _hand.HasCards();
-    }
-
     public bool HasCardsInArsenal()
     {
         return _arsenal.HasCards();
+    }
+    
+    public void MoveCardFromHandToRingArea(Play play)
+    {
+        Card cardToMove = play.Card;
+        _hand.RemoveCard(cardToMove);
+        _ringArea.AddCard(cardToMove);
     }
     public void MoveCardFromRingsideToArsenal(Card cardToMove)
     {
@@ -172,9 +189,10 @@ public class Player
         return _arsenal.HasMoreThanOneCard();
     }
     
-    public bool HasMoreThanOneCardInHand()
+    public bool HasMoreThanOneCard(CardSet deckToCheck)
     {
-        return _hand.HasMoreThanOneCard();
+        Deck cardsToCheck = _cardSetToDeck[deckToCheck];
+        return cardsToCheck.HasMoreThanOneCard();
     }
 
     // Abiliies methods

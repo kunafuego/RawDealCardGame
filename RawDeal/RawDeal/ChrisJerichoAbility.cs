@@ -28,6 +28,6 @@ class ChrisJerichoAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        return player.HasCardsInHand();
+        return player.HasCards(CardSet.Hand);
     }
 }

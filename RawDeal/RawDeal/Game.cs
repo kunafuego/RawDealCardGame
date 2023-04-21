@@ -49,6 +49,115 @@ public class Game
             _view.CongratulateWinner(_winner.Superstar.Name);
         }
     }
+    private void CreatePlayers()
+    {
+        _player1 = new Player();
+        _player2 = new Player();
+    }
+
+    private bool UsersSelectDecks()
+    {
+        List<Player> iteradorPlayers = new List<Player>(){ _player1, _player2 };
+        foreach (var player in iteradorPlayers)
+        {
+            List<string> deckContent = GetPlayersDecks();
+        
+            Deck deck = CreateDeckObject(deckContent);
+            if (!deck.IsValid())
+            {
+                _view.SayThatDeckIsInvalid();
+                return false;
+            }
+            Superstar superstar = InitializeSuperstar(deckContent[0]);
+            AssignDeckAndSuperstarToPlayer(player, deck, superstar);
+            DrawCardsToHand(player);
+        }
+
+        AssignPlayersAbilities();
+        return true;
+    }
+    private List<string> GetPlayersDecks()
+    {
+        string deckPath = _view.AskUserToSelectDeck(_deckFolder);
+        string[] deckText = File.ReadAllLines(deckPath);
+        return new List<string>(deckText);
+    }
+
+    private Deck CreateDeckObject(List<string> deckContent)
+    {
+        var deckListWithCardsNames = new List<string>(deckContent);
+        var superstarName = deckListWithCardsNames[0];
+        deckListWithCardsNames.Remove(superstarName);
+        Superstar superstar = InitializeSuperstar(superstarName);
+        Deck deck = InitializeCardsAndDeck(deckListWithCardsNames);
+        deck.AssignSuperstar(superstar);
+        return deck;
+    }
+    
+    public Superstar InitializeSuperstar(string superstarName)
+    {
+        string superstarPath = Path.Combine("data", "superstar.json");
+        string superstarInfo = File.ReadAllText(superstarPath);
+        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
+        var serializedSuperstar = superstarSerializer.Find(x => superstarName.Contains(x.Name));
+        Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, serializedSuperstar.SuperstarValue,
+            serializedSuperstar.SuperstarAbility);
+        return superstarObject;
+    }
+    
+    public Deck InitializeCardsAndDeck(List<string> deckListNames)
+    {
+        string cardsPath = Path.Combine("data", "cards.json");
+        string cardsInfo = File.ReadAllText(cardsPath);
+        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
+        List<Card> deckCards = new List<Card>();
+        foreach (var card in deckListNames)
+        {
+            DeserializedCards deserializedCard = cardsSerializer.Find(x => x.Title == card);
+            Card cardObject = new Card(deserializedCard.Title, deserializedCard.Types, deserializedCard.Subtypes, deserializedCard.Fortitude, 
+                deserializedCard.Damage, deserializedCard.StunValue, deserializedCard.CardEffect);
+            deckCards.Add((cardObject));
+        }   
+        Deck deckObject = new Deck(deckCards);
+        return deckObject;
+    }
+
+
+    private void AssignDeckAndSuperstarToPlayer(Player player, Deck deck, Superstar superstar)
+    {
+        player.AssignArsenal(deck);
+        player.AssignSuperstar(superstar);
+    }
+
+    private void DrawCardsToHand(Player player)
+    {
+        player.DrawCardsFromArsenalToHand();
+    }
+    
+    private void AssignPlayersAbilities()
+    {
+        AssignPlayer1Ability();
+        AssignPlayer2Ability();
+    }
+
+    private void AssignPlayer1Ability()
+    {
+        _player1SuperstarAbility = _abilities[_player1.Superstar.Name];
+
+    }
+    
+    private void AssignPlayer2Ability()
+    {
+        _player2SuperstarAbility = _abilities[_player2.Superstar.Name];
+    }
+
+    private void ChooseStarter()
+    {
+        _playerPlayingRound = (_player1.Superstar.SuperstarValue >= _player2.Superstar.SuperstarValue)
+            ? _player1
+            : _player2;
+    }
+
     
     private void PlayRound()
     {
@@ -68,17 +177,12 @@ public class Game
         CheckIfThereIsWinner();
         
     }
-
-    private void SwapPlayers()
-    {
-        _playerPlayingRound = GetPlayerThatIsNotPlayingRound();
-    }
-
     private Player GetPlayerThatIsNotPlayingRound()
     {
         Player playerNotPlayingRound = (_playerPlayingRound == _player1) ? _player2 : _player1;
         return playerNotPlayingRound;
     }
+
 
     private void ManageEffectBeforeDraw()
     {
@@ -101,7 +205,7 @@ public class Game
             }
         }
     }
-
+    
     private void PlayerDrawCards()
     {
         var playerPlayingRoundSuperstarAbility =
@@ -109,8 +213,6 @@ public class Game
         if (playerPlayingRoundSuperstarAbility.MustUseEffectDuringDrawSegment(_playerPlayingRound) &&
             playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(_playerPlayingRound))
         {
-            // _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
-            //     _playerPlayingRound.Superstar.SuperstarAbility);
             playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
         }
         else
@@ -119,6 +221,7 @@ public class Game
         }
     }
 
+    
     private NextPlay AskUserWhatToDo(bool effectUsed)
     {
         NextPlay nextPlayChosen;
@@ -138,6 +241,7 @@ public class Game
         return nextPlayChosen;
 
     }
+    
     private void ManageChosenOption(NextPlay optionChosen)
     {
         if (optionChosen == NextPlay.ShowCards)
@@ -158,20 +262,34 @@ public class Game
             _winner = GetPlayerThatIsNotPlayingRound();
         }
     }
-
-    private void CheckIfThereIsWinner()
+    private void ManageShowingCards()
     {
-        if (!_gameEnded && !_player1.HasCardsInArsenal())
+        CardSet cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
+        List<Card> cardsObjectsToShow = new List<Card>();
+        if (cardSetChosenForShowing.ToString().Contains("Opponents"))
         {
-            _gameEnded = true;
-            _winner = _player2;
+            Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
+            cardsObjectsToShow = playerNotPlayingRound.GetCardsToShow(cardSetChosenForShowing);
         }
-        else if (!_gameEnded && !_player2.HasCardsInArsenal())
+        else
         {
-            _gameEnded = true;
-            _winner = _player1;
+            cardsObjectsToShow = _playerPlayingRound.GetCardsToShow(cardSetChosenForShowing);
         }
+
+        List<string> cardsStringsToShow = GetCardsAsStringForShowing(cardsObjectsToShow);
+        _view.ShowCards(cardsStringsToShow);
     }
+    
+    private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
+    {
+        List<string> cardsStringsToShow = new List<string>();
+        foreach (Card card in cardsObjectsToShow)
+        {
+            cardsStringsToShow.Add(card.ToString());
+        }
+        return cardsStringsToShow;
+    }
+
     private void ManagePlayingCards()
     {
         List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
@@ -182,23 +300,24 @@ public class Game
             PlayCard(playsToShow[chosenPlay]);
         }
     }
-
-    private void UseAbilityDuringTurn()
+    
+    private List<string> GetStringsOfPlays(List<Play> availablePlays)
     {
-        var playerPlayingRoundSuperstarAbility =
-            (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
-        _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
-            _playerPlayingRound.Superstar.SuperstarAbility);
-        playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
+        List<string> playsToShow = new List<string>();
+        foreach (Play playObject in availablePlays)
+        {
+            playsToShow.Add(playObject.ToString());
+        }
 
+        return playsToShow;
     }
+
     private void PlayCard(Play chosenPlay)
     {
         Card cardPlayed = chosenPlay.Card;
         _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.Superstar.Name, chosenPlay.ToString());
         _view.SayThatPlayerSuccessfullyPlayedACard();
-        _playerPlayingRound.CardGoesToRingArea(chosenPlay);
-        Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
+        _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
         if (chosenPlay.Type == "MANEUVER")
         {
             PlayManeuver(cardPlayed);
@@ -237,126 +356,37 @@ public class Game
 
         return initialDamage;
     }
-    private List<string> GetStringsOfPlays(List<Play> availablePlays)
+    
+    
+    private void UseAbilityDuringTurn()
     {
-        List<string> playsToShow = new List<string>();
-        foreach (Play playObject in availablePlays)
-        {
-            playsToShow.Add(playObject.ToString());
-        }
-
-        return playsToShow;
-    }
-    private void ManageShowingCards()
-    {
-        CardSet cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
-        List<Card> cardsObjectsToShow = new List<Card>();
-        if (cardSetChosenForShowing.ToString().Contains("Opponents"))
-        {
-            Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
-            cardsObjectsToShow = playerNotPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-        else
-        {
-            cardsObjectsToShow = _playerPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-
-        List<string> cardsStringsToShow = GetCardsAsStringForShowing(cardsObjectsToShow);
-        _view.ShowCards(cardsStringsToShow);
-    }
-
-    private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
-    {
-        List<string> cardsStringsToShow = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            cardsStringsToShow.Add(card.ToString());
-        }
-        return cardsStringsToShow;
-    }
-    public void ChooseStarter()
-    {
-        _playerPlayingRound = (_player1.Superstar.SuperstarValue >= _player2.Superstar.SuperstarValue)
-            ? _player1
-            : _player2;
-    }
-    private bool UsersSelectDecks()
-    {
-        List<Player> iteradorPlayers = new List<Player>(){ _player1, _player2 };
-        foreach (var player in iteradorPlayers)
-        {
-            string deckPath = _view.AskUserToSelectDeck(_deckFolder);
-            string[] deckText = File.ReadAllLines(deckPath);
-            var deckListWithCardsNames = new List<string>(deckText);
-            var superstarName = deckListWithCardsNames[0];
-            deckListWithCardsNames.Remove(superstarName);
-            Superstar superstar = InitializeSuperstar(superstarName);
-            Deck deck = InitializeCardsAndDeck(deckListWithCardsNames);
-            deck.AssignSuperstar(superstar);
-            bool deckValidy = deck.IsValid();
-            if (deckValidy == false)
-            {
-                _view.SayThatDeckIsInvalid();
-                return false;
-            }
-            player.AssignArsenal(deck);
-            player.AssignSuperstar(superstar);
-            player.DrawCardsFromArsenalToHand();
-        }
-
-        AssignPlayersAbilities();
-        return true;
-    }
-
-    private void AssignPlayersAbilities()
-    {
-        AssignPlayer1Ability();
-        AssignPlayer2Ability();
-    }
-
-    private void AssignPlayer1Ability()
-    {
-        _player1SuperstarAbility = _abilities[_player1.Superstar.Name];
+        var playerPlayingRoundSuperstarAbility =
+            (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
+        _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
+            _playerPlayingRound.Superstar.SuperstarAbility);
+        playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
 
     }
     
-    private void AssignPlayer2Ability()
+    private void CheckIfThereIsWinner()
     {
-        _player2SuperstarAbility = _abilities[_player2.Superstar.Name];
-    }
-    
-    
-    
-    private void CreatePlayers()
-    {
-        _player1 = new Player();
-        _player2 = new Player();
-    }
-    public Superstar InitializeSuperstar(string superstarName)
-    {
-        string superstarPath = Path.Combine("data", "superstar.json");
-        string superstarInfo = File.ReadAllText(superstarPath);
-        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
-        var serializedSuperstar = superstarSerializer.Find(x => superstarName.Contains(x.Name));
-        Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, serializedSuperstar.SuperstarValue,
-            serializedSuperstar.SuperstarAbility);
-        return superstarObject;
-    }
-    
-    public Deck InitializeCardsAndDeck(List<string> deckListNames)
-    {
-        string cardsPath = Path.Combine("data", "cards.json");
-        string cardsInfo = File.ReadAllText(cardsPath);
-        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
-        List<Card> deckCards = new List<Card>();
-        foreach (var card in deckListNames)
+        if (!_gameEnded && !_player1.HasCardsInArsenal())
         {
-            DeserializedCards deserializedCard = cardsSerializer.Find(x => x.Title == card);
-            Card cardObject = new Card(deserializedCard.Title, deserializedCard.Types, deserializedCard.Subtypes, deserializedCard.Fortitude, 
-                deserializedCard.Damage, deserializedCard.StunValue, deserializedCard.CardEffect);
-            deckCards.Add((cardObject));
-        }   
-        Deck deckObject = new Deck(deckCards);
-        return deckObject;
+            _gameEnded = true;
+            _winner = _player2;
+        }
+        else if (!_gameEnded && !_player2.HasCardsInArsenal())
+        {
+            _gameEnded = true;
+            _winner = _player1;
+        }
     }
+
+
+    
+    private void SwapPlayers()
+    {
+        _playerPlayingRound = GetPlayerThatIsNotPlayingRound();
+    }
+
 }

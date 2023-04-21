@@ -24,7 +24,7 @@ class TheRockAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        return player.HasCardsInRingside();
+        return player.HasCards(CardSet.RingsidePile);
     }
 
 }
