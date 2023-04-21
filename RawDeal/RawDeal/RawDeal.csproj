@@ -370,6 +370,9 @@
 
     <ItemGroup>
       <Compile Remove="CardInfo.cs" />
+      <Compile Remove="Hand.cs" />
+      <Compile Remove="Arsenal.cs" />
+      <Compile Remove="Ringside.cs" />
     </ItemGroup>
 
 </Project>

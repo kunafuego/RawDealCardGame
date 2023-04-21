@@ -14,7 +14,7 @@ public class Game
     private bool _gameEnded;
     private SuperstarAbility _player1SuperstarAbility;
     private SuperstarAbility _player2SuperstarAbility;
-    private Dictionary<string, SuperstarAbility> _abilities;
+    private readonly Dictionary<string, SuperstarAbility> _abilities;
 
     public Game(View view, string deckFolder)
     {
@@ -35,8 +35,8 @@ public class Game
 
     public void Play()
     {
-        bool decksAreValid = UsersSelectDecks();
-        if (decksAreValid)
+        bool gameCanBePlayed = PlayersSelectTheirDecks();
+        if (gameCanBePlayed)
         {
             ChooseStarter();
             while (_gameEnded == false)
@@ -49,46 +49,45 @@ public class Game
         }
     }
 
-    private bool UsersSelectDecks()
+    private bool PlayersSelectTheirDecks()
     {
         List<Player> iteradorPlayers = new List<Player>(){ _player1, _player2 };
         foreach (var player in iteradorPlayers)
         {
-            List<string> deckContent = GetPlayersDecks();
-        
-            Deck deck = CreateDeckObject(deckContent);
-            if (!deck.IsValid())
+            List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
+            
+            Superstar superstar = GetDecksSuperstar(listOfStringsWithNamesOfCardsInDeck);
+            RemoveSuperstarFromListOfDecksCards(listOfStringsWithNamesOfCardsInDeck);
+            Deck deck = CreateDeckObject(listOfStringsWithNamesOfCardsInDeck);
+            if (!deck.IsValid(superstar.Logo))
             {
                 _view.SayThatDeckIsInvalid();
                 return false;
             }
-            Superstar superstar = InitializeSuperstar(deckContent[0]);
-            AssignDeckAndSuperstarToPlayer(player, deck, superstar);
-            DrawCardsToHand(player);
+            AssignDeckToPlayer(player, deck);
+            AssignSuperstarToPlayer(player, superstar);
+            DrawCardsToHandForFirstTime(player);
         }
 
         AssignPlayersAbilities();
         return true;
     }
-    private List<string> GetPlayersDecks()
+    
+    private List<string> AskPlayerToSelectDeck()
     {
         string deckPath = _view.AskUserToSelectDeck(_deckFolder);
         string[] deckText = File.ReadAllLines(deckPath);
         return new List<string>(deckText);
     }
 
-    private Deck CreateDeckObject(List<string> deckContent)
+    private Superstar GetDecksSuperstar(List<string> listOfStringsWithDeckContent)
     {
-        var deckListWithCardsNames = new List<string>(deckContent);
-        var superstarName = deckListWithCardsNames[0];
-        deckListWithCardsNames.Remove(superstarName);
+        string superstarName = listOfStringsWithDeckContent[0];
         Superstar superstar = InitializeSuperstar(superstarName);
-        Deck deck = CreateDeck(deckListWithCardsNames);
-        deck.AssignSuperstar(superstar);
-        return deck;
+        return superstar;
     }
-    
-    public Superstar InitializeSuperstar(string superstarName)
+
+    private Superstar InitializeSuperstar(string superstarName)
     {
         string superstarInfo = ReadSuperstarInfo();
         DeserializedSuperstars serializedSuperstar = FindSerializedSuperstar(superstarName, superstarInfo);
@@ -117,13 +116,25 @@ public class Game
         return superstarObject;
     }
     
-    private Deck CreateDeck(List<string> deckListNames)
+    private static void RemoveSuperstarFromListOfDecksCards(List<string> listOfStringsWithNamesOfCardsInDeck)
     {
-        var cardsSerializer = LoadCards();
+        listOfStringsWithNamesOfCardsInDeck.RemoveAt(0);
+    }
+    
+    private Deck CreateDeckObject(List<string> deckContent)
+    {
+        var deckListWithCardsNames = new List<string>(deckContent);
+        Deck deck = CreateDeck(deckListWithCardsNames);
+        return deck;
+    }
+
+    private Deck CreateDeck(List<string> deckListNamesWithCardNames)
+    {
+        var listWithDeserializedCards = LoadCards();
         List<Card> deckCards = new List<Card>();
-        foreach (var card in deckListNames)
+        foreach (var card in deckListNamesWithCardNames)
         {
-            DeserializedCards deserializedCard = cardsSerializer.Find(x => x.Title == card);
+            DeserializedCards deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
             Card cardObject = CreateCard(deserializedCard);
             deckCards.Add(cardObject);
         }   
@@ -151,13 +162,17 @@ public class Game
             deserializedCard.CardEffect);
     }
     
-    private void AssignDeckAndSuperstarToPlayer(Player player, Deck deck, Superstar superstar)
+    private void AssignDeckToPlayer(Player player, Deck deck)
     {
         player.AssignArsenal(deck);
+    }
+    
+    private void AssignSuperstarToPlayer(Player player, Superstar superstar)
+    {
         player.AssignSuperstar(superstar);
     }
-
-    private void DrawCardsToHand(Player player)
+    
+    private void DrawCardsToHandForFirstTime(Player player)
     {
         player.DrawCardsFromArsenalToHand();
     }
@@ -197,10 +212,19 @@ public class Game
         do
         {
             _view.ShowGameInfo(_playerPlayingRound.GetInfo(), playerNotPlayingRound.GetInfo());
-            nextPlayOptionChosen = AskUserWhatToDo(effectUsed);
-            if (nextPlayOptionChosen == NextPlay.UseAbility) effectUsed = true;
+            if (!effectUsed && CheckIfUserCanUseEffect())
+            {
+                nextPlayOptionChosen = AskUserWhatToDoWhenUsingHisAbilityIsPossible();
+            }
+            else
+            {
+                nextPlayOptionChosen = AskUserWhatToDoWhenHeCannotUseHisAbility();
+            }
+            
+            effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
+            
             ManageChosenOption(nextPlayOptionChosen);
-        } while (_gameEnded == false && nextPlayOptionChosen != NextPlay.EndTurn);
+        } while (!GameEnded() && nextPlayOptionChosen != NextPlay.EndTurn);
         CheckIfThereIsWinner();
         
     }
@@ -247,24 +271,26 @@ public class Game
         }
     }
     
-    private NextPlay AskUserWhatToDo(bool effectUsed)
+    private bool CheckIfUserCanUseEffect()
     {
-        NextPlay nextPlayChosen;
         var playerPlayingRoundSuperstarAbility =
             (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
         if (playerPlayingRoundSuperstarAbility.NeedToAskToUseAbilityDuringTurn(_playerPlayingRound) &&
-            playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(_playerPlayingRound) &&
-            !effectUsed)
+            playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(_playerPlayingRound))
         {
-            nextPlayChosen = _view.AskUserWhatToDoWhenUsingHisAbilityIsPossible();
+            return true;
         }
-        else
-        {
-            nextPlayChosen = _view.AskUserWhatToDoWhenHeCannotUseHisAbility();
-        }
+        return false;
+    }
 
-        return nextPlayChosen;
+    private NextPlay AskUserWhatToDoWhenUsingHisAbilityIsPossible()
+    {
+        return _view.AskUserWhatToDoWhenUsingHisAbilityIsPossible();
+    }
 
+    private NextPlay AskUserWhatToDoWhenHeCannotUseHisAbility()
+    {
+        return _view.AskUserWhatToDoWhenHeCannotUseHisAbility();
     }
     
     private void ManageChosenOption(NextPlay optionChosen)
@@ -287,6 +313,7 @@ public class Game
             _winner = GetPlayerThatIsNotPlayingRound();
         }
     }
+    
     private void ManageShowingCards()
     {
         CardSet cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
@@ -390,6 +417,11 @@ public class Game
             _playerPlayingRound.Superstar.SuperstarAbility);
         playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
 
+    }
+
+    private bool GameEnded()
+    {
+        return _gameEnded;
     }
     
     private void CheckIfThereIsWinner()

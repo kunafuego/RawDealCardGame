@@ -5,16 +5,10 @@ namespace RawDeal;
 public class Deck
 {
     private readonly  List<Card> _cards;
-    private Superstar _superstar;
 
     public Deck(List<Card> cards)
     {
         _cards = cards;
-    }
-
-    public void AssignSuperstar(Superstar superstar)
-    {
-        _superstar = superstar;
     }
 
     public List<Card> Cards
@@ -31,32 +25,21 @@ public class Deck
     {
         _cards.Remove(card);
     }
-    public bool IsValid()
+    public bool IsValid(string superstarLogo)
     {
-        bool checkQuantity = QuantityOk();
-        bool checkSubTypes = SubTypesOk();
-        if (checkQuantity && checkSubTypes)
-        {
-            return true;
-        }
-
-        return false;
+        if (!CheckIfAmountOfCardsIsOk()) return false;
+        if (!CheckIfSubtypesOfCardsAreOk(superstarLogo)) return false;
+        return true;
     }
 
 
-    public bool QuantityOk()
+    private bool CheckIfAmountOfCardsIsOk()
     {
-        if (_cards.Count == 60)
-        {
-            return true;
-        }
-
-        return false;
+        return _cards.Count == 60;
     }
 
-    public bool SubTypesOk()
+    private bool CheckIfSubtypesOfCardsAreOk(string superstarLogo)
     {
-        List<string> superstarLogos = GetSuperstarLogos();
         foreach (Card card in _cards)
         {
             List<string> subtypes = card.SubTypes;
@@ -64,21 +47,27 @@ public class Deck
             if (cardsWithSameTitle.Count > 1 && subtypes.Contains("Unique") ||
                 cardsWithSameTitle.Count > 3 && subtypes.Contains("SetUp") == false ||
                 subtypes.Contains("Heel") && _cards.Any(x => x.SubTypes.Contains("Face")) ||
-                subtypes.Contains("Face") && _cards.Any(y => y.SubTypes.Contains("Heel")))
+                subtypes.Contains("Face") && _cards.Any(y => y.SubTypes.Contains("Heel")) ||
+                CheckIfCardIsFromAnotherSuperstar(subtypes, superstarLogo))
             {
                 return false;
             }
-
-            foreach (var subtype in subtypes)
+        }
+        return true;
+    }
+    
+    private bool CheckIfCardIsFromAnotherSuperstar(List<string> subtypes, string superstarLogo)
+    {
+        List<string> listOfAllSuperstarsLogos = GetSuperstarLogos();
+        foreach (var subtype in subtypes)
+        {
+            if (listOfAllSuperstarsLogos.Contains(subtype) && subtype != superstarLogo)
             {
-                if (superstarLogos.Contains(subtype) && subtype != _superstar.Logo)
-                {
-                    return false;
-                }
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
     private List<string> GetSuperstarLogos()
