@@ -23,13 +23,13 @@ public class Game
         _gameEnded = false;
         _abilities = new Dictionary<string, SuperstarAbility>
         {
-            {"THE ROCK", new TheRockAbility()},
-            {"CHRIS JERICHO", new ChrisJerichoAbility()},
-            {"KANE", new KaneAbility()},
-            {"MANKIND", new MankindAbility()},
-            {"THE UNDERTAKER", new TheUndertakerAbility()},
-            {"STONE COLD STEVE AUSTIN", new StoneColdAbility()},
-            {"HHH", new HHHAbility()}
+            {"THE ROCK", new TheRockAbility(_player1, _player2, _view)},
+            {"CHRIS JERICHO", new ChrisJerichoAbility(_player1, _player2, _view)},
+            {"KANE", new KaneAbility(_player1, _player2, _view)},
+            {"MANKIND", new MankindAbility(_player1, _player2, _view)},
+            {"THE UNDERTAKER", new TheUndertakerAbility(_player1, _player2, _view)},
+            {"STONE COLD STEVE AUSTIN", new StoneColdAbility(_player1, _player2, _view)},
+            {"HHH", new HHHAbility(_player1, _player2, _view)}
         };
     }
 

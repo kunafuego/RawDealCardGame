@@ -3,6 +3,8 @@ namespace RawDeal;
 
 class TheRockAbility : SuperstarAbility
 {
+    public TheRockAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
+
     public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
     {
         List<Card> cardsObjectsToShow = playerPlayingRound.GetCardsToShow(CardSet.RingsidePile);

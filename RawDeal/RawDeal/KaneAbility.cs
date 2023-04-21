@@ -3,6 +3,8 @@ namespace RawDeal;
 
 class KaneAbility : SuperstarAbility
 {
+    public KaneAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
+
     public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
     {
         Console.WriteLine("Dentro del use effect");

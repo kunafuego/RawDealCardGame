@@ -3,6 +3,8 @@ namespace RawDeal;
 
 class TheUndertakerAbility : SuperstarAbility
 {
+    public TheUndertakerAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
+
     public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
     {
         for (int i = 2; i > 0; i--)
@@ -32,11 +34,6 @@ class TheUndertakerAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        if (player.HasMoreThanOneCard(CardSet.Hand))
-        {
-        return true;
-        }
-
-        return false;
+        return player.HasMoreThanOneCard(CardSet.Hand);
     }
 }

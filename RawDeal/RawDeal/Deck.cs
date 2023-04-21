@@ -4,7 +4,7 @@ namespace RawDeal;
 
 public class Deck
 {
-    private List<Card> _cards;
+    private readonly  List<Card> _cards;
     private Superstar _superstar;
 
     public Deck(List<Card> cards)
@@ -15,21 +15,6 @@ public class Deck
     public void AssignSuperstar(Superstar superstar)
     {
         _superstar = superstar;
-    }
-    // public Superstar Superstar{
-    //     get {return _superstar ;}
-    // }
-
-    public bool IsValid()
-    {
-        bool checkQuantity = QuantityOk();
-        bool checkSubTypes = SubTypesOk();
-        if (checkQuantity && checkSubTypes)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     public List<Card> Cards
@@ -46,6 +31,18 @@ public class Deck
     {
         _cards.Remove(card);
     }
+    public bool IsValid()
+    {
+        bool checkQuantity = QuantityOk();
+        bool checkSubTypes = SubTypesOk();
+        if (checkQuantity && checkSubTypes)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
 
     public bool QuantityOk()
     {

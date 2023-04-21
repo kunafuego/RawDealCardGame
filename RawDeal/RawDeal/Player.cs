@@ -4,23 +4,18 @@ namespace RawDeal;
 public class Player
 {
     private Superstar _superstar;
-    private int _fortitude;
+    private int _fortitude = 0;
     private Dictionary<CardSet, Deck> _cardSetToDeck; 
-    private Deck _arsenal;
-    private Deck _ringSide;
-    private Deck _ringArea;
-    private Deck _hand;
+    private Deck _arsenal = new (new List<Card>());
+    private Deck _ringSide = new (new List<Card>());
+    private Deck _ringArea = new (new List<Card>());
+    private Deck _hand = new (new List<Card>());
     
     public Superstar Superstar{ get { return _superstar; }}
 
     public Player()
     {
-    _ringArea = new Deck(new List<Card>());
-    _hand = new Deck(new List<Card>());
-    _ringSide = new Deck(new List<Card>());
-    _arsenal = new Deck(new List<Card>());
-    _fortitude = 0;
-    _cardSetToDeck = new Dictionary<CardSet, Deck>
+        _cardSetToDeck = new Dictionary<CardSet, Deck>
     {
         {CardSet.Hand,   _hand},
         {CardSet.RingArea, _ringArea},
@@ -82,8 +77,6 @@ public class Player
             _arsenal.Cards.Count);
         return info;
     }
-    
-    
 
     public List<Card> GetCardsToShow(CardSet cardSetChosenForShowing)
     {

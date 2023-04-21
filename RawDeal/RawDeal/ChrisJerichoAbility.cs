@@ -3,6 +3,8 @@ namespace RawDeal;
 
 class ChrisJerichoAbility : SuperstarAbility
 {
+    public ChrisJerichoAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
+
     public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
     {
         List<Player> playersIterable = new List<Player>() { playerPlayingRound, playerNotPlayingRound };
