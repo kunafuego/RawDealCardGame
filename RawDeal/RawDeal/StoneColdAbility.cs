@@ -3,16 +3,16 @@ namespace RawDeal;
 
 class StoneColdAbility : SuperstarAbility
 {
-    public StoneColdAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
+    public StoneColdAbility(View view) : base(view) {}
 
-    public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
+    public override void UseEffect(Player playerPlayingRound)
     {
         playerPlayingRound.MovesCardFromArsenalToHandInDrawSegment();
-        view.SayThatPlayerDrawCards(playerPlayingRound.Superstar.Name, 1);
+        View.SayThatPlayerDrawCards(playerPlayingRound.Superstar.Name, 1);
         
         List<Card> handCardsObjectsToShow = playerPlayingRound.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = view.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerPlayingRound.Superstar.Name, stringsOfHandCards);
+        int handCardIndex = View.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerPlayingRound.Superstar.Name, stringsOfHandCards);
         playerPlayingRound.MoveCardFromHandToArsenal(handCardsObjectsToShow[handCardIndex]);   
     }
 

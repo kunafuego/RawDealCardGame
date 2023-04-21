@@ -7,8 +7,8 @@ public class Game
 {
     private View _view;
     private string _deckFolder;
-    private Player _player1;
-    private Player _player2;
+    private Player _player1 = new ();
+    private Player _player2 = new ();
     private Player _playerPlayingRound;
     private Player _winner;
     private bool _gameEnded;
@@ -23,19 +23,18 @@ public class Game
         _gameEnded = false;
         _abilities = new Dictionary<string, SuperstarAbility>
         {
-            {"THE ROCK", new TheRockAbility(_player1, _player2, _view)},
+            {"THE ROCK", new TheRockAbility(_view)},
             {"CHRIS JERICHO", new ChrisJerichoAbility(_player1, _player2, _view)},
             {"KANE", new KaneAbility(_player1, _player2, _view)},
-            {"MANKIND", new MankindAbility(_player1, _player2, _view)},
-            {"THE UNDERTAKER", new TheUndertakerAbility(_player1, _player2, _view)},
-            {"STONE COLD STEVE AUSTIN", new StoneColdAbility(_player1, _player2, _view)},
-            {"HHH", new HHHAbility(_player1, _player2, _view)}
+            {"MANKIND", new MankindAbility(_view)},
+            {"THE UNDERTAKER", new TheUndertakerAbility(_view)},
+            {"STONE COLD STEVE AUSTIN", new StoneColdAbility(_view)},
+            {"HHH", new HHHAbility(_view)}
         };
     }
 
     public void Play()
     {
-        CreatePlayers();
         bool decksAreValid = UsersSelectDecks();
         if (decksAreValid)
         {
@@ -49,11 +48,7 @@ public class Game
             _view.CongratulateWinner(_winner.Superstar.Name);
         }
     }
-    private void CreatePlayers()
-    {
-        _player1 = new Player();
-        _player2 = new Player();
-    }
+
 
     private bool UsersSelectDecks()
     {
@@ -192,7 +187,7 @@ public class Game
         {
             _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
                 _playerPlayingRound.Superstar.SuperstarAbility);
-            playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
+            playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
         }
 
         if (playerPlayingRoundSuperstarAbility.NeedToAskToUseAbilityAtBeginningOfTurn(_playerPlayingRound) &&
@@ -201,7 +196,7 @@ public class Game
             bool wantsToUse = _view.DoesPlayerWantToUseHisAbility(_playerPlayingRound.Superstar.Name);
             if (wantsToUse)
             {
-                playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
+                playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
             }
         }
     }
@@ -213,7 +208,7 @@ public class Game
         if (playerPlayingRoundSuperstarAbility.MustUseEffectDuringDrawSegment(_playerPlayingRound) &&
             playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(_playerPlayingRound))
         {
-            playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
+            playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
         }
         else
         {
@@ -364,7 +359,7 @@ public class Game
             (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
         _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
             _playerPlayingRound.Superstar.SuperstarAbility);
-        playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound, GetPlayerThatIsNotPlayingRound(), _view);
+        playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
 
     }
     

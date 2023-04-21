@@ -2,19 +2,34 @@ using RawDealView;
 namespace RawDeal;
 
 class ChrisJerichoAbility : SuperstarAbility
-{
-    public ChrisJerichoAbility(Player player1, Player player2, View view) : base(player1, player2, view) {}
-
-    public override void UseEffect(Player playerPlayingRound, Player playerNotPlayingRound, View view)
+{    
+    private readonly Player _player1;
+    private readonly Player _player2;
+    public ChrisJerichoAbility(Player player1, Player player2, View view) : base(view)     
     {
-        List<Player> playersIterable = new List<Player>() { playerPlayingRound, playerNotPlayingRound };
-        foreach (Player player in playersIterable)
-        {
-            List<Card> handCardsObjectsToShow = player.GetCardsToShow(CardSet.Hand);
-            List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-            int handCardIndex = view.AskPlayerToSelectACardToDiscard(stringsOfHandCards, player.Superstar.Name, player.Superstar.Name, 1);
-            player.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
-        }
+        _player1 = player1;
+        _player2 = player2;
+    }
+
+    public override void UseEffect(Player playerPlayingRound)
+    {
+        DiscardCard(playerPlayingRound);
+        Player playerNotPlayingRound = GetPlayerNotPlayingRound(playerPlayingRound);
+        DiscardCard(playerNotPlayingRound);
+    }
+
+    private void DiscardCard(Player playerToDiscard)
+    {
+        List<Card> handCardsObjectsToShow = playerToDiscard.GetCardsToShow(CardSet.Hand);
+        List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerToDiscard.Superstar.Name, playerToDiscard.Superstar.Name, 1);
+        playerToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
+    }
+
+    private Player GetPlayerNotPlayingRound(Player playerPlayingRound)
+    {
+        Player playerNotPlayingRound = (playerPlayingRound == _player1) ? _player2 : _player1;
+        return playerNotPlayingRound;
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
