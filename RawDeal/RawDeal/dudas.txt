@@ -1,0 +1,14 @@
+
+1.-
+En GetCardsAsStringForShowing (Game linea 140)
+recibo una lista de cartas y quiero ocupar el formatter para dejarlas en forma de string.
+
+La pregunta es, al igual que cuando ocupo cualquier metodo formatter, le hago setter a los atributos de la carta,
+creo otra clase CardInfo, o le paso la view a un metodo de la carta???
+
+
+2.-
+Para modelar cada uno de los superhéroes, le creo una clase a cada uno?? Ifinitos if? Mando a chequear todo el rato desde
+Game a Player para ver si su superstar es tanto?
+
+Crear una interfaz para cada efecto, y luego una clase para el efecto de cada uno de las superestrellas.
