@@ -49,7 +49,6 @@ public class Game
         }
     }
 
-
     private bool UsersSelectDecks()
     {
         List<Player> iteradorPlayers = new List<Player>(){ _player1, _player2 };
@@ -84,40 +83,74 @@ public class Game
         var superstarName = deckListWithCardsNames[0];
         deckListWithCardsNames.Remove(superstarName);
         Superstar superstar = InitializeSuperstar(superstarName);
-        Deck deck = InitializeCardsAndDeck(deckListWithCardsNames);
+        Deck deck = CreateDeck(deckListWithCardsNames);
         deck.AssignSuperstar(superstar);
         return deck;
     }
     
     public Superstar InitializeSuperstar(string superstarName)
     {
+        string superstarInfo = ReadSuperstarInfo();
+        DeserializedSuperstars serializedSuperstar = FindSerializedSuperstar(superstarName, superstarInfo);
+        Superstar superstarObject = CreateSuperstarObject(serializedSuperstar);
+        return superstarObject;
+    }
+
+    private string ReadSuperstarInfo()
+    {
         string superstarPath = Path.Combine("data", "superstar.json");
         string superstarInfo = File.ReadAllText(superstarPath);
+        return superstarInfo;
+    }
+
+    private DeserializedSuperstars FindSerializedSuperstar(string superstarName, string superstarInfo)
+    {
         var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
         var serializedSuperstar = superstarSerializer.Find(x => superstarName.Contains(x.Name));
+        return serializedSuperstar;
+    }
+
+    private Superstar CreateSuperstarObject(DeserializedSuperstars serializedSuperstar)
+    {
         Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, serializedSuperstar.SuperstarValue,
             serializedSuperstar.SuperstarAbility);
         return superstarObject;
     }
     
-    public Deck InitializeCardsAndDeck(List<string> deckListNames)
+    private Deck CreateDeck(List<string> deckListNames)
     {
-        string cardsPath = Path.Combine("data", "cards.json");
-        string cardsInfo = File.ReadAllText(cardsPath);
-        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
+        var cardsSerializer = LoadCards();
         List<Card> deckCards = new List<Card>();
         foreach (var card in deckListNames)
         {
             DeserializedCards deserializedCard = cardsSerializer.Find(x => x.Title == card);
-            Card cardObject = new Card(deserializedCard.Title, deserializedCard.Types, deserializedCard.Subtypes, deserializedCard.Fortitude, 
-                deserializedCard.Damage, deserializedCard.StunValue, deserializedCard.CardEffect);
-            deckCards.Add((cardObject));
+            Card cardObject = CreateCard(deserializedCard);
+            deckCards.Add(cardObject);
         }   
         Deck deckObject = new Deck(deckCards);
         return deckObject;
     }
 
-
+    private List<DeserializedCards> LoadCards()
+    {
+        string cardsPath = Path.Combine("data", "cards.json");
+        string cardsInfo = File.ReadAllText(cardsPath);
+        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
+        return cardsSerializer;
+    }
+    
+    private Card CreateCard(DeserializedCards deserializedCard)
+    {
+        return new Card(
+            deserializedCard.Title, 
+            deserializedCard.Types, 
+            deserializedCard.Subtypes, 
+            deserializedCard.Fortitude, 
+            deserializedCard.Damage, 
+            deserializedCard.StunValue, 
+            deserializedCard.CardEffect);
+    }
+    
     private void AssignDeckAndSuperstarToPlayer(Player player, Deck deck, Superstar superstar)
     {
         player.AssignArsenal(deck);
@@ -152,7 +185,6 @@ public class Game
             ? _player1
             : _player2;
     }
-
     
     private void PlayRound()
     {
@@ -177,8 +209,7 @@ public class Game
         Player playerNotPlayingRound = (_playerPlayingRound == _player1) ? _player2 : _player1;
         return playerNotPlayingRound;
     }
-
-
+    
     private void ManageEffectBeforeDraw()
     {
         var playerPlayingRoundSuperstarAbility =
@@ -215,7 +246,6 @@ public class Game
             _playerPlayingRound.MovesCardFromArsenalToHandInDrawSegment();
         }
     }
-
     
     private NextPlay AskUserWhatToDo(bool effectUsed)
     {
@@ -351,8 +381,7 @@ public class Game
 
         return initialDamage;
     }
-    
-    
+
     private void UseAbilityDuringTurn()
     {
         var playerPlayingRoundSuperstarAbility =
@@ -377,8 +406,6 @@ public class Game
         }
     }
 
-
-    
     private void SwapPlayers()
     {
         _playerPlayingRound = GetPlayerThatIsNotPlayingRound();
