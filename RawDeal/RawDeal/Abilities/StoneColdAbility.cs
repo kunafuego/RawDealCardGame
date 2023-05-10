@@ -14,7 +14,7 @@ class StoneColdAbility : SuperstarAbility
 
     private void DrawCardFromArsenalToHand(Player playerDrawingCard)
     {
-        playerDrawingCard.MovesCardFromArsenalToHandInDrawSegment();
+        playerDrawingCard.DrawSingleCard();
         View.SayThatPlayerDrawCards(playerDrawingCard.Superstar.Name, 1);
     }
 

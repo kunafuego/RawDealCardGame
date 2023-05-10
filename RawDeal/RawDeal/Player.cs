@@ -45,7 +45,7 @@ public class Player
         _arsenal = arsenal;
     }
     
-    public void DrawCardsFromArsenalToHand()
+    public void DrawCardsFromArsenalToHandAtStart()
     {
         List<Card> removableCards = new List<Card>();
         for (int i = _arsenal.Cards.Count; i > _arsenal.Cards.Count - _superstar.HandSize ; i--)
@@ -65,11 +65,11 @@ public class Player
         }
     }
 
-    public void MovesCardFromArsenalToHandInDrawSegment()
+    public void DrawSingleCard()
     {
-        Card cardToSteal = _arsenal.Cards.Last();
-        _hand.AddCard(cardToSteal);
-        _arsenal.RemoveCard(cardToSteal);
+        Card cardToDraw = _arsenal.Cards.Last();
+        _hand.AddCard(cardToDraw);
+        _arsenal.RemoveCard(cardToDraw);
     }
 
     public PlayerInfo GetInfo()

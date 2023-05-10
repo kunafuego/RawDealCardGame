@@ -10,7 +10,7 @@ class MankindAbility : SuperstarAbility
     {
         for (int i = 0; i < 2; i++)
         {
-            playerPlayingRound.MovesCardFromArsenalToHandInDrawSegment();
+            playerPlayingRound.DrawSingleCard();
         }
     }
 

@@ -181,7 +181,7 @@ public class Game
     
     private void DrawCardsToHandForFirstTime(Player player)
     {
-        player.DrawCardsFromArsenalToHand();
+        player.DrawCardsFromArsenalToHandAtStart();
     }
     
     private void AssignPlayersAbilities()
@@ -280,7 +280,7 @@ public class Game
         }
         else
         {
-            _playerPlayingRound.MovesCardFromArsenalToHandInDrawSegment();
+            _playerPlayingRound.DrawSingleCard();
         }
     }
     
@@ -383,10 +383,14 @@ public class Game
         Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
         _view.SayThatPlayerIsTryingToPlayThisCard(playerPlayingRoundSuperstar.Name, chosenPlay.ToString());
         _view.SayThatPlayerSuccessfullyPlayedACard();
-        _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
         if (chosenPlay.PlayedAs == "MANEUVER")
         {
+            _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
             PlayManeuver(cardPlayed);
+        }
+        else if (chosenPlay.PlayedAs == "ACTION")
+        {
+            PlayAction(cardPlayed);
         }
     }
 
@@ -395,7 +399,10 @@ public class Game
         Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
         int cardDamage = ManageCardDamage(cardPlayed.Damage);
         Superstar playerNotPlayingRoundSuperstar = playerNotPlayingRound.Superstar;
-        _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
+        if (cardDamage > 0)
+        {
+            _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
+        }
         for (int i = 1; i <= cardDamage; i++)
         {
             if (!_gameEnded)
@@ -420,8 +427,16 @@ public class Game
         {
             return initialDamage - 1;
         }
-
         return initialDamage;
+    }
+
+    private void PlayAction(Card cardPlayed)
+    {
+        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
+        _playerPlayingRound.MoveCardFromHandToRingside(cardPlayed);
+        _playerPlayingRound.DrawSingleCard();
+        _view.SayThatPlayerMustDiscardThisCard(playerPlayingRoundSuperstar.Name, cardPlayed.Title);
+        _view.SayThatPlayerDrawCards(playerPlayingRoundSuperstar.Name, 1);
     }
 
     private void UseAbilityDuringTurn()
