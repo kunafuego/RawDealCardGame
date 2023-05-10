@@ -1,3 +1,4 @@
+using RawDealView.Options;
 using RawDealView;
 using System.Text.Json;
 
@@ -35,6 +36,14 @@ public class Game
 
     public void Play()
     {
+        // try
+        // {
+        //     PlayersSelectTheirDecks();
+        // }
+        // catch (InvalidDeckException e)
+        // {
+        //     _view.SayThatDeckIsInvalid();
+        // }
         bool gameCanBePlayed = PlayersSelectTheirDecks();
         if (gameCanBePlayed)
         {
@@ -55,7 +64,6 @@ public class Game
         foreach (var player in iteradorPlayers)
         {
             List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-            
             Superstar superstar = GetDecksSuperstar(listOfStringsWithNamesOfCardsInDeck);
             RemoveSuperstarFromListOfDecksCards(listOfStringsWithNamesOfCardsInDeck);
             Deck deck = CreateDeckObject(listOfStringsWithNamesOfCardsInDeck);
@@ -370,7 +378,7 @@ public class Game
         _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.Superstar.Name, chosenPlay.ToString());
         _view.SayThatPlayerSuccessfullyPlayedACard();
         _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
-        if (chosenPlay.Type == "MANEUVER")
+        if (chosenPlay.PlayedAs == "MANEUVER")
         {
             PlayManeuver(cardPlayed);
         }

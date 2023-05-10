@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj",
+      "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj",
       "projectName": "RawDealView",
-      "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj",
+      "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj",
       "packagesPath": "C:\\Users\\dague\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\obj\\",
+      "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\dague\\AppData\\Roaming\\NuGet\\NuGet.Config"

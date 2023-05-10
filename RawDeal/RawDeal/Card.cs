@@ -1,7 +1,9 @@
 namespace RawDeal;
+using RawDealView.Options;
+using RawDealView.Formatters;
 using RawDealView;
 
-public class Card
+public class Card : IViewableCardInfo
 {
     private string _title;
     private List<string> _types;
@@ -22,8 +24,13 @@ public class Card
     public string Title{
         get {return _title ;}
     }
-    
-    
+    public List<string> Subtypes {
+        get { return _subTypes; }
+    }
+    public string CardEffect
+    {
+        get { return _cardEffect; }
+    }
     public int Fortitude
     { get { return  _fortitude;} } 
     public int StunValue
@@ -46,7 +53,7 @@ public class Card
 
     public override string ToString()
     {
-        return Formatter.CardToString(_title, _fortitude.ToString(), _damage.ToString(), _stunValue.ToString(), _types, _subTypes, _cardEffect);
+        return Formatter.CardToString(this);
     }  
 
 }

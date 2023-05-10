@@ -1,3 +1,4 @@
+using RawDealView.Options;
 using RawDealView;
 namespace RawDeal;
 
