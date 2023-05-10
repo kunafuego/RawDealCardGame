@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal\\RawDeal.csproj": {}
+    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal\\RawDeal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj": {
+    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj",
+        "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj",
         "projectName": "RawDealView",
-        "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj",
+        "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj",
         "packagesPath": "C:\\Users\\dague\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\obj\\",
+        "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dague\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -57,14 +57,14 @@
         }
       }
     },
-    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal\\RawDeal.csproj": {
+    "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal\\RawDeal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal\\RawDeal.csproj",
+        "projectUniqueName": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal\\RawDeal.csproj",
         "projectName": "RawDeal",
-        "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal\\RawDeal.csproj",
+        "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal\\RawDeal.csproj",
         "packagesPath": "C:\\Users\\dague\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal\\obj\\",
+        "outputPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\dague\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -79,8 +79,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj": {
-                "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDealView\\RawDealView.csproj"
+              "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj": {
+                "projectPath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDealView\\RawDealView.csproj"
               }
             }
           }

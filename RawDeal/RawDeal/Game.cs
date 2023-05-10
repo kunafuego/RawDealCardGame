@@ -36,29 +36,32 @@ public class Game
 
     public void Play()
     {
-        // try
-        // {
-        //     PlayersSelectTheirDecks();
-        // }
-        // catch (InvalidDeckException e)
-        // {
-        //     _view.SayThatDeckIsInvalid();
-        // }
-        bool gameCanBePlayed = PlayersSelectTheirDecks();
-        if (gameCanBePlayed)
+        try
         {
-            ChooseStarter();
-            while (_gameEnded == false)
-            {
-                PlayRound();
-                SwapPlayers();
-            }
-            if (_winner != _player1 && _winner != _player2) _winner = GetPlayerThatIsNotPlayingRound();
-            _view.CongratulateWinner(_winner.Superstar.Name);
+            TryToPlayGame();
+        }
+        catch (InvalidDeckException e)
+        {
+            _view.SayThatDeckIsInvalid();
         }
     }
 
-    private bool PlayersSelectTheirDecks()
+    private void TryToPlayGame()
+    {
+    PlayersSelectTheirDecks();
+    AssignPlayersAbilities();
+    ChooseStarter();
+    while (_gameEnded == false)
+    {
+        PlayRound();
+        SwapPlayers();
+    }
+    if (_winner != _player1 && _winner != _player2) _winner = GetPlayerThatIsNotPlayingRound();
+    Superstar winnerSuperstar = _winner.Superstar;
+    _view.CongratulateWinner(winnerSuperstar.Name);
+    }
+    
+    private void PlayersSelectTheirDecks()
     {
         List<Player> iteradorPlayers = new List<Player>(){ _player1, _player2 };
         foreach (var player in iteradorPlayers)
@@ -69,16 +72,12 @@ public class Game
             Deck deck = CreateDeckObject(listOfStringsWithNamesOfCardsInDeck);
             if (!deck.IsValid(superstar.Logo))
             {
-                _view.SayThatDeckIsInvalid();
-                return false;
+                throw new InvalidDeckException("");
             }
             AssignDeckToPlayer(player, deck);
             AssignSuperstarToPlayer(player, superstar);
             DrawCardsToHandForFirstTime(player);
         }
-
-        AssignPlayersAbilities();
-        return true;
     }
     
     private List<string> AskPlayerToSelectDeck()
@@ -193,18 +192,22 @@ public class Game
 
     private void AssignPlayer1Ability()
     {
-        _player1SuperstarAbility = _abilities[_player1.Superstar.Name];
+        Superstar playersSuperstar = _player1.Superstar;
+        _player1SuperstarAbility = _abilities[playersSuperstar.Name];
 
     }
     
     private void AssignPlayer2Ability()
     {
-        _player2SuperstarAbility = _abilities[_player2.Superstar.Name];
+        Superstar playersSuperstar = _player2.Superstar;
+        _player2SuperstarAbility = _abilities[playersSuperstar.Name];
     }
 
     private void ChooseStarter()
     {
-        _playerPlayingRound = (_player1.Superstar.SuperstarValue >= _player2.Superstar.SuperstarValue)
+        Superstar player1Superstar = _player1.Superstar;
+        Superstar player2Superstar = _player2.Superstar;
+        _playerPlayingRound = (player1Superstar.SuperstarValue >= player2Superstar.SuperstarValue)
             ? _player1
             : _player2;
     }
@@ -212,7 +215,8 @@ public class Game
     private void PlayRound()
     {
         Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
-        _view.SayThatATurnBegins(_playerPlayingRound.Superstar.Name);
+        Superstar playerPlayingSuperstar = _playerPlayingRound.Superstar;
+        _view.SayThatATurnBegins(playerPlayingSuperstar.Name);
         ManageEffectBeforeDraw();
         PlayerDrawCards();
         bool effectUsed = false;
@@ -246,17 +250,18 @@ public class Game
     {
         var playerPlayingRoundSuperstarAbility =
             (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
+        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
         if (playerPlayingRoundSuperstarAbility.MustUseEffectAtStartOfTurn(_playerPlayingRound))
         {
-            _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
-                _playerPlayingRound.Superstar.SuperstarAbility);
+            _view.SayThatPlayerIsGoingToUseHisAbility(playerPlayingRoundSuperstar.Name,
+                playerPlayingRoundSuperstar.SuperstarAbility);
             playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
         }
 
         if (playerPlayingRoundSuperstarAbility.NeedToAskToUseAbilityAtBeginningOfTurn(_playerPlayingRound) &&
             playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(_playerPlayingRound))
         {
-            bool wantsToUse = _view.DoesPlayerWantToUseHisAbility(_playerPlayingRound.Superstar.Name);
+            bool wantsToUse = _view.DoesPlayerWantToUseHisAbility(playerPlayingRoundSuperstar.Name);
             if (wantsToUse)
             {
                 playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
@@ -375,7 +380,8 @@ public class Game
     private void PlayCard(Play chosenPlay)
     {
         Card cardPlayed = chosenPlay.Card;
-        _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.Superstar.Name, chosenPlay.ToString());
+        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
+        _view.SayThatPlayerIsTryingToPlayThisCard(playerPlayingRoundSuperstar.Name, chosenPlay.ToString());
         _view.SayThatPlayerSuccessfullyPlayedACard();
         _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
         if (chosenPlay.PlayedAs == "MANEUVER")
@@ -388,7 +394,8 @@ public class Game
     {
         Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
         int cardDamage = ManageCardDamage(cardPlayed.Damage);
-        _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRound.Superstar.Name, cardDamage);
+        Superstar playerNotPlayingRoundSuperstar = playerNotPlayingRound.Superstar;
+        _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
         for (int i = 1; i <= cardDamage; i++)
         {
             if (!_gameEnded)
@@ -421,8 +428,9 @@ public class Game
     {
         var playerPlayingRoundSuperstarAbility =
             (_playerPlayingRound == _player1) ? _player1SuperstarAbility : _player2SuperstarAbility;
-        _view.SayThatPlayerIsGoingToUseHisAbility(_playerPlayingRound.Superstar.Name,
-            _playerPlayingRound.Superstar.SuperstarAbility);
+        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
+        _view.SayThatPlayerIsGoingToUseHisAbility(playerPlayingRoundSuperstar.Name,
+            playerPlayingRoundSuperstar.SuperstarAbility);
         playerPlayingRoundSuperstarAbility.UseEffect(_playerPlayingRound);
 
     }

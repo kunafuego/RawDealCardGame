@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dsnE/GpHovlE9ziKTx8/ikEqJlr40UjEtQk+WOv4aYmVF8x/PCR2D3Ti2M5ci9ufEIg/MNZFDTq8XOgFgOgljw==",
+  "dgSpecHash": "0lv6WFxri/ScuDYh3FJrWxCSL525EuZTYLzGVWWYv39WInZBHqACCBvSK09ZDdjRNpTKHXJdIqFa62keFefRdA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\Entrega 3\\RawDeal\\RawDeal.Tests\\RawDeal.Tests.csproj",
+  "projectFilePath": "C:\\Users\\dague\\OneDrive - uc.cl\\Desktop\\Diseño Detallado de Software\\Proyecto\\RawDealCardGame\\RawDeal\\RawDeal.Tests\\RawDeal.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dague\\.nuget\\packages\\coverlet.collector\\3.1.0\\coverlet.collector.3.1.0.nupkg.sha512",
     "C:\\Users\\dague\\.nuget\\packages\\microsoft.codecoverage\\16.11.0\\microsoft.codecoverage.16.11.0.nupkg.sha512",

@@ -194,26 +194,26 @@ public class Player
     
     public bool NeedToAskToUseAbilityAtBeginningOfTurn()
     {
-        return _superstar.NeedToAskToUseAbilityAtBeginningOfTurn();
+        return _superstar.AskToUseAbilityAtBeginningOfTurn();
     }
 
     public bool MustUseEffectAtStartOfTurn()
     {
-        return _superstar.MustUseEffectAtStartOfTurn();
+        return _superstar.UseEffectAtStartOfTurn();
     }
 
     public bool NeedToAskToUseAbilityDuringTurn()
     {
-        return _superstar.NeedToAskToUseAbilityDuringTurn();
+        return _superstar.AskToUseAbilityDuringTurn();
     }
     
     public bool MustUseEffectDuringDrawSegment()
     {
-        return _superstar.MustUseEffectDuringDrawSegment();
+        return _superstar.UseEffectDuringDrawSegment();
     }
     
     public bool MustUseEffectWhileReceivingDamage()
     {
-        return _superstar.MustUseEffectWhileReceivingDamage();
+        return _superstar.UseEffectWhileReceivingDamage();
     }
 }

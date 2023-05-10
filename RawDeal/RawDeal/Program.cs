@@ -1,7 +1,7 @@
 ﻿using RawDeal;
 using RawDealView;
 
-string folder = "06-BasicHybridCards";
+string folder = "05-SuperstarAbilities";
 int idTest = 1;
 string pathToTest = Path.Combine("data", $"{folder}-Tests", $"{idTest}.txt");
 

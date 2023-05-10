@@ -26,27 +26,27 @@ public class Superstar
         _superstarAbility = superstarAbility;
     }
 
-    public bool NeedToAskToUseAbilityAtBeginningOfTurn()
+    public bool AskToUseAbilityAtBeginningOfTurn()
     {
         return _superstarAbility.Contains("At the start of your turn") && _superstarAbility.Contains("may");
     }
 
-    public bool MustUseEffectAtStartOfTurn()
+    public bool UseEffectAtStartOfTurn()
     {
         return _superstarAbility.Contains("At the start of your turn") && _superstarAbility.Contains("must");
     }
     
-    public bool NeedToAskToUseAbilityDuringTurn()
+    public bool AskToUseAbilityDuringTurn()
     {
         return _superstarAbility.Contains("Once during your turn") && _superstarAbility.Contains("may");
     }
 
-    public bool MustUseEffectDuringDrawSegment()
+    public bool UseEffectDuringDrawSegment()
     {
         return _superstarAbility.Contains("during your draw segment") && _superstarAbility.Contains("must");
     }
     
-    public bool MustUseEffectWhileReceivingDamage()
+    public bool UseEffectWhileReceivingDamage()
     {
         Console.WriteLine("LA SUPERSTAR ABILITY ESS");
         Console.WriteLine(_superstarAbility);
