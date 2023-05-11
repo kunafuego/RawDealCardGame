@@ -152,7 +152,7 @@ public class Game
             effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
             
             ManageChosenOption(nextPlayOptionChosen);
-        } while (!GameEnded() && nextPlayOptionChosen != NextPlay.EndTurn);
+        } while (!_gameEnded && nextPlayOptionChosen != NextPlay.EndTurn);
         CheckIfThereIsWinner();
         
     }
@@ -404,11 +404,6 @@ public class Game
 
     }
 
-    private bool GameEnded()
-    {
-        return _gameEnded;
-    }
-    
     private void CheckIfThereIsWinner()
     {
         if (!_gameEnded && !_player1.HasCardsInArsenal())

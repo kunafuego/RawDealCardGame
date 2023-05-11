@@ -52,7 +52,8 @@ public class DeckValidator
         return false;
     }
     
-    private static List<string> GetSuperstarLogos()
+    private static
+        List<string> GetSuperstarLogos()
     {
         string superstarPath = Path.Combine("data", "superstar.json");
         string superstarInfo = File.ReadAllText(superstarPath);
