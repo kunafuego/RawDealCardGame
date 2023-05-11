@@ -1,3 +1,4 @@
+using System.Text;
 using RawDealView.Options;
 using RawDealView;
 using System.Text.Json;
@@ -10,14 +11,12 @@ public class Game
     private string _deckFolder;
     private Player _playerPlayingRound = new ();
     private Player _playerNotPlayingRound = new ();
-    private Player _winner;
-    private bool _gameEnded;
+    private RoundManager _actualRoundManager;
 
     public Game(View view, string deckFolder)
     {
         _view = view;
         _deckFolder = deckFolder;
-        _gameEnded = false;
     }
 
     public void Play()
@@ -34,16 +33,17 @@ public class Game
 
     private void TryToPlayGame()
     {
-    PlayersSelectTheirDecks();
-    GetAbilityManagerReady();
-    ChooseStarter();
-    while (_gameEnded == false)
-    {
-        PlayRound();
-        SwapPlayers();
-    }
-    Superstar winnerSuperstar = _winner.Superstar;
-    _view.CongratulateWinner(winnerSuperstar.Name);
+        PlayersSelectTheirDecks();
+        SetAbilityManager();
+        SwapPlayersIfNecessary();
+        do
+        {
+            PlayRound();
+            SwapPlayers();
+        } while (_actualRoundManager.GameShouldEnd == false);
+        Player winner = _actualRoundManager.GetGameWinner();
+        Superstar winnerSuperstar = winner.Superstar;
+        _view.CongratulateWinner(winnerSuperstar.Name);
     }
     
     private void PlayersSelectTheirDecks()
@@ -87,14 +87,14 @@ public class Game
         player.DrawCardsFromArsenalToHandAtStart();
     }
 
-    private void GetAbilityManagerReady()
+    private void SetAbilityManager()
     {
         AbilitiesManager.View = _view;
         AbilitiesManager.SetAbility(_playerPlayingRound) ;
         AbilitiesManager.SetAbility(_playerNotPlayingRound) ;
     }
 
-    private void ChooseStarter()
+    private void SwapPlayersIfNecessary()
     {
         Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
         Superstar playerNotPlayingRoundSuperstar = _playerNotPlayingRound.Superstar;
@@ -103,238 +103,14 @@ public class Game
     
     private void PlayRound()
     {
-        Superstar playerPlayingSuperstar = _playerPlayingRound.Superstar;
-        _view.SayThatATurnBegins(playerPlayingSuperstar.Name);
-        AbilitiesManager.ManageAbilityBeforeDraw(_playerPlayingRound, _playerNotPlayingRound);
-        PlayerDrawCards();
-        bool effectUsed = false;
-        NextPlay nextPlayOptionChosen;
-        do
-        {
-            _view.ShowGameInfo(_playerPlayingRound.GetInfo(), _playerNotPlayingRound.GetInfo());
-            if (!effectUsed && AbilitiesManager.CheckIfUserCanUseAbilityDuringTurn(_playerPlayingRound))
-            {
-                nextPlayOptionChosen = AskUserWhatToDoWhenUsingHisAbilityIsPossible();
-            }
-            else
-            {
-                nextPlayOptionChosen = AskUserWhatToDoWhenHeCannotUseHisAbility();
-            }
-            
-            effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
-            
-            ManageChosenOption(nextPlayOptionChosen);
-        } while (!_gameEnded && nextPlayOptionChosen != NextPlay.EndTurn);
-        CheckIfThereIsWinner();
-        
+        _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view);
+        _actualRoundManager.PlayRound();
+        _actualRoundManager.CheckIfGameShouldEnd();
     }
     
-    private void PlayerDrawCards()
-    {
-        try
-        {
-            TryToUseEffectDuringDrawSegment();
-        }
-        catch (CantUseAbilityException)
-        {
-            _playerPlayingRound.DrawSingleCard();
-        }
-    }
-
-    private void TryToUseEffectDuringDrawSegment()
-    {
-        AbilitiesManager.UseAbilityDuringDrawSegment(_playerPlayingRound, _playerNotPlayingRound);
-    }
-
-    private NextPlay AskUserWhatToDoWhenUsingHisAbilityIsPossible()
-    {
-        return _view.AskUserWhatToDoWhenUsingHisAbilityIsPossible();
-    }
-
-    private NextPlay AskUserWhatToDoWhenHeCannotUseHisAbility()
-    {
-        return _view.AskUserWhatToDoWhenHeCannotUseHisAbility();
-    }
-    
-    private void ManageChosenOption(NextPlay optionChosen)
-    {
-        if (optionChosen == NextPlay.ShowCards)
-        {
-            ManageShowingCards();
-        }
-        else if (optionChosen == NextPlay.PlayCard)
-        {
-            ManagePlayingCards();
-        }
-        else if (optionChosen == NextPlay.UseAbility)
-        {
-            AbilitiesManager.UseAbilityDuringTurn(_playerPlayingRound, _playerNotPlayingRound);
-        }
-        else if (optionChosen == NextPlay.GiveUp)
-        {
-            _gameEnded = true;
-            _winner = _playerNotPlayingRound;
-        }
-    }
-    
-    private void ManageShowingCards()
-    {
-        CardSet cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
-        List<Card> cardsObjectsToShow = new List<Card>();
-        if (cardSetChosenForShowing.ToString().Contains("Opponents"))
-        {
-            cardsObjectsToShow = _playerNotPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-        else
-        {
-            cardsObjectsToShow = _playerPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-
-        List<string> cardsStringsToShow = GetCardsAsStringForShowing(cardsObjectsToShow);
-        _view.ShowCards(cardsStringsToShow);
-    }
-    
-    private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
-    {
-        List<string> cardsStringsToShow = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            cardsStringsToShow.Add(card.ToString());
-        }
-        return cardsStringsToShow;
-    }
-
-    private void ManagePlayingCards()
-    {
-        List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
-        List<string> availabePlaysInStringFormat = GetStringsOfPlays(playsToShow);
-        int chosenPlay = _view.AskUserToSelectAPlay(availabePlaysInStringFormat);
-        if (chosenPlay != -1)
-        {
-            TryToPlayCard(playsToShow[chosenPlay]);
-        }
-    }
-    
-    private List<string> GetStringsOfPlays(List<Play> availablePlays)
-    {
-        List<string> playsToShow = new List<string>();
-        foreach (Play playObject in availablePlays)
-        {
-            playsToShow.Add(playObject.ToString());
-        }
-
-        return playsToShow;
-    }
-
-    private void TryToPlayCard(Play chosenPlay)
-    {
-        Card cardPlayed = chosenPlay.Card;
-        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
-        _view.SayThatPlayerIsTryingToPlayThisCard(playerPlayingRoundSuperstar.Name, chosenPlay.ToString());
-        TryToReversePlay(chosenPlay);
-        _view.SayThatPlayerSuccessfullyPlayedACard();
-        if (chosenPlay.PlayedAs == "MANEUVER")
-        {
-            _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
-            PlayManeuver(cardPlayed);
-        }
-        else if (chosenPlay.PlayedAs == "ACTION")
-        {
-            PlayAction(cardPlayed);
-        }
-    }
-
-    private void TryToReversePlay(Play playOpponentIsTryingToMake)
-    {
-        try
-        {
-            List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
-            List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
-                reversalCardsThatPlayerCanPlay
-                .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
-            List<string> reversalCardsStrings =
-                reversalCardsThatPlayerCanPlayOnThisCard.Select(card => card.ToString()).ToList();
-            int usersChoice = _view.AskUserToSelectAReversal(_playerNotPlayingRound.GetSuperstarName(),
-                reversalCardsStrings);
-            if (usersChoice != -1)
-            {
-                Card reversalSelected = reversalCardsThatPlayerCanPlayOnThisCard[usersChoice];
-                _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
-            }
-        }
-        catch (NoReverseCardsException e)
-        {
-        }
-        
-    }
-
-    private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
-    {
-        List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
-        if (!reversalCardsThatPlayerCanPlayOnThisCard.Any())
-        {
-            throw new NoReverseCardsException();
-        }
-
-        return reversalCardsThatPlayerCanPlayOnThisCard;
-    }
-
-    private void PlayManeuver(Card cardPlayed)
-    {
-        int cardDamage = ManageCardDamage(cardPlayed.Damage);
-        Superstar playerNotPlayingRoundSuperstar = _playerNotPlayingRound.Superstar;
-        if (cardDamage > 0)
-        {
-            _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
-        }
-        for (int i = 1; i <= cardDamage; i++)
-        {
-            if (!_gameEnded)
-            {
-                Card cardThatWentToRingSide = _playerNotPlayingRound.ReceivesDamage();
-                _view.ShowCardOverturnByTakingDamage(cardThatWentToRingSide.ToString(), i, cardDamage);
-                _gameEnded = !_playerNotPlayingRound.HasCardsInArsenal();
-            }
-            _winner = _playerPlayingRound;
-        }
-        _playerPlayingRound.UpdateFortitude();
-    }
-
-    private int ManageCardDamage(int initialDamage)
-    {
-        if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(_playerNotPlayingRound))
-        {
-            return initialDamage - 1;
-        }
-        return initialDamage;
-    }
-
-    private void PlayAction(Card cardPlayed)
-    {
-        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
-        _playerPlayingRound.MoveCardFromHandToRingside(cardPlayed);
-        _playerPlayingRound.DrawSingleCard();
-        _view.SayThatPlayerMustDiscardThisCard(playerPlayingRoundSuperstar.Name, cardPlayed.Title);
-        _view.SayThatPlayerDrawCards(playerPlayingRoundSuperstar.Name, 1);
-    }
-
-    private void CheckIfThereIsWinner()
-    {
-        if (!_gameEnded && !_playerPlayingRound.HasCardsInArsenal())
-        {
-            _gameEnded = true;
-            _winner = _playerNotPlayingRound;
-        }
-        else if (!_gameEnded && !_playerNotPlayingRound.HasCardsInArsenal())
-        {
-            _gameEnded = true;
-            _winner = _playerPlayingRound;
-        }
-    }
-
     private void SwapPlayers()
     {
         (_playerPlayingRound, _playerNotPlayingRound) = (_playerNotPlayingRound, _playerPlayingRound);
     }
+
 }

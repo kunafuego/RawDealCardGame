@@ -185,6 +185,8 @@ public class Player
 
     public void MoveCardFromHandToRingside(Card cardToMove)
     {
+        Console.WriteLine("Moviendo Carta");
+        Console.WriteLine(cardToMove.Title);
         _hand.RemoveCard(cardToMove);
         _ringSide.AddCard(cardToMove);
     }

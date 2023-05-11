@@ -12,3 +12,6 @@ Con manejo de errores
 Cómo no usar player1 y player2?
 
 Donde dejar diccionario de AbilitiesManager
+
+
+Mapear carta a efecto, obligado a ocupar switch
