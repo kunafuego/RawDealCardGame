@@ -10,7 +10,7 @@ abstract class SuperstarAbility
         View = view;
     }
     
-    public abstract void UseEffect(Player playerPlayingRound);
+    public abstract void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound);
     public abstract bool MeetsTheRequirementsForUsingEffect(Player player);
 
     public bool NeedToAskToUseAbilityAtBeginningOfTurn(Player playerInTurn)
@@ -18,9 +18,9 @@ abstract class SuperstarAbility
         return playerInTurn.NeedToAskToUseAbilityAtBeginningOfTurn();
     }
 
-    public bool MustUseEffectAtStartOfTurn(Player playerInTurn)
+    public bool MustUseAbilityAtStartOfTurn(Player playerInTurn)
     {
-        return playerInTurn.MustUseEffectAtStartOfTurn();
+        return playerInTurn.MustUseAbilityAtStartOfTurn();
     }
 
     public bool NeedToAskToUseAbilityDuringTurn(Player playerInTurn)
@@ -30,11 +30,11 @@ abstract class SuperstarAbility
     
     public bool MustUseEffectDuringDrawSegment(Player playerInTurn)
     {
-        return playerInTurn.MustUseEffectDuringDrawSegment();
+        return playerInTurn.MustUseAbilityDuringDrawSegment();
     }
     
     public bool MustUseEffectWhileReceivingDamage(Player playerInTurn)
     {
-        return playerInTurn.MustUseEffectWhileReceivingDamage();
+        return playerInTurn.MustUseAbilityWhileReceivingDamage();
     }
 }

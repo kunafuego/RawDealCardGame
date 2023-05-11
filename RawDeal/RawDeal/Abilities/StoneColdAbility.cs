@@ -6,7 +6,7 @@ class StoneColdAbility : SuperstarAbility
 {
     public StoneColdAbility(View view) : base(view) {}
 
-    public override void UseEffect(Player playerPlayingRound)
+    public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         DrawCardFromArsenalToHand(playerPlayingRound);
         ChooseAndMoveCardFromHandToArsenal(playerPlayingRound);

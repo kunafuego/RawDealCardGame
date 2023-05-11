@@ -6,7 +6,7 @@ class MankindAbility : SuperstarAbility
 {
     public MankindAbility(View view) : base(view) {}
 
-    public override void UseEffect(Player playerPlayingRound)
+    public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         for (int i = 0; i < 2; i++)
         {

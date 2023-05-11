@@ -31,7 +31,7 @@ public class Superstar
         return _superstarAbility.Contains("At the start of your turn") && _superstarAbility.Contains("may");
     }
 
-    public bool UseEffectAtStartOfTurn()
+    public bool UseAbilityAtStartOfTurn()
     {
         return _superstarAbility.Contains("At the start of your turn") && _superstarAbility.Contains("must");
     }
@@ -41,12 +41,12 @@ public class Superstar
         return _superstarAbility.Contains("Once during your turn") && _superstarAbility.Contains("may");
     }
 
-    public bool UseEffectDuringDrawSegment()
+    public bool UseAbilityDuringDrawSegment()
     {
         return _superstarAbility.Contains("during your draw segment") && _superstarAbility.Contains("must");
     }
     
-    public bool UseEffectWhileReceivingDamage()
+    public bool UseAbilityWhileReceivingDamage()
     {
         Console.WriteLine("LA SUPERSTAR ABILITY ESS");
         Console.WriteLine(_superstarAbility);

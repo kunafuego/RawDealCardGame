@@ -9,4 +9,6 @@ Cómo manejamos que Players select desk retorna booleano?
 Con manejo de errores
 
 
-Cómo no usar player1 y player2??
+Cómo no usar player1 y player2?
+
+Donde dejar diccionario de AbilitiesManager

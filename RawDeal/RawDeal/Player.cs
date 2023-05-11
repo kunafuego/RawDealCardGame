@@ -219,9 +219,9 @@ public class Player
         return _superstar.AskToUseAbilityAtBeginningOfTurn();
     }
 
-    public bool MustUseEffectAtStartOfTurn()
+    public bool MustUseAbilityAtStartOfTurn()
     {
-        return _superstar.UseEffectAtStartOfTurn();
+        return _superstar.UseAbilityAtStartOfTurn();
     }
 
     public bool NeedToAskToUseAbilityDuringTurn()
@@ -229,13 +229,13 @@ public class Player
         return _superstar.AskToUseAbilityDuringTurn();
     }
     
-    public bool MustUseEffectDuringDrawSegment()
+    public bool MustUseAbilityDuringDrawSegment()
     {
-        return _superstar.UseEffectDuringDrawSegment();
+        return _superstar.UseAbilityDuringDrawSegment();
     }
     
-    public bool MustUseEffectWhileReceivingDamage()
+    public bool MustUseAbilityWhileReceivingDamage()
     {
-        return _superstar.UseEffectWhileReceivingDamage();
+        return _superstar.UseAbilityWhileReceivingDamage();
     }
 }

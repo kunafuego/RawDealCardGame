@@ -6,7 +6,7 @@ class HHHAbility : SuperstarAbility
 {
     public HHHAbility(View view) : base(view) {}
 
-    public override void UseEffect(Player playerPlayingRound)
+    public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         
     }

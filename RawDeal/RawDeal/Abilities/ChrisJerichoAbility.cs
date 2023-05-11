@@ -3,34 +3,21 @@ using RawDealView;
 namespace RawDeal;
 
 class ChrisJerichoAbility : SuperstarAbility
-{    
-    private readonly Player _player1;
-    private readonly Player _player2;
-    public ChrisJerichoAbility(Player player1, Player player2, View view) : base(view)     
-    {
-        _player1 = player1;
-        _player2 = player2;
-    }
+{
+    public ChrisJerichoAbility(View view) : base(view) {}
 
-    public override void UseEffect(Player playerPlayingRound)
+    public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         DiscardCard(playerPlayingRound);
-        Player playerNotPlayingRound = GetPlayerNotPlayingRound(playerPlayingRound);
         DiscardCard(playerNotPlayingRound);
     }
 
-    private void DiscardCard(Player playerToDiscard)
+    private void DiscardCard(Player playerThatHasToDiscard)
     {
-        List<Card> handCardsObjectsToShow = playerToDiscard.GetCardsToShow(CardSet.Hand);
+        List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerToDiscard.Superstar.Name, playerToDiscard.Superstar.Name, 1);
-        playerToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
-    }
-
-    private Player GetPlayerNotPlayingRound(Player playerPlayingRound)
-    {
-        Player playerNotPlayingRound = (playerPlayingRound == _player1) ? _player2 : _player1;
-        return playerNotPlayingRound;
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.Superstar.Name, playerThatHasToDiscard.Superstar.Name, 1);
+        playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
