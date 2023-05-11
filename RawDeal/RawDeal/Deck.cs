@@ -27,9 +27,7 @@ public class Deck
     }
     public bool IsValid(string superstarLogo)
     {
-        if (!CheckIfAmountOfCardsIsOk()) return false;
-        if (!CheckIfSubtypesOfCardsAreOk(superstarLogo)) return false;
-        return true;
+        return DeckValidator.CheckIfDeckIsValid(superstarLogo, _cards);
     }
 
     public bool CheckIfHasReversalCard()
@@ -49,57 +47,6 @@ public class Deck
     public List<Card> GetReversalCards()
     {
         return _cards.Where(card => card.HasReversalType()).ToList();
-    }
-
-    private bool CheckIfAmountOfCardsIsOk()
-    {
-        return _cards.Count == 60;
-    }
-
-    private bool CheckIfSubtypesOfCardsAreOk(string superstarLogo)
-    {
-        foreach (Card card in _cards)
-        {
-            List<string> subtypes = card.SubTypes;
-            List<Card> cardsWithSameTitle = _cards.FindAll(x => x.Title == card.Title);
-            if (cardsWithSameTitle.Count > 1 && subtypes.Contains("Unique") ||
-                cardsWithSameTitle.Count > 3 && subtypes.Contains("SetUp") == false ||
-                subtypes.Contains("Heel") && _cards.Any(x => x.SubTypes.Contains("Face")) ||
-                subtypes.Contains("Face") && _cards.Any(y => y.SubTypes.Contains("Heel")) ||
-                CheckIfCardIsFromAnotherSuperstar(subtypes, superstarLogo))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private bool CheckIfCardIsFromAnotherSuperstar(List<string> subtypes, string superstarLogo)
-    {
-        List<string> listOfAllSuperstarsLogos = GetSuperstarLogos();
-        foreach (var subtype in subtypes)
-        {
-            if (listOfAllSuperstarsLogos.Contains(subtype) && subtype != superstarLogo)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private List<string> GetSuperstarLogos()
-    {
-        string superstarPath = Path.Combine("data", "superstar.json");
-        string superstarInfo = File.ReadAllText(superstarPath);
-        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
-        List<string> superstarLogos = new List<string>();
-        foreach (var superstarSerialized in superstarSerializer)
-        {
-            superstarLogos.Add(superstarSerialized.Logo);
-        }
-
-        return superstarLogos;
     }
 
     public Card GetLastCard()

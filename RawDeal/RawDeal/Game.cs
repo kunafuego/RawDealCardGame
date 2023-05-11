@@ -67,15 +67,13 @@ public class Game
         foreach (var player in iteradorPlayers)
         {
             List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-            Superstar superstar = GetDecksSuperstar(listOfStringsWithNamesOfCardsInDeck);
-            RemoveSuperstarFromListOfDecksCards(listOfStringsWithNamesOfCardsInDeck);
-            Deck deck = CreateDeckObject(listOfStringsWithNamesOfCardsInDeck);
-            if (!deck.IsValid(superstar.Logo))
+            Deck deck = DeckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
+            if (!deck.IsValid(DeckCreator.GetDeckSuperstar().Logo))
             {
                 throw new InvalidDeckException("");
             }
             AssignDeckToPlayer(player, deck);
-            AssignSuperstarToPlayer(player, superstar);
+            AssignSuperstarToPlayer(player, DeckCreator.GetDeckSuperstar());
             DrawCardsToHandForFirstTime(player);
         }
     }
@@ -87,88 +85,6 @@ public class Game
         return new List<string>(deckText);
     }
 
-    private Superstar GetDecksSuperstar(List<string> listOfStringsWithDeckContent)
-    {
-        string superstarName = listOfStringsWithDeckContent[0];
-        Superstar superstar = InitializeSuperstar(superstarName);
-        return superstar;
-    }
-
-    private Superstar InitializeSuperstar(string superstarName)
-    {
-        string superstarInfo = ReadSuperstarInfo();
-        DeserializedSuperstars serializedSuperstar = FindSerializedSuperstar(superstarName, superstarInfo);
-        Superstar superstarObject = CreateSuperstarObject(serializedSuperstar);
-        return superstarObject;
-    }
-
-    private string ReadSuperstarInfo()
-    {
-        string superstarPath = Path.Combine("data", "superstar.json");
-        string superstarInfo = File.ReadAllText(superstarPath);
-        return superstarInfo;
-    }
-
-    private DeserializedSuperstars FindSerializedSuperstar(string superstarName, string superstarInfo)
-    {
-        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
-        var serializedSuperstar = superstarSerializer.Find(x => superstarName.Contains(x.Name));
-        return serializedSuperstar;
-    }
-
-    private Superstar CreateSuperstarObject(DeserializedSuperstars serializedSuperstar)
-    {
-        Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, serializedSuperstar.SuperstarValue,
-            serializedSuperstar.SuperstarAbility);
-        return superstarObject;
-    }
-    
-    private static void RemoveSuperstarFromListOfDecksCards(List<string> listOfStringsWithNamesOfCardsInDeck)
-    {
-        listOfStringsWithNamesOfCardsInDeck.RemoveAt(0);
-    }
-    
-    private Deck CreateDeckObject(List<string> deckContent)
-    {
-        var deckListWithCardsNames = new List<string>(deckContent);
-        Deck deck = CreateDeck(deckListWithCardsNames);
-        return deck;
-    }
-
-    private Deck CreateDeck(List<string> deckListNamesWithCardNames)
-    {
-        var listWithDeserializedCards = LoadCards();
-        List<Card> deckCards = new List<Card>();
-        foreach (var card in deckListNamesWithCardNames)
-        {
-            DeserializedCards deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
-            Card cardObject = CreateCard(deserializedCard);
-            deckCards.Add(cardObject);
-        }   
-        Deck deckObject = new Deck(deckCards);
-        return deckObject;
-    }
-
-    private List<DeserializedCards> LoadCards()
-    {
-        string cardsPath = Path.Combine("data", "cards.json");
-        string cardsInfo = File.ReadAllText(cardsPath);
-        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
-        return cardsSerializer;
-    }
-    
-    private Card CreateCard(DeserializedCards deserializedCard)
-    {
-        return new Card(
-            deserializedCard.Title, 
-            deserializedCard.Types, 
-            deserializedCard.Subtypes, 
-            deserializedCard.Fortitude, 
-            deserializedCard.Damage, 
-            deserializedCard.StunValue, 
-            deserializedCard.CardEffect);
-    }
-    
     private void AssignDeckToPlayer(Player player, Deck deck)
     {
         player.AssignArsenal(deck);
@@ -398,11 +314,6 @@ public class Game
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
         Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
-        // bool hasReversalCard = playerNotPlayingRound.CheckIfHasReversalCardInHand();
-        // if (hasReversalCard)
-        // {
-        //     List < Card > = playerNotPlayingRound.GetReversalCards();
-        // }
         try
         {
             List<Card> reversalCardsThatPlayerCanPlay = playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
