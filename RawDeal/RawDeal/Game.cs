@@ -362,7 +362,7 @@ public class Game
         int chosenPlay = _view.AskUserToSelectAPlay(availabePlaysInStringFormat);
         if (chosenPlay != -1)
         {
-            PlayCard(playsToShow[chosenPlay]);
+            TryToPlayCard(playsToShow[chosenPlay]);
         }
     }
     
@@ -377,11 +377,12 @@ public class Game
         return playsToShow;
     }
 
-    private void PlayCard(Play chosenPlay)
+    private void TryToPlayCard(Play chosenPlay)
     {
         Card cardPlayed = chosenPlay.Card;
         Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
         _view.SayThatPlayerIsTryingToPlayThisCard(playerPlayingRoundSuperstar.Name, chosenPlay.ToString());
+        TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
         if (chosenPlay.PlayedAs == "MANEUVER")
         {
@@ -392,6 +393,48 @@ public class Game
         {
             PlayAction(cardPlayed);
         }
+    }
+
+    private void TryToReversePlay(Play playOpponentIsTryingToMake)
+    {
+        Player playerNotPlayingRound = GetPlayerThatIsNotPlayingRound();
+        // bool hasReversalCard = playerNotPlayingRound.CheckIfHasReversalCardInHand();
+        // if (hasReversalCard)
+        // {
+        //     List < Card > = playerNotPlayingRound.GetReversalCards();
+        // }
+        try
+        {
+            List<Card> reversalCardsThatPlayerCanPlay = playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
+            List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
+                reversalCardsThatPlayerCanPlay
+                .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
+            List<string> reversalCardsStrings =
+                reversalCardsThatPlayerCanPlayOnThisCard.Select(card => card.ToString()).ToList();
+            int usersChoice = _view.AskUserToSelectAReversal(playerNotPlayingRound.GetSuperstarName(),
+                reversalCardsStrings);
+            if (usersChoice != -1)
+            {
+                Card reversalSelected = reversalCardsThatPlayerCanPlayOnThisCard[usersChoice];
+                _view.SayThatPlayerReversedTheCard(playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
+            }
+        }
+        catch (NoReverseCardsException e)
+        {
+        }
+        
+    }
+
+    private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
+    {
+        List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
+            .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
+        if (!reversalCardsThatPlayerCanPlayOnThisCard.Any())
+        {
+            throw new NoReverseCardsException();
+        }
+
+        return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
     private void PlayManeuver(Card cardPlayed)

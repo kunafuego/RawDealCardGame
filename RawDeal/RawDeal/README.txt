@@ -7,3 +7,6 @@ Así, en cada una de esas partes llamamos el metodo del superstar y hace algo so
 
 Cómo manejamos que Players select desk retorna booleano?
 Con manejo de errores
+
+
+Cómo no usar player1 y player2??

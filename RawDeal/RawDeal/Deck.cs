@@ -32,6 +32,24 @@ public class Deck
         return true;
     }
 
+    public bool CheckIfHasReversalCard()
+    {
+        foreach (Card card in _cards)
+        {
+            List<string> types = card.Types;
+            if (types.Contains("Reversal"))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public List<Card> GetReversalCards()
+    {
+        return _cards.Where(card => card.HasReversalType()).ToList();
+    }
 
     private bool CheckIfAmountOfCardsIsOk()
     {

@@ -26,6 +26,28 @@ public class Player
     };
     }
 
+    public bool CheckIfHasReversalCardInHand()
+    {
+        return _hand.CheckIfHasReversalCard();
+    }
+
+    public string GetSuperstarName()
+    {
+        return _superstar.Name;
+    }
+    
+    public List<Card> GetReversalCardsThatPlayerCanPlay()
+    {
+        List<Card> reversalCards = _hand.GetReversalCards();
+        List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => _fortitude >= card.Fortitude).ToList();
+        if (!reversalCardsThatCanBePlayed.Any())
+        {
+            throw new NoReverseCardsException();
+        }
+
+        return reversalCardsThatCanBePlayed;
+    }
+
     public void UpdateFortitude()
     {
         _fortitude = 0;

@@ -51,6 +51,57 @@ public class Card : IViewableCardInfo
         _cardEffect = cardEffect;
     }
 
+    public bool HasReversalType()
+    {
+        return _types.Contains("Reversal");
+    }
+
+    // public bool CheckIfCanReverseThisPlay(Play play)
+    // {
+    //     Card cardToBePlayed = play.Card;
+    //     foreach (string subtype in cardToBePlayed._subTypes)
+    //     {
+    //         if(_cardEffect.Contains("Reverse any" + subtype))
+    //         {
+    //             return true;
+    //         }
+    //         List<string> types = cardToBePlayed.Types;
+    //         else if (types.Contains("Action") && _cardEffect.Contains("Reverse any ACTION"))
+    //         {
+    //             return true;
+    //         }
+    //     }  
+    // }
+    public bool CheckIfCanReverseThisPlay(Play play)
+    {
+        Card cardToBePlayed = play.Card;
+
+        if (HasMatchingSubTypeReverseEffect(cardToBePlayed))
+            return true;
+
+        if (HasActionReverseEffect(cardToBePlayed))
+            return true;
+
+        return false;
+    }
+
+    private bool HasMatchingSubTypeReverseEffect(Card card)
+    {
+        foreach (string subtype in card.Subtypes)
+        {
+            string reverseEffect = "Reverse any " + subtype;
+            if (_cardEffect.Contains(reverseEffect))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool HasActionReverseEffect(Card card)
+    {
+        List<string> types = card.Types;
+        return types.Contains("Action") && _cardEffect.Contains("Reverse any ACTION");
+    }
     public override string ToString()
     {
         return Formatter.CardToString(this);
