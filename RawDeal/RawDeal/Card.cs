@@ -55,39 +55,47 @@ public class Card : IViewableCardInfo
     {
         return _types.Contains("Reversal");
     }
-
-    // public bool CheckIfCanReverseThisPlay(Play play)
-    // {
-    //     Card cardToBePlayed = play.Card;
-    //     foreach (string subtype in cardToBePlayed._subTypes)
-    //     {
-    //         if(_cardEffect.Contains("Reverse any" + subtype))
-    //         {
-    //             return true;
-    //         }
-    //         List<string> types = cardToBePlayed.Types;
-    //         else if (types.Contains("Action") && _cardEffect.Contains("Reverse any ACTION"))
-    //         {
-    //             return true;
-    //         }
-    //     }  
-    // }
-    public bool CheckIfCanReverseThisPlay(Play play)
+    public bool CheckIfCanReverseThisPlay(Play playThatOpponentIsTryingToMake)
     {
-        Card cardToBePlayed = play.Card;
-
-        if (HasMatchingSubTypeReverseEffect(cardToBePlayed))
+        if (HasMatchingSubTypeReverseEffect(playThatOpponentIsTryingToMake))
             return true;
 
-        if (HasActionReverseEffect(cardToBePlayed))
+        if (HasActionReverseEffect(playThatOpponentIsTryingToMake))
             return true;
 
         return false;
     }
 
-    private bool HasMatchingSubTypeReverseEffect(Card card)
+    private bool HasMatchingSubTypeReverseEffect(Play playOpponentIsTryingToMake)
     {
-        foreach (string subtype in card.Subtypes)
+        Card cardToBePlayed = playOpponentIsTryingToMake.Card;
+        foreach (string subtype in cardToBePlayed.Subtypes)
+        {
+            string reverseEffect = "Reverse any " + subtype;
+            if (_cardEffect.Contains(reverseEffect) && playOpponentIsTryingToMake.PlayedAs == "MANEUVER")
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool HasActionReverseEffect(Play play)
+    {
+        return play.PlayedAs == "ACTION" && _cardEffect.Contains("Reverse any ACTION");
+    }
+    public override string ToString()
+    {
+        return Formatter.CardToString(this);
+    }
+
+    public bool CheckIfCanReverseThisManeuver(Card cardPlayed)
+    {
+        Console.WriteLine("Card Played by Opponent is ");
+        Console.WriteLine(cardPlayed.Title);
+        Console.WriteLine("Card That was turned over");
+        Console.WriteLine(_title);
+        Console.WriteLine(_cardEffect);
+        foreach (string subtype in cardPlayed.Subtypes)
         {
             string reverseEffect = "Reverse any " + subtype;
             if (_cardEffect.Contains(reverseEffect))
@@ -96,15 +104,5 @@ public class Card : IViewableCardInfo
 
         return false;
     }
-
-    private bool HasActionReverseEffect(Card card)
-    {
-        List<string> types = card.Types;
-        return types.Contains("Action") && _cardEffect.Contains("Reverse any ACTION");
-    }
-    public override string ToString()
-    {
-        return Formatter.CardToString(this);
-    }  
 
 }

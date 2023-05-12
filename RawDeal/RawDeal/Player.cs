@@ -7,23 +7,26 @@ public class Player
 {
     private Superstar _superstar;
     private int _fortitude = 0;
-    private Dictionary<CardSet, Deck> _cardSetToDeck; 
-    private Deck _arsenal = new (new List<Card>());
-    private Deck _ringSide = new (new List<Card>());
-    private Deck _ringArea = new (new List<Card>());
-    private Deck _hand = new (new List<Card>());
-    
-    public Superstar Superstar{ get { return _superstar; }}
+    private Dictionary<CardSet, Deck> _cardSetToDeck;
+    private Deck _arsenal = new(new List<Card>());
+    private Deck _ringSide = new(new List<Card>());
+    private Deck _ringArea = new(new List<Card>());
+    private Deck _hand = new(new List<Card>());
+
+    public Superstar Superstar
+    {
+        get { return _superstar; }
+    }
 
     public Player()
     {
         _cardSetToDeck = new Dictionary<CardSet, Deck>
-    {
-        {CardSet.Hand,   _hand},
-        {CardSet.RingArea, _ringArea},
-        {CardSet.RingsidePile, _ringSide},
-        {CardSet.Arsenal, _arsenal}
-    };
+        {
+            { CardSet.Hand, _hand },
+            { CardSet.RingArea, _ringArea },
+            { CardSet.RingsidePile, _ringSide },
+            { CardSet.Arsenal, _arsenal }
+        };
     }
 
     public bool CheckIfHasReversalCardInHand()
@@ -35,16 +38,11 @@ public class Player
     {
         return _superstar.Name;
     }
-    
+
     public List<Card> GetReversalCardsThatPlayerCanPlay()
     {
         List<Card> reversalCards = _hand.GetReversalCards();
         List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => _fortitude >= card.Fortitude).ToList();
-        if (!reversalCardsThatCanBePlayed.Any())
-        {
-            throw new NoReverseCardsException();
-        }
-
         return reversalCardsThatCanBePlayed;
     }
 
@@ -56,25 +54,26 @@ public class Player
             _fortitude += card.Damage;
         }
     }
-    
+
     public void AssignSuperstar(Superstar superstar)
     {
         _superstar = superstar;
     }
-    
+
     public void AssignArsenal(Deck arsenal)
     {
         _arsenal = arsenal;
     }
-    
+
     public void DrawCardsFromArsenalToHandAtStart()
     {
         List<Card> removableCards = new List<Card>();
-        for (int i = _arsenal.Cards.Count; i > _arsenal.Cards.Count - _superstar.HandSize ; i--)
+        for (int i = _arsenal.Cards.Count; i > _arsenal.Cards.Count - _superstar.HandSize; i--)
         {
             Card cardToPass = _arsenal.Cards[i - 1];
             removableCards.Add(cardToPass);
         }
+
         MoveManyCardsFromArsenalToHand(removableCards);
     }
 
@@ -109,20 +108,21 @@ public class Player
         {
             cardsToShow = _hand.Cards;
         }
-        else if (cardSetChosenForShowing == CardSet.RingArea || 
+        else if (cardSetChosenForShowing == CardSet.RingArea ||
                  cardSetChosenForShowing == CardSet.OpponentsRingArea)
         {
             cardsToShow = _ringArea.Cards;
         }
-        else if (cardSetChosenForShowing == CardSet.RingsidePile || 
-                cardSetChosenForShowing == CardSet.OpponentsRingsidePile)
+        else if (cardSetChosenForShowing == CardSet.RingsidePile ||
+                 cardSetChosenForShowing == CardSet.OpponentsRingsidePile)
         {
             cardsToShow = _ringSide.Cards;
         }
+
         return cardsToShow;
     }
 
- 
+
     public List<Play> GetAvailablePlays()
     {
         List<Play> playsThatCanBePlayed = new List<Play>();
@@ -133,6 +133,7 @@ public class Player
                 AddPlayablePlays(card, playsThatCanBePlayed);
             }
         }
+
         return playsThatCanBePlayed;
     }
 
@@ -153,12 +154,11 @@ public class Player
         }
     }
 
-    public Card ReceivesDamage()
+    public void ReceivesDamage()
     {
-        Card cardToRemove = _arsenal.GetLastCard();
+        Card cardToRemove = _arsenal.GetCardOnTop();
         _arsenal.RemoveCard(cardToRemove);
         _ringSide.AddCard(cardToRemove);
-        return cardToRemove;
     }
 
     public bool HasCards(CardSet deckToCheck)
@@ -166,17 +166,19 @@ public class Player
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
         return cardsToCheck.HasCards();
     }
+
     public bool HasCardsInArsenal()
     {
         return _arsenal.HasCards();
     }
-    
-    public void MoveCardFromHandToRingArea(Play play)
+
+    public void MoveCardFromHandToRingArea(Card cardToMove)
     {
-        Card cardToMove = play.Card;
         _hand.RemoveCard(cardToMove);
         _ringArea.AddCard(cardToMove);
+        UpdateFortitude();
     }
+
     public void MoveCardFromRingsideToArsenal(Card cardToMove)
     {
         _ringSide.RemoveCard(cardToMove);
@@ -185,8 +187,6 @@ public class Player
 
     public void MoveCardFromHandToRingside(Card cardToMove)
     {
-        Console.WriteLine("Moviendo Carta");
-        Console.WriteLine(cardToMove.Title);
         _hand.RemoveCard(cardToMove);
         _ringSide.AddCard(cardToMove);
     }
@@ -207,7 +207,7 @@ public class Player
     {
         return _arsenal.HasMoreThanOneCard();
     }
-    
+
     public bool HasMoreThanOneCard(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
@@ -215,7 +215,7 @@ public class Player
     }
 
     // Abiliies methods
-    
+
     public bool NeedToAskToUseAbilityAtBeginningOfTurn()
     {
         return _superstar.AskToUseAbilityAtBeginningOfTurn();
@@ -230,14 +230,30 @@ public class Player
     {
         return _superstar.AskToUseAbilityDuringTurn();
     }
-    
+
     public bool MustUseAbilityDuringDrawSegment()
     {
         return _superstar.UseAbilityDuringDrawSegment();
     }
-    
+
     public bool MustUseAbilityWhileReceivingDamage()
     {
         return _superstar.UseAbilityWhileReceivingDamage();
     }
+
+    public bool CheckIfHasHigherFortitudeThanCard(Card card)
+    {
+        return _fortitude >= card.Fortitude;
+    }
+
+    public Card GetCardOnTopOfRingside()
+    {
+        return _ringSide.GetCardOnTop();
+    }
+
+    public Card GetCardOnTopOfArsenal()
+    {
+        return _arsenal.GetCardOnTop();
+    }
+
 }

@@ -48,9 +48,6 @@ public class Superstar
     
     public bool UseAbilityWhileReceivingDamage()
     {
-        Console.WriteLine("LA SUPERSTAR ABILITY ESS");
-        Console.WriteLine(_superstarAbility);
-        Console.WriteLine(_superstarAbility.Contains("All damage from opponent"));
         return _superstarAbility.Contains("All damage from opponent");
     }
     

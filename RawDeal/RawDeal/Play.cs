@@ -29,12 +29,6 @@ public class Play : IViewablePlayInfo
         _playedAs = type.ToUpper();
     }
 
-    // public string GetCardString()
-    // {
-    //     string cardAsString = Formatter.CardToString(_card);
-    //     return cardAsString;
-    // }
-    
     public override string ToString()
     {
         return Formatter.PlayToString(this);

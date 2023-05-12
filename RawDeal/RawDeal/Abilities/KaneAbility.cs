@@ -9,8 +9,9 @@ class KaneAbility : SuperstarAbility
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         View.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRound.Superstar.Name, 1);
-        Card cardThatWentToRingSide = playerNotPlayingRound.ReceivesDamage();
-        View.ShowCardOverturnByTakingDamage(cardThatWentToRingSide.ToString(), 1, 1);
+        playerNotPlayingRound.ReceivesDamage();
+        Card cardThatWentToRingside = playerNotPlayingRound.GetCardOnTopOfRingside();
+        View.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), 1, 1);
         playerPlayingRound.UpdateFortitude();
     }
 

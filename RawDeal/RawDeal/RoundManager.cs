@@ -44,9 +44,7 @@ public class RoundManager
             {
                 nextPlayOptionChosen = _view.AskUserWhatToDoWhenHeCannotUseHisAbility();
             }
-            
             effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
-            
             ManageChosenOption(nextPlayOptionChosen);
         } while (!_turnEnded);
     }
@@ -72,8 +70,6 @@ public class RoundManager
     {
         if (optionChosen == NextPlay.ShowCards)
         {
-            Console.WriteLine("PARTIENDO A MOSTRAR CARTAS 81");
-            Console.WriteLine(_turnEnded);
             ManageShowingCards();
         }
         else if (optionChosen == NextPlay.PlayCard)
@@ -87,14 +83,11 @@ public class RoundManager
         else if (optionChosen == NextPlay.EndTurn)
         {
             _turnEnded = true;
-            Console.WriteLine("TURN ENDED PORQUE ACABO EL TURNO ELEGIDO");
         }
         else if (optionChosen == NextPlay.GiveUp)
         {
             _turnEnded = true;
             _gameShouldEnd = true;
-            Console.WriteLine("TURN ENDED PORQUE SE RINDIO");
-            // _winner = _playerNotPlayingRound;
         }
     }
     
@@ -110,11 +103,8 @@ public class RoundManager
         {
             cardsObjectsToShow = _playerPlayingRound.GetCardsToShow(cardSetChosenForShowing);
         }
-        Console.WriteLine(_turnEnded);
         List<string> cardsStringsToShow = GetCardsAsStringForShowing(cardsObjectsToShow);
         _view.ShowCards(cardsStringsToShow);
-        Console.WriteLine("Mostrando Cartas");
-        Console.WriteLine(_turnEnded);
     }
     
     private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
@@ -140,6 +130,7 @@ public class RoundManager
             }
             catch (CardWasReversedException e)
             {
+                // _playerPlayingRound.MoveCardFromHandToRingside(playsToShow[chosenPlay].Card);
                 _turnEnded = true;
             }
         }
@@ -165,7 +156,7 @@ public class RoundManager
         _view.SayThatPlayerSuccessfullyPlayedACard();
         if (chosenPlay.PlayedAs == "MANEUVER")
         {
-            _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay);
+            // _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay.Card);
             PlayManeuver(cardPlayed);
         }
         else if (chosenPlay.PlayedAs == "ACTION")
@@ -176,12 +167,10 @@ public class RoundManager
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        try
+        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
+        List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
+        if (reversalCardsThatPlayerCanPlayOnThisCard.Any())
         {
-            List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
-            List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
-                reversalCardsThatPlayerCanPlay
-                .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
             List<Play> reversalPlays = GetPlaysOfAvailablesCards(reversalCardsThatPlayerCanPlayOnThisCard);
             List<string> reversalPlaysString = reversalPlays.Select(play => play.ToString()).ToList();
             int usersChoice = _view.AskUserToSelectAReversal(_playerNotPlayingRound.GetSuperstarName(), reversalPlaysString);
@@ -189,15 +178,11 @@ public class RoundManager
             {
                 Play reversalSelected = reversalPlays[usersChoice];
                 _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
-                _playerPlayingRound.MoveCardFromHandToRingside(reversalSelected.Card);
-                Console.WriteLine("MOVIENDO LA CARTA AL RINGSIDE");
+                _playerNotPlayingRound.MoveCardFromHandToRingArea(reversalSelected.Card);
+                _playerPlayingRound.MoveCardFromHandToRingside(playOpponentIsTryingToMake.Card);
                 throw new CardWasReversedException();
             }
         }
-        catch (NoReverseCardsException e)
-        {
-        }
-        
     }
 
     private List<Play> GetPlaysOfAvailablesCards(List<Card> reversalCardThatPlayerCanPlay)
@@ -216,11 +201,6 @@ public class RoundManager
     {
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
             .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
-        if (!reversalCardsThatPlayerCanPlayOnThisCard.Any())
-        {
-            throw new NoReverseCardsException();
-        }
-
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
@@ -231,15 +211,18 @@ public class RoundManager
         if (cardDamage > 0)
         {
             _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
+            CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
         for (int i = 1; i <= cardDamage; i++)
         {
             if (!_turnEnded)
             {
+                SayThatCardWasOverturned(i, cardDamage);
+                CheckIfManeuverCanBeReversed(cardPlayed);
                 DealSingleCardDamage(i, cardDamage);
             }
         }
-        _playerPlayingRound.UpdateFortitude();
+        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 
     private int ManageCardDamage(int initialDamage)
@@ -250,16 +233,63 @@ public class RoundManager
         }
         return initialDamage;
     }
+
+    private void CheckIfManeuverCanBeReversed(Card cardPlayed)
+    {
+        Card cardThatWasTurnedOver = _playerNotPlayingRound.GetCardOnTopOfArsenal();
+        bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, cardPlayed);
+        if (cardCanReverseReceivingDamage)
+        {
+            _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+            _playerNotPlayingRound.ReceivesDamage();
+            _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
+            throw new CardWasReversedException();
+        }
+    }
+
+    private void SayThatCardWasOverturned(int index, int cardDamage)
+    {
+        Card cardThatWillGoToRingside = _playerNotPlayingRound.GetCardOnTopOfArsenal();
+        _view.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), index, cardDamage);
+    }
     
     private void DealSingleCardDamage(int cardIndex, int cardDamage)
     {
-        Card cardThatWentToRingSide = _playerNotPlayingRound.ReceivesDamage();
-        _view.ShowCardOverturnByTakingDamage(cardThatWentToRingSide.ToString(), cardIndex, cardDamage);
-
+        _playerNotPlayingRound.ReceivesDamage();
         if (cardIndex < cardDamage)
         {
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
+    }
+
+    private bool CheckIfCardCanReverseManeuver(Card cardThatWasTurnedOver, Card cardPlayedByOpponent)
+    {
+        bool cardIsReversal = CheckIfCardIsReversal(cardThatWasTurnedOver);
+        Console.WriteLine("Card Is Reversal");
+        Console.WriteLine(cardIsReversal);
+        bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver);
+        Console.WriteLine("Card has fortitude");
+        Console.WriteLine(playerHasHigherFortitudeThanCard);
+        bool cardTurnedOverCanReverseThisTypeOfManeuver = cardThatWasTurnedOver.CheckIfCanReverseThisManeuver(cardPlayedByOpponent);
+        Console.WriteLine("Card meets type");
+        Console.WriteLine(cardTurnedOverCanReverseThisTypeOfManeuver);
+        
+        if (cardIsReversal && playerHasHigherFortitudeThanCard && cardTurnedOverCanReverseThisTypeOfManeuver)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool CheckIfCardIsReversal(Card card)
+    {
+        List<string> cardTypes = card.Types;
+        return cardTypes.Contains("Reversal");
+    }
+
+    private bool CheckIfPlayerHasHigherFortitudeThanCard(Card card)
+    {
+        return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanCard(card);
     }
 
     private void CheckIfGameAndTurnShouldEndWhileReceivingDamage()

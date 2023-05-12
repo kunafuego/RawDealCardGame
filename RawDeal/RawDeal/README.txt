@@ -15,3 +15,5 @@ Donde dejar diccionario de AbilitiesManager
 
 
 Mapear carta a efecto, obligado a ocupar switch
+
+Cuando tenga que retornar verdadero y falso muchas veces es bueno ocupar try/except.

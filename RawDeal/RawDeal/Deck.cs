@@ -49,7 +49,7 @@ public class Deck
         return _cards.Where(card => card.HasReversalType()).ToList();
     }
 
-    public Card GetLastCard()
+    public Card GetCardOnTop()
     {
         return _cards.Last();
     }
@@ -61,7 +61,6 @@ public class Deck
 
     public bool HasCards()
     {
-        Console.WriteLine("Player has " + _cards.Count() + "In Arsenal");
         return _cards.Any();
     }
 
@@ -69,5 +68,5 @@ public class Deck
     {
         return _cards.Count() > 1;
     }
-    
+
 }
