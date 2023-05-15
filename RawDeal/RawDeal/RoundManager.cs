@@ -9,6 +9,7 @@ public class RoundManager
     private Player _playerPlayingRound;
     private Player _playerNotPlayingRound;
     private View _view;
+    private ReversalManager _reversalmanager = new ();
     
     public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view)
     {
@@ -71,6 +72,7 @@ public class RoundManager
         if (optionChosen == NextPlay.ShowCards)
         {
             ManageShowingCards();
+            // Crear otra clase altoquee
         }
         else if (optionChosen == NextPlay.PlayCard)
         {
@@ -178,6 +180,7 @@ public class RoundManager
             {
                 Play reversalSelected = reversalPlays[usersChoice];
                 _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
+                _reversalmanager.PerformEffect(reversalSelected, _playerNotPlayingRound, _playerPlayingRound);
                 _playerNotPlayingRound.MoveCardFromHandToRingArea(reversalSelected.Card);
                 _playerPlayingRound.MoveCardFromHandToRingside(playOpponentIsTryingToMake.Card);
                 throw new CardWasReversedException();
@@ -200,26 +203,26 @@ public class RoundManager
     private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
     {
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(card => card.CheckIfCanReverseThisPlay(playOpponentIsTryingToMake)).ToList();
+            .Where(cardThatCanPossibleReverse => _reversalmanager.CheckIfCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake)).ToList();
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
     private void PlayManeuver(Card cardPlayed)
     {
-        int cardDamage = ManageCardDamage(cardPlayed.Damage);
+        int cardTotalDamage = ManageCardDamage(cardPlayed.GetDamage());
         Superstar playerNotPlayingRoundSuperstar = _playerNotPlayingRound.Superstar;
-        if (cardDamage > 0)
+        if (cardTotalDamage > 0)
         {
-            _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardDamage);
+            _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
-        for (int i = 1; i <= cardDamage; i++)
+        for (int i = 1; i <= cardTotalDamage; i++)
         {
             if (!_turnEnded)
             {
-                SayThatCardWasOverturned(i, cardDamage);
-                CheckIfManeuverCanBeReversed(cardPlayed);
-                DealSingleCardDamage(i, cardDamage);
+                SayThatCardWasOverturned(i, cardTotalDamage);
+                CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
+                DealSingleCardDamage(i, cardTotalDamage);
             }
         }
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
@@ -234,7 +237,7 @@ public class RoundManager
         return initialDamage;
     }
 
-    private void CheckIfManeuverCanBeReversed(Card cardPlayed)
+    private void CheckIfManeuverCanBeReversedFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed)
     {
         Card cardThatWasTurnedOver = _playerNotPlayingRound.GetCardOnTopOfArsenal();
         bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, cardPlayed);
@@ -243,14 +246,30 @@ public class RoundManager
             _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
             _playerNotPlayingRound.ReceivesDamage();
             _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
+            if (amountOfDamageReceivedAtMoment < totalCardDamage) PlayerDrawCardsStunValueEffect(cardPlayed);
             throw new CardWasReversedException();
         }
     }
 
-    private void SayThatCardWasOverturned(int index, int cardDamage)
+    private void PlayerDrawCardsStunValueEffect(Card card)
+    {
+        int amountOfCardsToDraw = 0;
+        if (card.StunValue > 0)
+        { 
+            amountOfCardsToDraw =
+                _view.AskHowManyCardsToDrawBecauseOfStunValue(_playerPlayingRound.GetSuperstarName(), card.StunValue);
+        }
+        if (amountOfCardsToDraw > 0) _view.SayThatPlayerDrawCards(_playerPlayingRound.GetSuperstarName(), amountOfCardsToDraw);
+        for (int i = 0; i < amountOfCardsToDraw; i++)
+        {
+            _playerPlayingRound.DrawSingleCard();
+        }
+    }
+
+    private void SayThatCardWasOverturned(int amountOfDamageReceivedAtMoment, int totalCardDamage)
     {
         Card cardThatWillGoToRingside = _playerNotPlayingRound.GetCardOnTopOfArsenal();
-        _view.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), index, cardDamage);
+        _view.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), amountOfDamageReceivedAtMoment, totalCardDamage);
     }
     
     private void DealSingleCardDamage(int cardIndex, int cardDamage)
@@ -265,15 +284,9 @@ public class RoundManager
     private bool CheckIfCardCanReverseManeuver(Card cardThatWasTurnedOver, Card cardPlayedByOpponent)
     {
         bool cardIsReversal = CheckIfCardIsReversal(cardThatWasTurnedOver);
-        Console.WriteLine("Card Is Reversal");
-        Console.WriteLine(cardIsReversal);
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver);
-        Console.WriteLine("Card has fortitude");
-        Console.WriteLine(playerHasHigherFortitudeThanCard);
         bool cardTurnedOverCanReverseThisTypeOfManeuver = cardThatWasTurnedOver.CheckIfCanReverseThisManeuver(cardPlayedByOpponent);
-        Console.WriteLine("Card meets type");
-        Console.WriteLine(cardTurnedOverCanReverseThisTypeOfManeuver);
-        
+
         if (cardIsReversal && playerHasHigherFortitudeThanCard && cardTurnedOverCanReverseThisTypeOfManeuver)
         {
             return true;

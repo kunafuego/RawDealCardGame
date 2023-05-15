@@ -51,7 +51,7 @@ public class Player
         _fortitude = 0;
         foreach (var card in _ringArea.Cards)
         {
-            _fortitude += card.Damage;
+            _fortitude += card.GetDamage();
         }
     }
 

@@ -19,9 +19,7 @@ public static class AbilitiesManager
             {"STONE COLD STEVE AUSTIN", new StoneColdAbility(View)},
             {"HHH", new HHHAbility(View)}
         };
-        // Donde dejo este diccionario
         Superstar playersSuperstar = player.Superstar;
-        Console.WriteLine(playersSuperstar.Name);
         PlayersAbilities.Add(player, abilities[playersSuperstar.Name]);
     }
     
