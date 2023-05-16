@@ -62,21 +62,14 @@ public class Card : IViewableCardInfo
         return _types.Contains("Reversal");
     }
 
+    public bool CheckIfSubtypesContain(string subtype)
+    {
+        return _subTypes.Contains(subtype);
+    }
+
     public override string ToString()
     {
         return Formatter.CardToString(this);
-    }
-
-    public bool CheckIfCanReverseThisManeuver(Card cardPlayed)
-    {
-        foreach (string subtype in cardPlayed.Subtypes)
-        {
-            string reverseEffect = "Reverse any " + subtype;
-            if (_cardEffect.Contains(reverseEffect))
-                return true;
-        }
-
-        return false;
     }
 
 }

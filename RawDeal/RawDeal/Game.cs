@@ -103,9 +103,22 @@ public class Game
     
     private void PlayRound()
     {
-        _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view);
+        EffectForNextMove effectForNextRound = GetPossibleEffectFromLastRound();
+        _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view, effectForNextRound);
         _actualRoundManager.PlayRound();
         _actualRoundManager.CheckIfGameShouldEnd();
+    }
+
+    private EffectForNextMove GetPossibleEffectFromLastRound()
+    {
+        try
+        {
+            return _actualRoundManager.NextMoveEffect;
+        }
+        catch (NullReferenceException e)
+        {
+            return new EffectForNextMove(0, 0);
+        }
     }
     
     private void SwapPlayers()

@@ -21,6 +21,7 @@ public class Play : IViewablePlayInfo
 
     public string PlayedAs{
         get {return _playedAs ;}
+        set { _playedAs = value; }
     }
     
     public Play(Card card, string type)

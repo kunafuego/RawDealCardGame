@@ -1,7 +1,14 @@
+using RawDealView;
 namespace RawDeal.ReversalCards;
 
 public abstract class ReversalCard
 {
-    public abstract void PerformEffect(string typeOfReversal, Player playerThatReversePlay, Player playerThatWasReversed);
-    public abstract bool CheckIfCanReversePlay(Play playThatIsBeingPlayed);
+    protected View View;
+    protected ReversalCard (View view)
+    {
+        View = view;
+    }
+    public abstract void PerformEffect(Play typeOfReversal, Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed);
+
+    public abstract bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive);
 }

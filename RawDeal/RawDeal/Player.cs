@@ -39,10 +39,10 @@ public class Player
         return _superstar.Name;
     }
 
-    public List<Card> GetReversalCardsThatPlayerCanPlay()
+    public List<Card> GetReversalCardsThatPlayerCanPlay(EffectForNextMove effectFromPastMove)
     {
         List<Card> reversalCards = _hand.GetReversalCards();
-        List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => _fortitude >= card.Fortitude).ToList();
+        List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => _fortitude >= card.Fortitude + effectFromPastMove.FortitudeChange).ToList();
         return reversalCardsThatCanBePlayed;
     }
 
@@ -154,7 +154,7 @@ public class Player
         }
     }
 
-    public void ReceivesDamage()
+    public void MoveArsenalTopCardToRingside()
     {
         Card cardToRemove = _arsenal.GetCardOnTop();
         _arsenal.RemoveCard(cardToRemove);
@@ -241,9 +241,10 @@ public class Player
         return _superstar.UseAbilityWhileReceivingDamage();
     }
 
-    public bool CheckIfHasHigherFortitudeThanCard(Card card)
+    public bool CheckIfHasHigherFortitudeThanGiven(int fortitude)
     {
-        return _fortitude >= card.Fortitude;
+        // Console.WriteLine("Player: " + Convert.ToString(_fortitude) + " Fortitude: " + Convert.ToString(fortitude));
+        return _fortitude >= fortitude;
     }
 
     public Card GetCardOnTopOfRingside()

@@ -9,15 +9,21 @@ public class RoundManager
     private Player _playerPlayingRound;
     private Player _playerNotPlayingRound;
     private View _view;
-    private ReversalManager _reversalmanager = new ();
+    private EffectForNextMove _nextMoveEffect;
     
-    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view)
+    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view, EffectForNextMove effectForNextMove)
     {
         _gameShouldEnd = false;
         _turnEnded = false;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
         _view = view;
+        _nextMoveEffect = effectForNextMove;
+    }
+
+    public EffectForNextMove NextMoveEffect
+    {
+        get { return _nextMoveEffect; }
     }
 
     public bool GameShouldEnd
@@ -85,6 +91,7 @@ public class RoundManager
         else if (optionChosen == NextPlay.EndTurn)
         {
             _turnEnded = true;
+            _nextMoveEffect = new EffectForNextMove(0, 0);
         }
         else if (optionChosen == NextPlay.GiveUp)
         {
@@ -130,9 +137,16 @@ public class RoundManager
             {
                 TryToPlayCard(playsToShow[chosenPlay]);
             }
-            catch (CardWasReversedException e)
+            catch (CardWasReversedException error)
             {
-                // _playerPlayingRound.MoveCardFromHandToRingside(playsToShow[chosenPlay].Card);
+                // Console.WriteLine(error.Message);
+                if (error.Message == "Jockeying for Position")
+                {
+                    SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
+                    _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
+                        ? new EffectForNextMove(4, 0)
+                        : new EffectForNextMove(0, 8);
+                }
                 _turnEnded = true;
             }
         }
@@ -145,20 +159,17 @@ public class RoundManager
         {
             playsToShow.Add(playObject.ToString());
         }
-
         return playsToShow;
     }
 
     private void TryToPlayCard(Play chosenPlay)
     {
         Card cardPlayed = chosenPlay.Card;
-        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
-        _view.SayThatPlayerIsTryingToPlayThisCard(playerPlayingRoundSuperstar.Name, chosenPlay.ToString());
+        _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(), chosenPlay.ToString());
         TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
         if (chosenPlay.PlayedAs == "MANEUVER")
         {
-            // _playerPlayingRound.MoveCardFromHandToRingArea(chosenPlay.Card);
             PlayManeuver(cardPlayed);
         }
         else if (chosenPlay.PlayedAs == "ACTION")
@@ -169,7 +180,9 @@ public class RoundManager
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay();
+        // Console.WriteLine("Trying To reveerse Maneuver with");
+        // Console.WriteLine(_nextMoveEffect.FortitudeChange);
+        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay(_nextMoveEffect);
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
         if (reversalCardsThatPlayerCanPlayOnThisCard.Any())
         {
@@ -179,11 +192,13 @@ public class RoundManager
             if (usersChoice != -1)
             {
                 Play reversalSelected = reversalPlays[usersChoice];
+                Card reversalCardSelected = reversalSelected.Card;
+                playOpponentIsTryingToMake.PlayedAs = "Reversed From Hand";
                 _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
-                _reversalmanager.PerformEffect(reversalSelected, _playerNotPlayingRound, _playerPlayingRound);
-                _playerNotPlayingRound.MoveCardFromHandToRingArea(reversalSelected.Card);
+                ReversalManager reversalManager = new ReversalManager(_view);
+                reversalManager.PerformEffect(playOpponentIsTryingToMake, reversalSelected.Card, _playerNotPlayingRound, _playerPlayingRound);
                 _playerPlayingRound.MoveCardFromHandToRingside(playOpponentIsTryingToMake.Card);
-                throw new CardWasReversedException();
+                throw new CardWasReversedException(reversalCardSelected.Title);
             }
         }
     }
@@ -202,122 +217,41 @@ public class RoundManager
 
     private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
     {
+        Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
+        ReversalManager reversalManager = new ReversalManager(_view);
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(cardThatCanPossibleReverse => _reversalmanager.CheckIfCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake)).ToList();
+            .Where(cardThatCanPossibleReverse => reversalManager.CheckIfCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
     private void PlayManeuver(Card cardPlayed)
     {
-        int cardTotalDamage = ManageCardDamage(cardPlayed.GetDamage());
-        Superstar playerNotPlayingRoundSuperstar = _playerNotPlayingRound.Superstar;
-        if (cardTotalDamage > 0)
-        {
-            _view.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRoundSuperstar.Name, cardTotalDamage);
-            CheckIfGameAndTurnShouldEndWhileReceivingDamage();
-        }
-        for (int i = 1; i <= cardTotalDamage; i++)
-        {
-            if (!_turnEnded)
-            {
-                SayThatCardWasOverturned(i, cardTotalDamage);
-                CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
-                DealSingleCardDamage(i, cardTotalDamage);
-            }
-        }
-        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-    }
-
-    private int ManageCardDamage(int initialDamage)
-    {
-        if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(_playerNotPlayingRound))
-        {
-            return initialDamage - 1;
-        }
-        return initialDamage;
-    }
-
-    private void CheckIfManeuverCanBeReversedFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed)
-    {
-        Card cardThatWasTurnedOver = _playerNotPlayingRound.GetCardOnTopOfArsenal();
-        bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, cardPlayed);
-        if (cardCanReverseReceivingDamage)
-        {
-            _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-            _playerNotPlayingRound.ReceivesDamage();
-            _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
-            if (amountOfDamageReceivedAtMoment < totalCardDamage) PlayerDrawCardsStunValueEffect(cardPlayed);
-            throw new CardWasReversedException();
-        }
-    }
-
-    private void PlayerDrawCardsStunValueEffect(Card card)
-    {
-        int amountOfCardsToDraw = 0;
-        if (card.StunValue > 0)
-        { 
-            amountOfCardsToDraw =
-                _view.AskHowManyCardsToDrawBecauseOfStunValue(_playerPlayingRound.GetSuperstarName(), card.StunValue);
-        }
-        if (amountOfCardsToDraw > 0) _view.SayThatPlayerDrawCards(_playerPlayingRound.GetSuperstarName(), amountOfCardsToDraw);
-        for (int i = 0; i < amountOfCardsToDraw; i++)
-        {
-            _playerPlayingRound.DrawSingleCard();
-        }
-    }
-
-    private void SayThatCardWasOverturned(int amountOfDamageReceivedAtMoment, int totalCardDamage)
-    {
-        Card cardThatWillGoToRingside = _playerNotPlayingRound.GetCardOnTopOfArsenal();
-        _view.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), amountOfDamageReceivedAtMoment, totalCardDamage);
-    }
-    
-    private void DealSingleCardDamage(int cardIndex, int cardDamage)
-    {
-        _playerNotPlayingRound.ReceivesDamage();
-        if (cardIndex < cardDamage)
-        {
-            CheckIfGameAndTurnShouldEndWhileReceivingDamage();
-        }
-    }
-
-    private bool CheckIfCardCanReverseManeuver(Card cardThatWasTurnedOver, Card cardPlayedByOpponent)
-    {
-        bool cardIsReversal = CheckIfCardIsReversal(cardThatWasTurnedOver);
-        bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver);
-        bool cardTurnedOverCanReverseThisTypeOfManeuver = cardThatWasTurnedOver.CheckIfCanReverseThisManeuver(cardPlayedByOpponent);
-
-        if (cardIsReversal && playerHasHigherFortitudeThanCard && cardTurnedOverCanReverseThisTypeOfManeuver)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    private bool CheckIfCardIsReversal(Card card)
-    {
-        List<string> cardTypes = card.Types;
-        return cardTypes.Contains("Reversal");
-    }
-
-    private bool CheckIfPlayerHasHigherFortitudeThanCard(Card card)
-    {
-        return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanCard(card);
-    }
-
-    private void CheckIfGameAndTurnShouldEndWhileReceivingDamage()
-    {
-        _gameShouldEnd = !_playerNotPlayingRound.HasCardsInArsenal();
-        _turnEnded = _gameShouldEnd;
+        // Console.WriteLine("228 Round Manager" + Convert.ToString(_nextMoveEffect.FortitudeChange));
+        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        maneuverPlayer.PlayManeuver(cardPlayed);
+        _nextMoveEffect = new EffectForNextMove(0, 0);
+        _turnEnded = maneuverPlayer.TurnEnded;
+        _gameShouldEnd = maneuverPlayer.GameShouldEnd;
     }
 
     private void PlayAction(Card cardPlayed)
     {
-        Superstar playerPlayingRoundSuperstar = _playerPlayingRound.Superstar;
+        if (cardPlayed.Title == "Jockeying for Position")
+        {
+            SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerPlayingRound.GetSuperstarName());
+            // Console.WriteLine(chosenOption);
+            _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
+                ? new EffectForNextMove(4, 0)
+                : new EffectForNextMove(0, 8);
+            // Console.WriteLine(_nextMoveEffect.FortitudeChange);
+        }
+        else
+        {
+            _playerPlayingRound.DrawSingleCard();
+            _view.SayThatPlayerMustDiscardThisCard(_playerPlayingRound.GetSuperstarName(), cardPlayed.Title);
+            _view.SayThatPlayerDrawCards(_playerPlayingRound.GetSuperstarName(), 1);
+        }
         _playerPlayingRound.MoveCardFromHandToRingside(cardPlayed);
-        _playerPlayingRound.DrawSingleCard();
-        _view.SayThatPlayerMustDiscardThisCard(playerPlayingRoundSuperstar.Name, cardPlayed.Title);
-        _view.SayThatPlayerDrawCards(playerPlayingRoundSuperstar.Name, 1);
     }
     
     public void CheckIfGameShouldEnd()

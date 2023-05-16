@@ -1,38 +1,41 @@
 using RawDeal.ReversalCards;
+using RawDealView;
 
 namespace RawDeal;
 
 public class ReversalManager
 {
     private Dictionary<string, ReversalCard> _effects;
+    private View _view;
 
-    public ReversalManager()
+    public ReversalManager(View view)
     {
+        _view = view;
         _effects = new Dictionary<string, ReversalCard>
         {
-            { "Rolling Takedown", new RollingTakedown() },
-            { "Knee to the Gut", new KneeToTheGut() },
-            { "Elbow to the Face", new ElbowToTheFace() },
-            { "Manager Interferes", new ManagerInterferes() },
-            { "Chyna Interferes", new ChynaInterferes() },
-            { "Clean Break", new CleanBreak() },
-            { "Jockeying for Position", new JockeyingForPosition() },
-            { "Step Aside", new StepAside()},
-            { "Escape Move", new EscapeMove()},
-            { "Break the Hold", new BreakTheHold()},
-            { "No Chance in Hell", new NoChanceInHell()}
+            { "Rolling Takedown", new RollingTakedown(view) },
+            { "Knee to the Gut", new KneeToTheGut(view) },
+            { "Elbow to the Face", new ElbowToTheFace(view) },
+            { "Manager Interferes", new ManagerInterferes(view) },
+            { "Chyna Interferes", new ChynaInterferes(view) },
+            { "Clean Break", new CleanBreak(view) },
+            { "Jockeying for Position", new JockeyingForPosition(view) },
+            { "Step Aside", new StepAside(view)},
+            { "Escape Move", new EscapeMove(view)},
+            { "Break the Hold", new BreakTheHold(view)},
+            { "No Chance in Hell", new NoChanceInHell(view)}
         };
     }
 
-    public void PerformEffect(Play playThatIsReversingManeuver, Player playerWhoReverse, Player playerBeingReversed)
+    public void PerformEffect(Play playThatIsBeingReversed, Card cardThatIsReversingManeuver, Player playerWhoReverse, Player playerBeingReversed)
     {
-        Card cardThatIsReversingPlay = playThatIsReversingManeuver.Card;
-        _effects[cardThatIsReversingPlay.Title].PerformEffect(playThatIsReversingManeuver.PlayedAs, playerWhoReverse, playerBeingReversed);
+        _effects[cardThatIsReversingManeuver.Title].PerformEffect(playThatIsBeingReversed, cardThatIsReversingManeuver, playerWhoReverse, playerBeingReversed);
     }
 
-    public bool CheckIfCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade)
+    public bool CheckIfCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
     {
+        // Console.WriteLine("CHEQUEANDO SI SE PUEDE REVERTIR");
         ReversalCard reversalCardObject = _effects[cardThatCanPossibleReverse.Title];
-        return reversalCardObject.CheckIfCanReversePlay(playIsBeingMade);
+        return reversalCardObject.CheckIfCanReversePlay(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
     }
 }

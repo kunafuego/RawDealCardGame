@@ -1,14 +1,55 @@
+using RawDealView;
+using RawDealView.Options;
 namespace RawDeal.ReversalCards;
 
 public class CleanBreak: ReversalCard
 {
-    public override void PerformEffect(string typeOfReversal, Player playerThatReversePlay, Player playerThatWasReversed)
+    private readonly int _amountOfCardsToDrawInEffect;
+    private readonly int _amountOfCardsToDiscardInEffect;
+    public CleanBreak(View view) : base(view)
     {
-        throw new NotImplementedException();
+        _amountOfCardsToDrawInEffect = 1;
+        _amountOfCardsToDiscardInEffect = 4;
+    }
+
+    public override void PerformEffect(Play playThatWasReversed,  Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed)
+    {
+        playerThatWasReversed.MoveCardFromHandToRingArea(playThatWasReversed.Card);
+        for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
+        {
+            DiscardCard(i, playerThatWasReversed);
+        }
+        View.SayThatPlayerDrawCards(playerThatReversePlay.GetSuperstarName(), _amountOfCardsToDrawInEffect);
+        for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)
+        {
+            playerThatReversePlay.DrawSingleCard();
+        }
+
     }
     
-    public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed)
+    private void DiscardCard(int amountOfCardsLeftToDiscard, Player playerThatHasToDiscard)
     {
-        return playThatIsBeingPlayed.PlayedAs == "ACTION";
+        List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
+        List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.Superstar.Name, playerThatHasToDiscard.Superstar.Name, amountOfCardsLeftToDiscard);
+        playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
+    }
+    
+    private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
+    {
+        List<string> stringsOfCards = new List<string>();
+        foreach (Card card in cardsObjectsToShow)
+        {
+            stringsOfCards.Add(card.ToString());
+        }
+        
+        return stringsOfCards;
+    }
+    
+    public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    {
+        Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
+        if(askedFromDeskOrHand == "Hand") return cardThatIsBeingPlayed.Title == "Jockeying for Position";
+        return false;
     }
 }
