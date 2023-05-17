@@ -5,19 +5,38 @@ public class KneeToTheGut: ReversalCard
 {
     public KneeToTheGut(View view) : base(view) {}
 
-    public override void PerformEffect(Play playThatWasReversed, Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed)
+    public override void PerformEffect(Play playThatWasReversed,  Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed)
     {
         Card cardThatWasReversed = playThatWasReversed.Card;
-        View.SayThatOpponentWillTakeSomeDamage(playerThatWasReversed.GetSuperstarName(), cardThatWasReversed.GetDamage());
-        for (int i = 1; i <= cardThatWasReversed.GetDamage(); i++)
+        if (playThatWasReversed.PlayedAs == "REVERSED FROM DECK")
         {
-            Card cardThatWillGoToRingside = playerThatWasReversed.GetCardOnTopOfArsenal();
-            View.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), i, cardThatWasReversed.GetDamage());
-            playerThatWasReversed.MoveArsenalTopCardToRingside();
+            playerThatReversePlay.MoveArsenalTopCardToRingside();
         }
-        playerThatReversePlay.MoveCardFromHandToRingArea(cardObject);
+        int damage = ManageDamage(cardThatWasReversed, playerThatReversePlay);
+        Console.WriteLine("The damage that the reversal is going to make is " + Convert.ToString(damage));
+        // View.SayThatOpponentWillTakeSomeDamage(playerThatWasReversed.GetSuperstarName(), cardThatWasReversed.GetDamage());
+        // for (int i = 1; i <= cardThatWasReversed.GetDamage(); i++)
+        // {
+        //     Card cardThatWillGoToRingside = playerThatWasReversed.GetCardOnTopOfArsenal();
+        //     View.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), i, cardThatWasReversed.GetDamage());
+        //     playerThatWasReversed.MoveArsenalTopCardToRingside();
+        // }
+        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(View, playerThatReversePlay, playerThatWasReversed, new EffectForNextMove(0,0));
+        cardObject.ReversalDamage = damage;
+        maneuverPlayer.PlayReversalAsManeuver(cardObject);
+        // playerThatReversePlay.MoveCardFromHandToRingside(cardObject);
     }
     
+    private int ManageDamage(Card cardPlayed, Player playerThatReverse)
+    {
+        int initialDamage = cardPlayed.ReversalDamage;
+        if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(playerThatReverse))
+        {
+            initialDamage -= 1;
+        }
+
+        return initialDamage;
+    }
     public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
     {        
         Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;

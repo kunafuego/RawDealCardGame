@@ -14,7 +14,6 @@ public class CleanBreak: ReversalCard
 
     public override void PerformEffect(Play playThatWasReversed,  Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed)
     {
-        playerThatWasReversed.MoveCardFromHandToRingArea(playThatWasReversed.Card);
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
             DiscardCard(i, playerThatWasReversed);
@@ -24,7 +23,7 @@ public class CleanBreak: ReversalCard
         {
             playerThatReversePlay.DrawSingleCard();
         }
-
+        playerThatReversePlay.MoveCardFromHandToRingArea(cardObject);
     }
     
     private void DiscardCard(int amountOfCardsLeftToDiscard, Player playerThatHasToDiscard)

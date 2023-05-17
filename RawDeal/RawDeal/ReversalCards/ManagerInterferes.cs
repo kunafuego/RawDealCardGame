@@ -21,6 +21,10 @@ public class ManagerInterferes: ReversalCard
             ManeuverPlayer maneuverPlayer = new ManeuverPlayer(View, playerThatReversePlay, playerThatWasReversed, new EffectForNextMove(0,0));
             maneuverPlayer.PlayReversalAsManeuver(cardObject);
         }
+        else
+        {
+            playerThatReversePlay.MoveArsenalTopCardToRingside();
+        }
         
     }
     

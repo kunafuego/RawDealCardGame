@@ -39,10 +39,12 @@ public class Player
         return _superstar.Name;
     }
 
-    public List<Card> GetReversalCardsThatPlayerCanPlay(EffectForNextMove effectFromPastMove)
+    public List<Card> GetReversalCardsThatPlayerCanPlay(EffectForNextMove effectFromPastMove, Card cardOpponentIsTryingToPlay)
     {
         List<Card> reversalCards = _hand.GetReversalCards();
-        List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => _fortitude >= card.Fortitude + effectFromPastMove.FortitudeChange).ToList();
+        List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => cardOpponentIsTryingToPlay.CheckIfSubtypesContain("Grapple")
+            ? _fortitude >= card.Fortitude + effectFromPastMove.FortitudeChange
+            :  _fortitude >= card.Fortitude).ToList();
         return reversalCardsThatCanBePlayed;
     }
 
@@ -51,7 +53,9 @@ public class Player
         _fortitude = 0;
         foreach (var card in _ringArea.Cards)
         {
-            _fortitude += card.GetDamage();
+            string cardDamage = card.Damage;
+            if (cardDamage == "#") cardDamage = "0";
+            _fortitude += Convert.ToInt16(cardDamage);
         }
     }
 

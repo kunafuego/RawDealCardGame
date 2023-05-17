@@ -10,6 +10,7 @@ public class Card : IViewableCardInfo
     private List<string> _subTypes;
     private int _fortitude;
     private string _damage;
+    private int _reversalDamage;
     private int _stunValue;
     private string _cardEffect;
 
@@ -39,7 +40,13 @@ public class Card : IViewableCardInfo
     public List<string> Types
     { get { return  _types;} }
     public string Effect
-    { get { return  _cardEffect;} } 
+    { get { return  _cardEffect;} }
+
+    public int ReversalDamage
+    {
+        get { return _reversalDamage; }
+        set { _reversalDamage = value; }
+    }
     public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffect)
     {
         _title = title;
@@ -49,11 +56,20 @@ public class Card : IViewableCardInfo
         _damage = damage;
         _stunValue = Convert.ToInt16(stunValue);
         _cardEffect = cardEffect;
+        _reversalDamage = 0;
     }
     
+
     public int GetDamage()
     {
-        if(_damage == "#") return  0;
+        if (_damage == "#")
+        {
+            if (_reversalDamage == 0)
+            {
+                return  0;
+            }
+            return _reversalDamage;
+        }
         return Convert.ToInt16(_damage);
 } 
 
