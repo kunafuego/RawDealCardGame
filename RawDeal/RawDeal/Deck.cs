@@ -1,7 +1,4 @@
-using System.Text.Json;
-
 namespace RawDeal;
-
 public class Deck
 {
     private readonly  List<Card> _cards;
@@ -25,7 +22,7 @@ public class Deck
     {
         _cards.Remove(card);
     }
-    public bool IsValid(string superstarLogo)
+    public bool CheckIfDeckIsValid(string superstarLogo)
     {
         return DeckValidator.CheckIfDeckIsValid(superstarLogo, _cards);
     }
@@ -40,7 +37,6 @@ public class Deck
                 return true;
             }
         }
-
         return false;
     }
 
@@ -59,14 +55,13 @@ public class Deck
         _cards.Insert(0, cardToInsert);   
     }
 
-    public bool HasCards()
+    public bool CheckIfHasCards()
     {
         return _cards.Any();
     }
 
-    public bool HasMoreThanOneCard()
+    public bool CheckIfHasMoreThanOneCard()
     {
         return _cards.Count() > 1;
     }
-
 }

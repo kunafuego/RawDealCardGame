@@ -15,7 +15,7 @@ class TheRockAbility : SuperstarAbility
     {
         List<Card> cardsObjectsToShow = playerThatWillRecoverCard.GetCardsToShow(CardSet.RingsidePile);
         List<string> stringsOfRingsidePileCards = GetCardsToShowAsString(cardsObjectsToShow);
-        int cardIndex = View.AskPlayerToSelectCardsToRecover(playerThatWillRecoverCard.Superstar.Name, 1, stringsOfRingsidePileCards);
+        int cardIndex = View.AskPlayerToSelectCardsToRecover(playerThatWillRecoverCard.GetSuperstarName(), 1, stringsOfRingsidePileCards);
         playerThatWillRecoverCard.MoveCardFromRingsideToArsenal(cardsObjectsToShow[cardIndex]);
     }
 

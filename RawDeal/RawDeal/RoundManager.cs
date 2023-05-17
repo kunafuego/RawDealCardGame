@@ -34,8 +34,7 @@ public class RoundManager
     public void PlayRound()
     {
         _turnEnded = false;
-        Superstar playerPlayingSuperstar = _playerPlayingRound.Superstar;
-        _view.SayThatATurnBegins(playerPlayingSuperstar.Name);
+        _view.SayThatATurnBegins(_playerPlayingRound.GetSuperstarName());
         AbilitiesManager.ManageAbilityBeforeDraw(_playerPlayingRound, _playerNotPlayingRound);
         PlayerDrawCards();
         bool effectUsed = false;

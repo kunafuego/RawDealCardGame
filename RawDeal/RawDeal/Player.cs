@@ -168,12 +168,12 @@ public class Player
     public bool HasCards(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
-        return cardsToCheck.HasCards();
+        return cardsToCheck.CheckIfHasCards();
     }
 
     public bool HasCardsInArsenal()
     {
-        return _arsenal.HasCards();
+        return _arsenal.CheckIfHasCards();
     }
 
     public void MoveCardFromHandToRingArea(Card cardToMove)
@@ -209,17 +209,15 @@ public class Player
 
     public bool CheckIfPlayerHasMoreThanOneCardInArsenal()
     {
-        return _arsenal.HasMoreThanOneCard();
+        return _arsenal.CheckIfHasMoreThanOneCard();
     }
 
     public bool CheckIfPlayerHasMoreThanOneCard(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
-        return cardsToCheck.HasMoreThanOneCard();
+        return cardsToCheck.CheckIfHasMoreThanOneCard();
     }
-
-    // Abiliies methods
-
+    
     public bool CheckIfNeededToAskToUseAbilityAtBeginningOfTurn()
     {
         return _superstar.CheckIfNeedToAskToUseAbilityAtBeginningOfTurn();

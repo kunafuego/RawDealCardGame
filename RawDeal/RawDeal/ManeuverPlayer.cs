@@ -127,8 +127,7 @@ public class ManeuverPlayer
 
     private bool CheckIfPlayerHasHigherFortitudeThanCard(Card cardThatCouldReverseManeuver, Card cardThatCanBeReversed)
     {
-        List<string> cardThatIsBeingPlayedSubtypes = cardThatCanBeReversed.Subtypes;
-        int extraFortitude = (cardThatIsBeingPlayedSubtypes.Contains("Grapple")) ? _effectForThisMove.FortitudeChange : 0;
+        int extraFortitude = (cardThatCanBeReversed.CheckIfSubtypesContain("Grapple")) ? _effectForThisMove.FortitudeChange : 0;
         return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanGiven(cardThatCouldReverseManeuver.Fortitude + extraFortitude);
     }
     

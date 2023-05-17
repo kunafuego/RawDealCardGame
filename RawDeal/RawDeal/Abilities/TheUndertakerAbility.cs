@@ -24,7 +24,7 @@ class TheUndertakerAbility : SuperstarAbility
     {
         List<Card> handCardsObjectsToShow = playerThatWillDiscardCard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatWillDiscardCard.GetSuperstarName(), playerThatWillDiscardCard.Superstar.Name, numberOfCardDiscarding);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatWillDiscardCard.GetSuperstarName(), playerThatWillDiscardCard.GetSuperstarName(), numberOfCardDiscarding);
         playerThatWillDiscardCard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 

@@ -32,8 +32,7 @@ public class RollingTakedown: ReversalCard
     public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
     {
         Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
-        List<string> cardsSubtypes = cardThatIsBeingPlayed.Subtypes;
-        if (netDamageThatWillReceive <= 7 && playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Grapple"))
+        if (netDamageThatWillReceive <= 7 && playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardThatIsBeingPlayed.CheckIfSubtypesContain("Grapple"))
         {
             return true;
         }

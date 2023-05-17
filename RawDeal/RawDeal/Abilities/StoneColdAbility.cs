@@ -15,14 +15,14 @@ class StoneColdAbility : SuperstarAbility
     private void DrawCardFromArsenalToHand(Player playerDrawingCard)
     {
         playerDrawingCard.DrawSingleCard();
-        View.SayThatPlayerDrawCards(playerDrawingCard.Superstar.Name, 1);
+        View.SayThatPlayerDrawCards(playerDrawingCard.GetSuperstarName(), 1);
     }
 
     private void ChooseAndMoveCardFromHandToArsenal(Player playerGettingCardBack)
     {
         List<Card> handCardsObjectsToShow = playerGettingCardBack.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerGettingCardBack.Superstar.Name, stringsOfHandCards);
+        int handCardIndex = View.AskPlayerToReturnOneCardFromHisHandToHisArsenal(playerGettingCardBack.GetSuperstarName(), stringsOfHandCards);
         playerGettingCardBack.MoveCardFromHandToArsenal(handCardsObjectsToShow[handCardIndex]);   
     }
 

@@ -1,18 +1,15 @@
 namespace RawDeal;
-using RawDealView.Options;
 using RawDealView.Formatters;
-using RawDealView;
-
 public class Card : IViewableCardInfo
 {
-    private string _title;
-    private List<string> _types;
-    private List<string> _subTypes;
-    private int _fortitude;
-    private string _damage;
+    private readonly string _title;
+    private readonly List<string> _types;
+    private readonly List<string> _subTypes;
+    private readonly int _fortitude;
+    private readonly string _damage;
     private int _reversalDamage;
-    private int _stunValue;
-    private string _cardEffect;
+    private readonly int _stunValue;
+    private readonly string _cardEffect;
 
     public List<string> SubTypes
     {
@@ -59,7 +56,6 @@ public class Card : IViewableCardInfo
         _reversalDamage = 0;
     }
     
-
     public int GetDamage()
     {
         if (_damage == "#")
@@ -71,7 +67,7 @@ public class Card : IViewableCardInfo
             return _reversalDamage;
         }
         return Convert.ToInt16(_damage);
-} 
+    } 
 
     public bool HasReversalType()
     {

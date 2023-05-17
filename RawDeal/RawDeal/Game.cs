@@ -42,8 +42,7 @@ public class Game
             SwapPlayers();
         } while (_actualRoundManager.GameShouldEnd == false);
         Player winner = _actualRoundManager.GetGameWinner();
-        Superstar winnerSuperstar = winner.Superstar;
-        _view.CongratulateWinner(winnerSuperstar.Name);
+        _view.CongratulateWinner(winner.GetSuperstarName());
     }
     
     private void PlayersSelectTheirDecks()
@@ -54,7 +53,7 @@ public class Game
             List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
             Deck deck = DeckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
             Superstar superstar = DeckCreator.GetDeckSuperstar();
-            if (!deck.IsValid(superstar.Logo))
+            if (!deck.CheckIfDeckIsValid(superstar.Logo))
             {
                 throw new InvalidDeckException("");
             }

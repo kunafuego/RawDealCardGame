@@ -1,19 +1,2 @@
-Se puede crear un metodo para cada parte donde 
-se pueden ocupar habilidades.
-
-Así en superstarAbility debemos tener métodos ApplyBeforeDrawing, ApplyDuringDrawSegment, ApplyDuringMainSegment, etc.
-
-Así, en cada una de esas partes llamamos el metodo del superstar y hace algo solo si es que está implementado.
-
-Cómo manejamos que Players select desk retorna booleano?
-Con manejo de errores
-
-
-Cómo no usar player1 y player2?
-
-Donde dejar diccionario de AbilitiesManager
-
-
-Mapear carta a efecto, obligado a ocupar switch
-
-Cuando tenga que retornar verdadero y falso muchas veces es bueno ocupar try/except.
+Card: READY
+Deck: READY
