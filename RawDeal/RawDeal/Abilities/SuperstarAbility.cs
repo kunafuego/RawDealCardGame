@@ -15,7 +15,7 @@ abstract class SuperstarAbility
 
     public bool NeedToAskToUseAbilityAtBeginningOfTurn(Player playerInTurn)
     {
-        return playerInTurn.NeedToAskToUseAbilityAtBeginningOfTurn();
+        return playerInTurn.CheckIfNeededToAskToUseAbilityAtBeginningOfTurn();
     }
 
     public bool MustUseAbilityAtStartOfTurn(Player playerInTurn)

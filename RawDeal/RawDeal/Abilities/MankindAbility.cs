@@ -16,6 +16,6 @@ class MankindAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        return player.HasMoreThanOneCardInArsenal();
+        return player.CheckIfPlayerHasMoreThanOneCardInArsenal();
     }
 }

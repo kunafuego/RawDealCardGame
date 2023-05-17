@@ -24,7 +24,7 @@ class TheUndertakerAbility : SuperstarAbility
     {
         List<Card> handCardsObjectsToShow = playerThatWillDiscardCard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatWillDiscardCard.Superstar.Name, playerThatWillDiscardCard.Superstar.Name, numberOfCardDiscarding);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatWillDiscardCard.GetSuperstarName(), playerThatWillDiscardCard.Superstar.Name, numberOfCardDiscarding);
         playerThatWillDiscardCard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 
@@ -32,7 +32,7 @@ class TheUndertakerAbility : SuperstarAbility
     {
         List<Card> ringsideCardsObjectsToShow = playerThatWillGetCardBack.GetCardsToShow(CardSet.RingsidePile);
         List<string> stringsOfRingsideCards = GetCardsToShowAsString(ringsideCardsObjectsToShow);
-        int ringsideCardIndex = View.AskPlayerToSelectCardsToPutInHisHand(playerThatWillGetCardBack.Superstar.Name, 1, stringsOfRingsideCards);
+        int ringsideCardIndex = View.AskPlayerToSelectCardsToPutInHisHand(playerThatWillGetCardBack.GetSuperstarName(), 1, stringsOfRingsideCards);
         playerThatWillGetCardBack.MoveCardFromRingsideToHand(ringsideCardsObjectsToShow[ringsideCardIndex]); 
     }
 
@@ -49,6 +49,6 @@ class TheUndertakerAbility : SuperstarAbility
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
-        return player.HasMoreThanOneCard(CardSet.Hand);
+        return player.CheckIfPlayerHasMoreThanOneCard(CardSet.Hand);
     }
 }

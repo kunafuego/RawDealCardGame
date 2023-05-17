@@ -19,8 +19,7 @@ public static class AbilitiesManager
             {"STONE COLD STEVE AUSTIN", new StoneColdAbility(View)},
             {"HHH", new HHHAbility(View)}
         };
-        Superstar playersSuperstar = player.Superstar;
-        PlayersAbilities.Add(player, abilities[playersSuperstar.Name]);
+        PlayersAbilities.Add(player, abilities[player.GetSuperstarName()]);
     }
     
     public static void ManageAbilityBeforeDraw(Player playerPlayingRound, Player playerNotPlayingRound)

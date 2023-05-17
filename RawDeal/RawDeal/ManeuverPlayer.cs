@@ -93,7 +93,6 @@ public class ManeuverPlayer
     
     private void CheckIfManeuverCanBeReversedFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed)
     {
-        // Console.WriteLine("CHEqueando si se peude revertir desde deck");
         Card cardThatWasTurnedOver = _playerNotPlayingRound.GetCardOnTopOfArsenal();
         bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, new Play(cardPlayed, "MANEUVER"));
         if (cardCanReverseReceivingDamage)
@@ -128,10 +127,8 @@ public class ManeuverPlayer
 
     private bool CheckIfPlayerHasHigherFortitudeThanCard(Card cardThatCouldReverseManeuver, Card cardThatCanBeReversed)
     {
-        // Sumarle 8 si la última carta jugada fue jocker
         List<string> cardThatIsBeingPlayedSubtypes = cardThatCanBeReversed.Subtypes;
         int extraFortitude = (cardThatIsBeingPlayedSubtypes.Contains("Grapple")) ? _effectForThisMove.FortitudeChange : 0;
-        // Console.WriteLine("Checking if player has higher fortitude than " + Convert.ToString(cardThatCouldReverseManeuver.Fortitude) + " + " + Convert.ToString(_effectForThisMove.FortitudeChange));
         return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanGiven(cardThatCouldReverseManeuver.Fortitude + extraFortitude);
     }
     

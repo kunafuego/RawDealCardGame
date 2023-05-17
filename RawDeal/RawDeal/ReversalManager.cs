@@ -34,7 +34,6 @@ public class ReversalManager
 
     public bool CheckIfCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
     {
-        // Console.WriteLine("CHEQUEANDO SI SE PUEDE REVERTIR");
         ReversalCard reversalCardObject = _effects[cardThatCanPossibleReverse.Title];
         return reversalCardObject.CheckIfCanReversePlay(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
     }

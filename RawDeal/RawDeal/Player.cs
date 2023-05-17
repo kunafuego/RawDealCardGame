@@ -207,12 +207,12 @@ public class Player
         _arsenal.AddCardAtBottom(cardToMove);
     }
 
-    public bool HasMoreThanOneCardInArsenal()
+    public bool CheckIfPlayerHasMoreThanOneCardInArsenal()
     {
         return _arsenal.HasMoreThanOneCard();
     }
 
-    public bool HasMoreThanOneCard(CardSet deckToCheck)
+    public bool CheckIfPlayerHasMoreThanOneCard(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
         return cardsToCheck.HasMoreThanOneCard();
@@ -220,34 +220,33 @@ public class Player
 
     // Abiliies methods
 
-    public bool NeedToAskToUseAbilityAtBeginningOfTurn()
+    public bool CheckIfNeededToAskToUseAbilityAtBeginningOfTurn()
     {
-        return _superstar.AskToUseAbilityAtBeginningOfTurn();
+        return _superstar.CheckIfNeedToAskToUseAbilityAtBeginningOfTurn();
     }
 
     public bool MustUseAbilityAtStartOfTurn()
     {
-        return _superstar.UseAbilityAtStartOfTurn();
+        return _superstar.CheckIfHasToUseAbilityAtStartOfTurn();
     }
 
     public bool NeedToAskToUseAbilityDuringTurn()
     {
-        return _superstar.AskToUseAbilityDuringTurn();
+        return _superstar.CheckIfNeedToAskToUseAbilityDuringTurn();
     }
 
     public bool MustUseAbilityDuringDrawSegment()
     {
-        return _superstar.UseAbilityDuringDrawSegment();
+        return _superstar.CheckIfHasToUseAbilityDuringDrawSegment();
     }
 
     public bool MustUseAbilityWhileReceivingDamage()
     {
-        return _superstar.UseAbilityWhileReceivingDamage();
+        return _superstar.CheckIfHasToUseAbilityWhileReceivingDamage();
     }
 
     public bool CheckIfHasHigherFortitudeThanGiven(int fortitude)
     {
-        // Console.WriteLine("Player: " + Convert.ToString(_fortitude) + " Fortitude: " + Convert.ToString(fortitude));
         return _fortitude >= fortitude;
     }
 

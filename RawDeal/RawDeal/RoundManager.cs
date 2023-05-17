@@ -139,7 +139,6 @@ public class RoundManager
             }
             catch (CardWasReversedException error)
             {
-                // Console.WriteLine(error.Message);
                 if (error.Message == "Jockeying for Position")
                 {
                     SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
@@ -184,8 +183,6 @@ public class RoundManager
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        // Console.WriteLine("Trying To reveerse Maneuver with");
-        // Console.WriteLine(_nextMoveEffect.FortitudeChange);
         List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay(_nextMoveEffect, playOpponentIsTryingToMake.Card);
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
         if (reversalCardsThatPlayerCanPlayOnThisCard.Any())
@@ -233,13 +230,11 @@ public class RoundManager
         if (reversalCardSelected.Title == "Rolling Takedown" || reversalCardSelected.Title == "Knee to the Gut")
         {
             cardOpponentWasTryingToPlay.ReversalDamage = cardOpponentWasTryingToPlay.GetDamage() + _nextMoveEffect.DamageChange;
-            Console.WriteLine("El reversal damage de " + Convert.ToString(cardOpponentWasTryingToPlay.Title) + " quedó seteado a " + Convert.ToString(reversalCardSelected.GetDamage()) + " + " + Convert.ToString(_nextMoveEffect.DamageChange));
         }
     }
 
     private void PlayManeuver(Card cardPlayed)
     {
-        // Console.WriteLine("228 Round Manager" + Convert.ToString(_nextMoveEffect.FortitudeChange));
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
         maneuverPlayer.PlayManeuver(cardPlayed);
         _nextMoveEffect = new EffectForNextMove(0, 0);
@@ -252,11 +247,9 @@ public class RoundManager
         if (cardPlayed.Title == "Jockeying for Position")
         {
             SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerPlayingRound.GetSuperstarName());
-            // Console.WriteLine(chosenOption);
             _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
                 ? new EffectForNextMove(4, 0)
                 : new EffectForNextMove(0, 8);
-            // Console.WriteLine(_nextMoveEffect.FortitudeChange);
             _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
         }
         else
