@@ -5,8 +5,8 @@ namespace RawDeal;
 
 public class ReversalManager
 {
-    private Dictionary<string, ReversalCard> _effects;
     private View _view;
+    private Dictionary<string, ReversalCard> _effects;
 
     public ReversalManager(View view)
     {
@@ -37,4 +37,5 @@ public class ReversalManager
         ReversalCard reversalCardObject = _effects[cardThatCanPossibleReverse.Title];
         return reversalCardObject.CheckIfCanReversePlay(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
     }
+    
 }

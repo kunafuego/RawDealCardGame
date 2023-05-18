@@ -59,6 +59,18 @@ public static class AbilitiesManager
 
     }
 
+    public static bool CheckIfUserCanUseAbilityDuringDrawSection(Player playerPlayingRound)
+    {
+        SuperstarAbility playerPlayingRoundSuperstarAbility = PlayersAbilities[playerPlayingRound];
+        if (playerPlayingRoundSuperstarAbility.MustUseEffectDuringDrawSegment(playerPlayingRound) &&
+            playerPlayingRoundSuperstarAbility.MeetsTheRequirementsForUsingEffect(playerPlayingRound))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
     public static bool CheckIfUserCanUseAbilityDuringTurn(Player playerPlayingRound)
     {
         SuperstarAbility playerPlayingRoundSuperstarAbility = PlayersAbilities[playerPlayingRound];

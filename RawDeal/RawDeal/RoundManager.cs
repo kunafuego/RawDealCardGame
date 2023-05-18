@@ -57,27 +57,23 @@ public class RoundManager
     
     private void PlayerDrawCards()
     {
-        try
+        bool userCanUseAbility = AbilitiesManager.CheckIfUserCanUseAbilityDuringDrawSection(_playerPlayingRound);
+        if(userCanUseAbility)
         {
-            TryToUseEffectDuringDrawSegment();
+            AbilitiesManager.UseAbilityDuringDrawSegment(_playerPlayingRound, _playerNotPlayingRound);
         }
-        catch (CantUseAbilityException)
+        else
         {
             _playerPlayingRound.DrawSingleCard();
         }
     }
-    
-    private void TryToUseEffectDuringDrawSegment()
-    {
-        AbilitiesManager.UseAbilityDuringDrawSegment(_playerPlayingRound, _playerNotPlayingRound);
-    }
-    
+
     private void ManageChosenOption(NextPlay optionChosen)
     {
         if (optionChosen == NextPlay.ShowCards)
         {
-            ManageShowingCards();
-            // Crear otra clase altoquee
+            CardsShower cardsShower = new CardsShower(_view, _playerPlayingRound, _playerNotPlayingRound);
+            cardsShower.ManageShowingCards();
         }
         else if (optionChosen == NextPlay.PlayCard)
         {
@@ -97,32 +93,6 @@ public class RoundManager
             _turnEnded = true;
             _gameShouldEnd = true;
         }
-    }
-    
-    private void ManageShowingCards()
-    {
-        CardSet cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
-        List<Card> cardsObjectsToShow = new List<Card>();
-        if (cardSetChosenForShowing.ToString().Contains("Opponents"))
-        {
-            cardsObjectsToShow = _playerNotPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-        else
-        {
-            cardsObjectsToShow = _playerPlayingRound.GetCardsToShow(cardSetChosenForShowing);
-        }
-        List<string> cardsStringsToShow = GetCardsAsStringForShowing(cardsObjectsToShow);
-        _view.ShowCards(cardsStringsToShow);
-    }
-    
-    private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
-    {
-        List<string> cardsStringsToShow = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            cardsStringsToShow.Add(card.ToString());
-        }
-        return cardsStringsToShow;
     }
 
     private void ManagePlayingCards()

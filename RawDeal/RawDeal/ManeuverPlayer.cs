@@ -3,12 +3,12 @@ namespace RawDeal;
 
 public class ManeuverPlayer
 {
-    private View _view;
-    private Player _playerPlayingRound;
-    private Player _playerNotPlayingRound;
+    private readonly View _view;
+    private readonly Player _playerPlayingRound;
+    private readonly Player _playerNotPlayingRound;
     private bool _gameShouldEnd;
     private bool _turnEnded;
-    private EffectForNextMove _effectForThisMove;
+    private readonly EffectForNextMove _effectForThisMove;
     public ManeuverPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, EffectForNextMove effectForThisMove)
     {
         _view = view;
@@ -37,14 +37,11 @@ public class ManeuverPlayer
             _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
-        for (int i = 1; i <= cardTotalDamage; i++)
+        for (int i = 1; i <= cardTotalDamage && !_turnEnded; i++)
         {
-            if (!_turnEnded)
-            {
-                SayThatCardWasOverturned(i, cardTotalDamage);
-                CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
-                DealSingleCardDamage(i, cardTotalDamage);
-            }
+            SayThatCardWasOverturned(i, cardTotalDamage);
+            CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
+            DealSingleCardDamage(i, cardTotalDamage);
         }
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
@@ -57,13 +54,10 @@ public class ManeuverPlayer
             _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
-        for (int i = 1; i <= cardTotalDamage; i++)
+        for (int i = 1; i <= cardTotalDamage && !_turnEnded; i++)
         {
-            if (!_turnEnded)
-            {
-                SayThatCardWasOverturned(i, cardTotalDamage);
-                DealSingleCardDamage(i, cardTotalDamage);
-            }
+            SayThatCardWasOverturned(i, cardTotalDamage);
+            DealSingleCardDamage(i, cardTotalDamage);
         }
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
