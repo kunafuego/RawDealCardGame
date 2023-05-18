@@ -1,27 +1,32 @@
-using System.Text.Json;
-
 namespace RawDeal;
 
 public class DeckValidator
 {
-    private static string _superstarLogo;
-    private static List<Card> _cards;
+    private string _superstarLogo;
+    private List<Card> _cards;
+    private SuperstarUtils _superstarUtils;
+    int correctAmountOfCards = 60;
 
-    public static bool CheckIfDeckIsValid(string superstarLogo, List<Card> cards)
+    public DeckValidator(string superstarLogo, List<Card> cards)
     {
         _superstarLogo = superstarLogo;
         _cards = cards;
+        _superstarUtils = new SuperstarUtils();
+    }
+    
+    public bool CheckIfDeckIsValid()
+    {
         if (!CheckIfAmountOfCardsIsOk()) return false;
         if (!CheckIfSubtypesOfCardsAreOk()) return false;
         return true;
     }
     
-    private static bool CheckIfAmountOfCardsIsOk()
+    private bool CheckIfAmountOfCardsIsOk()
     {
-        return _cards.Count == 60;
+        return _cards.Count == correctAmountOfCards;
     }
     
-    private static bool CheckIfSubtypesOfCardsAreOk()
+    private bool CheckIfSubtypesOfCardsAreOk()
     {
         foreach (Card card in _cards)
         {
@@ -38,9 +43,9 @@ public class DeckValidator
         }
         return true;
     }
-    private static bool CheckIfCardIsFromAnotherSuperstar(List<string> subtypes)
+    private bool CheckIfCardIsFromAnotherSuperstar(List<string> subtypes)
     {
-        List<string> listOfAllSuperstarsLogos = GetSuperstarLogos();
+        List<string> listOfAllSuperstarsLogos = _superstarUtils.GetSuperstarLogos();
         foreach (var subtype in subtypes)
         {
             if (listOfAllSuperstarsLogos.Contains(subtype) && subtype != _superstarLogo)
@@ -50,20 +55,5 @@ public class DeckValidator
         }
 
         return false;
-    }
-    
-    private static
-        List<string> GetSuperstarLogos()
-    {
-        string superstarPath = Path.Combine("data", "superstar.json");
-        string superstarInfo = File.ReadAllText(superstarPath);
-        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
-        List<string> superstarLogos = new List<string>();
-        foreach (var superstarSerialized in superstarSerializer)
-        {
-            superstarLogos.Add(superstarSerialized.Logo);
-        }
-
-        return superstarLogos;
     }
 }

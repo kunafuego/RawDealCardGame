@@ -24,7 +24,8 @@ public class Deck
     }
     public bool CheckIfDeckIsValid(string superstarLogo)
     {
-        return DeckValidator.CheckIfDeckIsValid(superstarLogo, _cards);
+        DeckValidator deckValidator = new DeckValidator(superstarLogo, _cards);
+        return deckValidator.CheckIfDeckIsValid();
     }
 
     public bool CheckIfHasReversalCard()
