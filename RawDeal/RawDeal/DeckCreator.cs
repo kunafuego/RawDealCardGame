@@ -1,103 +1,64 @@
 using System.Text.Json;
-
 namespace RawDeal;
 
-public static class DeckCreator
+public class DeckCreator
 {
-    private static Superstar _superstar;
+    private Superstar _superstar;
+    private readonly CardLoader _cardLoader;
+    private readonly CardFactory _cardFactory;
+    private readonly SuperstarFactory _superstarFactory;
 
-    public static Superstar GetDeckSuperstar()
+    public DeckCreator()
+    {
+        _cardLoader = new CardLoader();
+        _cardFactory = new CardFactory();
+        _superstarFactory = new SuperstarFactory();
+    }
+
+    public Superstar GetDeckSuperstar()
     {
         return _superstar;
     }
     
-    public static Deck InitializeDeck(List<string> listOfStringsWithNamesOfCardsInDeck)
+    public Deck InitializeDeck(List<string> namesOfCardsInDeck)
     {
-        _superstar = GetDecksSuperstar(listOfStringsWithNamesOfCardsInDeck);
-        RemoveSuperstarFromListOfDecksCards(listOfStringsWithNamesOfCardsInDeck);
-        Deck deck = CreateDeckObject(listOfStringsWithNamesOfCardsInDeck);
+        InitializeSuperstar(namesOfCardsInDeck);
+        RemoveSuperstarFromListOfDecksCards(namesOfCardsInDeck);
+        Deck deck = CreateDeckObject(namesOfCardsInDeck);
         return deck;
     } 
     
-    private static Superstar GetDecksSuperstar(List<string> listOfStringsWithDeckContent)
+    private void InitializeSuperstar(List<string> listOfStringsWithDeckContent)
     {
         string superstarName = listOfStringsWithDeckContent[0];
-        Superstar superstar = InitializeSuperstar(superstarName);
-        return superstar;
+        _superstar = _superstarFactory.CreateSuperstar(superstarName);
     }
     
-    private static Superstar InitializeSuperstar(string superstarName)
+    private void RemoveSuperstarFromListOfDecksCards(List<string> namesOfCardsInDeck)
     {
-        string superstarInfo = ReadSuperstarInfo();
-        DeserializedSuperstars serializedSuperstar = FindSerializedSuperstar(superstarName, superstarInfo);
-        Superstar superstarObject = CreateSuperstarObject(serializedSuperstar);
-        return superstarObject;
+        namesOfCardsInDeck.RemoveAt(0);
     }
     
-    private static string ReadSuperstarInfo()
+    private Deck CreateDeckObject(List<string> deckContent)
     {
-        string superstarPath = Path.Combine("data", "superstar.json");
-        string superstarInfo = File.ReadAllText(superstarPath);
-        return superstarInfo;
-    }
-    
-    private static DeserializedSuperstars FindSerializedSuperstar(string superstarName, string superstarInfo)
-    {
-        var superstarSerializer = JsonSerializer.Deserialize<List<DeserializedSuperstars>>(superstarInfo);
-        var serializedSuperstar = superstarSerializer.Find(x => superstarName.Contains(x.Name));
-        return serializedSuperstar;
-    }
-    
-    private static Superstar CreateSuperstarObject(DeserializedSuperstars serializedSuperstar)
-    {
-        Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, serializedSuperstar.SuperstarValue,
-            serializedSuperstar.SuperstarAbility);
-        return superstarObject;
-    }
-    
-    private static void RemoveSuperstarFromListOfDecksCards(List<string> listOfStringsWithNamesOfCardsInDeck)
-    {
-        listOfStringsWithNamesOfCardsInDeck.RemoveAt(0);
-    }
-    
-    private static Deck CreateDeckObject(List<string> deckContent)
-    {
-        var deckListWithCardsNames = new List<string>(deckContent);
-        Deck deck = CreateDeck(deckListWithCardsNames);
-        return deck;
-    }
-    
-    private static Deck CreateDeck(List<string> deckListNamesWithCardNames)
-    {
-        var listWithDeserializedCards = LoadCards();
-        List<Card> deckCards = new List<Card>();
-        foreach (var card in deckListNamesWithCardNames)
-        {
-            DeserializedCards deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
-            Card cardObject = CreateCard(deserializedCard);
-            deckCards.Add(cardObject);
-        }   
+        List<string> deckListWithCardsNames = new List<string>(deckContent);
+        List<Card> deckCards = CreateCards(deckListWithCardsNames);
         Deck deckObject = new Deck(deckCards);
         return deckObject;
     }
     
-    private static List<DeserializedCards> LoadCards()
+    private List<Card> CreateCards(List<string> deckListNamesWithCardNames)
     {
-        string cardsPath = Path.Combine("data", "cards.json");
-        string cardsInfo = File.ReadAllText(cardsPath);
-        var cardsSerializer = JsonSerializer.Deserialize<List<DeserializedCards>>(cardsInfo);
-        return cardsSerializer;
-    }
-    
-    private static Card CreateCard(DeserializedCards deserializedCard)
-    {
-        return new Card(
-            deserializedCard.Title, 
-            deserializedCard.Types, 
-            deserializedCard.Subtypes, 
-            deserializedCard.Fortitude, 
-            deserializedCard.Damage, 
-            deserializedCard.StunValue, 
-            deserializedCard.CardEffect);
+        List<Card> deckCards = new List<Card>();
+        List<DeserializedCards> listWithDeserializedCards = _cardLoader.LoadCards();
+        
+        foreach (var card in deckListNamesWithCardNames)
+        {
+            DeserializedCards deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
+            Card cardObject = _cardFactory.CreateCard(deserializedCard);
+            deckCards.Add(cardObject);
+        }
+        
+        return deckCards;
     }
 }

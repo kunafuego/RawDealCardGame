@@ -47,19 +47,19 @@ public class Game
     
     private void PlayersSelectTheirDecks()
     {
+        DeckCreator deckCreator = new DeckCreator();
         List<Player> iteradorPlayers = new List<Player>(){ _playerPlayingRound, _playerNotPlayingRound };
         foreach (var player in iteradorPlayers)
         {
             List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-            Deck deck = DeckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
-            Superstar superstar = DeckCreator.GetDeckSuperstar();
+            Deck deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
+            Superstar superstar = deckCreator.GetDeckSuperstar();
             if (!deck.CheckIfDeckIsValid(superstar.Logo))
             {
                 throw new InvalidDeckException("");
             }
-            // Sacarlos de acá
             AssignDeckToPlayer(player, deck);
-            AssignSuperstarToPlayer(player, DeckCreator.GetDeckSuperstar());
+            AssignSuperstarToPlayer(player, deckCreator.GetDeckSuperstar());
             DrawCardsToHandForFirstTime(player);
         }
     }
