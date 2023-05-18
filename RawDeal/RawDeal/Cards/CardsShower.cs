@@ -4,9 +4,9 @@ namespace RawDeal;
 
 public class CardsShower
 {
-    private View _view;
-    private Player _playerPlayingRound;
-    private Player _playerNotPlayingRound;
+    private readonly View _view;
+    private readonly Player _playerPlayingRound;
+    private readonly Player _playerNotPlayingRound;
 
     public CardsShower(View view, Player playerPlayingRound, Player playerNotPlayingRound)
     {
