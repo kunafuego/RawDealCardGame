@@ -1,7 +1,4 @@
-using System.Text;
-using RawDealView.Options;
 using RawDealView;
-using System.Text.Json;
 
 namespace RawDeal;
 
@@ -25,7 +22,7 @@ public class Game
         {
             TryToPlayGame();
         }
-        catch (InvalidDeckException e)
+        catch (InvalidDeckException)
         {
             _view.SayThatDeckIsInvalid();
         }
@@ -47,43 +44,11 @@ public class Game
     
     private void PlayersSelectTheirDecks()
     {
-        DeckCreator deckCreator = new DeckCreator();
-        List<Player> iteradorPlayers = new List<Player>(){ _playerPlayingRound, _playerNotPlayingRound };
-        foreach (var player in iteradorPlayers)
+        DeckSelectionManager deckSelectionManager = new DeckSelectionManager(_view, _deckFolder);
+        foreach (var player in new List<Player>() { _playerPlayingRound, _playerNotPlayingRound })
         {
-            List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-            Deck deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
-            Superstar superstar = deckCreator.GetDeckSuperstar();
-            if (!deck.CheckIfDeckIsValid(superstar.Logo))
-            {
-                throw new InvalidDeckException("");
-            }
-            AssignDeckToPlayer(player, deck);
-            AssignSuperstarToPlayer(player, deckCreator.GetDeckSuperstar());
-            DrawCardsToHandForFirstTime(player);
+            deckSelectionManager.SelectDeck(player);
         }
-    }
-    
-    private List<string> AskPlayerToSelectDeck()
-    {
-        string deckPath = _view.AskUserToSelectDeck(_deckFolder);
-        string[] deckText = File.ReadAllLines(deckPath);
-        return new List<string>(deckText);
-    }
-
-    private void AssignDeckToPlayer(Player player, Deck deck)
-    {
-        player.AssignArsenal(deck);
-    }
-    
-    private void AssignSuperstarToPlayer(Player player, Superstar superstar)
-    {
-        player.AssignSuperstar(superstar);
-    }
-    
-    private void DrawCardsToHandForFirstTime(Player player)
-    {
-        player.DrawCardsFromArsenalToHandAtStart();
     }
 
     private void SetAbilityManager()
@@ -114,7 +79,7 @@ public class Game
         {
             return _actualRoundManager.NextMoveEffect;
         }
-        catch (NullReferenceException e)
+        catch (NullReferenceException)
         {
             return new EffectForNextMove(0, 0);
         }
