@@ -13,9 +13,18 @@ public class RollingTakedown: ReversalCard
             playerThatReversePlay.MoveArsenalTopCardToRingside();
         }
         int damage = ManageDamage(cardThatWasReversed, playerThatReversePlay);
+        Console.WriteLine("The damage that the reversal is going to make is " + Convert.ToString(damage));
+        // View.SayThatOpponentWillTakeSomeDamage(playerThatWasReversed.GetSuperstarName(), cardThatWasReversed.GetDamage());
+        // for (int i = 1; i <= cardThatWasReversed.GetDamage(); i++)
+        // {
+        //     Card cardThatWillGoToRingside = playerThatWasReversed.GetCardOnTopOfArsenal();
+        //     View.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), i, cardThatWasReversed.GetDamage());
+        //     playerThatWasReversed.MoveArsenalTopCardToRingside();
+        // }
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(View, playerThatReversePlay, playerThatWasReversed, new EffectForNextMove(0,0));
         cardObject.ReversalDamage = damage;
         maneuverPlayer.PlayReversalAsManeuver(cardObject);
+        // playerThatReversePlay.MoveCardFromHandToRingside(cardObject);
     }
 
     private int ManageDamage(Card cardPlayed, Player playerThatReverse)
@@ -31,8 +40,10 @@ public class RollingTakedown: ReversalCard
 
     public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
     {
+        Console.WriteLine("CHEcking net damage for rolling takedown" + Convert.ToString(netDamageThatWillReceive));
         Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
-        if (netDamageThatWillReceive <= 7 && playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardThatIsBeingPlayed.CheckIfSubtypesContain("Grapple"))
+        List<string> cardsSubtypes = cardThatIsBeingPlayed.Subtypes;
+        if (netDamageThatWillReceive <= 7 && playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Grapple"))
         {
             return true;
         }

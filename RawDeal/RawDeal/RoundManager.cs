@@ -38,9 +38,9 @@ public class RoundManager
         AbilitiesManager.ManageAbilityBeforeDraw(_playerPlayingRound, _playerNotPlayingRound);
         PlayerDrawCards();
         bool effectUsed = false;
-        NextPlay nextPlayOptionChosen;
         do
         {
+            NextPlay nextPlayOptionChosen;
             _view.ShowGameInfo(_playerPlayingRound.GetInfo(), _playerNotPlayingRound.GetInfo());
             if (!effectUsed && AbilitiesManager.CheckIfUserCanUseAbilityDuringTurn(_playerPlayingRound))
             {
@@ -70,33 +70,56 @@ public class RoundManager
 
     private void ManageChosenOption(NextPlay optionChosen)
     {
-        if (optionChosen == NextPlay.ShowCards)
+        switch (optionChosen)
         {
-            CardsShower cardsShower = new CardsShower(_view, _playerPlayingRound, _playerNotPlayingRound);
-            cardsShower.ManageShowingCards();
+            case NextPlay.ShowCards:
+                ManageShowingCards();
+                break;
+            case NextPlay.PlayCard:
+                ManagePlayingCards();
+                break;
+            case NextPlay.UseAbility:
+                UseAbilityDuringTurn();
+                break;
+            case NextPlay.EndTurn:
+                EndTurn();
+                break;
+            case NextPlay.GiveUp:
+                GiveUp();
+                break;
         }
-        else if (optionChosen == NextPlay.PlayCard)
-        {
-            CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
-            cardPlayer.ManagePlayingCards();
-            _nextMoveEffect = cardPlayer.NextMoveEffect;
-            _turnEnded = cardPlayer.TurnEnded;
-            _gameShouldEnd = cardPlayer.GameShouldEnd;
-        }
-        else if (optionChosen == NextPlay.UseAbility)
-        {
-            AbilitiesManager.UseAbilityDuringTurn(_playerPlayingRound, _playerNotPlayingRound);
-        }
-        else if (optionChosen == NextPlay.EndTurn)
-        {
-            _turnEnded = true;
-            _nextMoveEffect = new EffectForNextMove(0, 0);
-        }
-        else if (optionChosen == NextPlay.GiveUp)
-        {
-            _turnEnded = true;
-            _gameShouldEnd = true;
-        }
+    }
+
+    private void ManageShowingCards()
+    {
+        CardsShower cardsShower = new CardsShower(_view, _playerPlayingRound, _playerNotPlayingRound);
+        cardsShower.ManageShowingCards();
+    }
+
+    private void ManagePlayingCards()
+    {
+        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        cardPlayer.ManagePlayingCards();
+        _nextMoveEffect = cardPlayer.NextMoveEffect;
+        _turnEnded = cardPlayer.TurnEnded;
+        _gameShouldEnd = cardPlayer.GameShouldEnd;
+    }
+
+    private void UseAbilityDuringTurn()
+    {
+        AbilitiesManager.UseAbilityDuringTurn(_playerPlayingRound, _playerNotPlayingRound);
+    }
+
+    private void EndTurn()
+    {
+        _turnEnded = true;
+        _nextMoveEffect = new EffectForNextMove(0, 0);
+    }
+
+    private void GiveUp()
+    {
+        _turnEnded = true;
+        _gameShouldEnd = true;
     }
 
     public void CheckIfGameShouldEnd()
@@ -109,25 +132,11 @@ public class RoundManager
 
     public Player GetGameWinner()
     {
-        Player winner;
-        if (!_playerPlayingRound.HasCardsInArsenal() && !_playerNotPlayingRound.HasCardsInArsenal())
+        if (!_playerNotPlayingRound.HasCardsInArsenal())
         {
-            winner = _playerPlayingRound;
+            return _playerPlayingRound;
         }
-        else if (!_playerPlayingRound.HasCardsInArsenal())
-        {
-            winner = _playerNotPlayingRound;
-        }
-        else if (!_playerNotPlayingRound.HasCardsInArsenal())
-        {
-            winner = _playerPlayingRound;
-        }
-        else
-        {
-            winner = _playerNotPlayingRound;
-        }
-
-        return winner;
+        return _playerNotPlayingRound;
     }
     
 }

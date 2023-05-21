@@ -37,7 +37,7 @@ public class ManeuverPlayer
             _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
-        for (int i = 1; i <= cardTotalDamage && !_turnEnded; i++)
+        for (int i = 1; i <= cardTotalDamage && !_gameShouldEnd; i++)
         {
             SayThatCardWasOverturned(i, cardTotalDamage);
             CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
@@ -54,7 +54,7 @@ public class ManeuverPlayer
             _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
-        for (int i = 1; i <= cardTotalDamage && !_turnEnded; i++)
+        for (int i = 1; i <= cardTotalDamage && !_gameShouldEnd; i++)
         {
             SayThatCardWasOverturned(i, cardTotalDamage);
             DealSingleCardDamage(i, cardTotalDamage);

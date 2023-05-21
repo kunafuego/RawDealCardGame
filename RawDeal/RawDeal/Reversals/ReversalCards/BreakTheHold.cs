@@ -19,7 +19,8 @@ public class BreakTheHold: ReversalCard
     public override bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
     {
         Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
-        if (playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardThatIsBeingPlayed.CheckIfSubtypesContain("Submission"))
+        List<string> cardSubTypes = cardThatIsBeingPlayed.SubTypes;
+        if (playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardSubTypes.Contains("Submission"))
         {
             return true;
         }

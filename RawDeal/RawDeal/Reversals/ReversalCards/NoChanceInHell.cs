@@ -7,6 +7,7 @@ public class NoChanceInHell: ReversalCard
 
     public override void PerformEffect(Play playThatIsBeingReversed,  Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed)
     {
+        // Console.WriteLine(playThatIsBeingReversed.PlayedAs);
         if (playThatIsBeingReversed.PlayedAs == "Reversed From Hand")
         {
             playerThatReversePlay.MoveCardFromHandToRingArea(cardObject);
