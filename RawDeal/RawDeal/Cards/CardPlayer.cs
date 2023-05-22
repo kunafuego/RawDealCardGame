@@ -90,54 +90,8 @@ public class CardPlayer
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay(_nextMoveEffect, playOpponentIsTryingToMake.Card);
-        List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, playOpponentIsTryingToMake);
-        if (reversalCardsThatPlayerCanPlayOnThisCard.Any())
-        {
-            List<Play> reversalPlays = GetPlaysOfAvailablesCards(reversalCardsThatPlayerCanPlayOnThisCard);
-            List<string> reversalPlaysString = reversalPlays.Select(play => play.ToString()).ToList();
-            int usersChoice = _view.AskUserToSelectAReversal(_playerNotPlayingRound.GetSuperstarName(), reversalPlaysString);
-            if (usersChoice != -1)
-            {
-                Play reversalSelected = reversalPlays[usersChoice];
-                Card reversalCardSelected = reversalSelected.Card;
-                playOpponentIsTryingToMake.PlayedAs = "Reversed From Hand";
-                _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
-                _playerPlayingRound.MoveCardFromHandToRingside(playOpponentIsTryingToMake.Card);
-                SetDamageThatReversalShouldMake(reversalCardSelected, playOpponentIsTryingToMake.Card);
-                ReversalManager reversalManager = new ReversalManager(_view);
-                reversalManager.PerformEffect(playOpponentIsTryingToMake, reversalSelected.Card, _playerNotPlayingRound, _playerPlayingRound);
-                throw new CardWasReversedException(reversalCardSelected.Title);
-            }
-        }
-    }
-    private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
-    {
-        Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
-        ReversalManager reversalManager = new ReversalManager(_view);
-        List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(cardThatCanPossibleReverse => reversalManager.CheckIfCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
-        return reversalCardsThatPlayerCanPlayOnThisCard;
-    }
-
-    private List<Play> GetPlaysOfAvailablesCards(List<Card> reversalCardThatPlayerCanPlay)
-    {
-        List<Play> playsToReturn = new();
-        foreach (Card card in reversalCardThatPlayerCanPlay)
-        {
-            Play play = new Play(card, "REVERSAL");
-            playsToReturn.Add(play);
-        }
-
-        return playsToReturn;
-    }
-
-    private void SetDamageThatReversalShouldMake(Card reversalCardSelected, Card cardOpponentWasTryingToPlay)
-    {
-        if (reversalCardSelected.Title == "Rolling Takedown" || reversalCardSelected.Title == "Knee to the Gut")
-        {
-            cardOpponentWasTryingToPlay.ReversalDamage = cardOpponentWasTryingToPlay.GetDamage() + _nextMoveEffect.DamageChange;
-        }
+        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
     private void PlayManeuver(Card cardPlayed)

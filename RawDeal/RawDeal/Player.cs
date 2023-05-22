@@ -13,11 +13,13 @@ public class Player
     private Deck _ringArea = new(new List<Card>());
     private Deck _hand = new(new List<Card>());
 
-    public Superstar Superstar
-    {
-        get { return _superstar; }
-    }
+    public Superstar Superstar { get { return _superstar; } }
+    public void AssignSuperstar(Superstar superstar) { _superstar = superstar; }
 
+    public void AssignArsenal(Deck arsenal) { _arsenal = arsenal; }
+
+    public string GetSuperstarName() { return _superstar.Name; }
+    
     public Player()
     {
         _cardSetToDeck = new Dictionary<CardSet, Deck>
@@ -29,15 +31,6 @@ public class Player
         };
     }
 
-    public bool CheckIfHasReversalCardInHand()
-    {
-        return _hand.CheckIfHasReversalCard();
-    }
-
-    public string GetSuperstarName()
-    {
-        return _superstar.Name;
-    }
 
     public List<Card> GetReversalCardsThatPlayerCanPlay(EffectForNextMove effectFromPastMove, Card cardOpponentIsTryingToPlay)
     {
@@ -59,25 +52,16 @@ public class Player
         }
     }
 
-    public void AssignSuperstar(Superstar superstar)
-    {
-        _superstar = superstar;
-    }
-
-    public void AssignArsenal(Deck arsenal)
-    {
-        _arsenal = arsenal;
-    }
 
     public void DrawCardsFromArsenalToHandAtStart()
     {
         List<Card> removableCards = new List<Card>();
-        for (int i = _arsenal.Cards.Count; i > _arsenal.Cards.Count - _superstar.HandSize; i--)
+        List<Card> arsenalCards = _arsenal.Cards;
+        for (int i = arsenalCards.Count; i > arsenalCards.Count - _superstar.HandSize; i--)
         {
             Card cardToPass = _arsenal.Cards[i - 1];
             removableCards.Add(cardToPass);
         }
-
         MoveManyCardsFromArsenalToHand(removableCards);
     }
 
@@ -104,7 +88,7 @@ public class Player
             _arsenal.Cards.Count);
         return info;
     }
-
+    
     public List<Card> GetCardsToShow(CardSet cardSetChosenForShowing)
     {
         List<Card> cardsToShow = new List<Card>();
@@ -122,60 +106,21 @@ public class Player
         {
             cardsToShow = _ringSide.Cards;
         }
-
         return cardsToShow;
     }
-
-
-    public List<Play> GetAvailablePlays()
-    {
-        List<Play> playsThatCanBePlayed = new List<Play>();
-        foreach (Card card in _hand.Cards)
-        {
-            if (CanPlayCard(card))
-            {
-                AddPlayablePlays(card, playsThatCanBePlayed);
-            }
-        }
-
-        return playsThatCanBePlayed;
-    }
-
-    private bool CanPlayCard(Card card)
-    {
-        return card.Fortitude <= _fortitude;
-    }
-
-    private void AddPlayablePlays(Card card, List<Play> playsThatCanBePlayed)
-    {
-        foreach (string type in card.Types)
-        {
-            if (type != "Reversal")
-            {
-                Play play = new Play(card, type);
-                playsThatCanBePlayed.Add(play);
-            }
-        }
-    }
-
+    
     public void MoveArsenalTopCardToRingside()
     {
         Card cardToRemove = _arsenal.GetCardOnTop();
         _arsenal.RemoveCard(cardToRemove);
         _ringSide.AddCard(cardToRemove);
     }
-
     public bool HasCards(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
         return cardsToCheck.CheckIfHasCards();
     }
-
-    public bool HasCardsInArsenal()
-    {
-        return _arsenal.CheckIfHasCards();
-    }
-
+    public bool HasCardsInArsenal() { return _arsenal.CheckIfHasCards(); }
     public void MoveCardFromHandToRingArea(Card cardToMove)
     {
         _hand.RemoveCard(cardToMove);
@@ -207,55 +152,19 @@ public class Player
         _arsenal.AddCardAtBottom(cardToMove);
     }
 
-    public bool CheckIfPlayerHasMoreThanOneCardInArsenal()
-    {
-        return _arsenal.CheckIfHasMoreThanOneCard();
-    }
-
     public bool CheckIfPlayerHasMoreThanOneCard(CardSet deckToCheck)
     {
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
         return cardsToCheck.CheckIfHasMoreThanOneCard();
     }
-    
-    public bool CheckIfNeededToAskToUseAbilityAtBeginningOfTurn()
-    {
-        return _superstar.CheckIfNeedToAskToUseAbilityAtBeginningOfTurn();
-    }
-
-    public bool MustUseAbilityAtStartOfTurn()
-    {
-        return _superstar.CheckIfHasToUseAbilityAtStartOfTurn();
-    }
-
-    public bool NeedToAskToUseAbilityDuringTurn()
-    {
-        return _superstar.CheckIfNeedToAskToUseAbilityDuringTurn();
-    }
-
-    public bool MustUseAbilityDuringDrawSegment()
-    {
-        return _superstar.CheckIfHasToUseAbilityDuringDrawSegment();
-    }
-
-    public bool MustUseAbilityWhileReceivingDamage()
-    {
-        return _superstar.CheckIfHasToUseAbilityWhileReceivingDamage();
-    }
-
-    public bool CheckIfHasHigherFortitudeThanGiven(int fortitude)
-    {
-        return _fortitude >= fortitude;
-    }
-
-    public Card GetCardOnTopOfRingside()
-    {
-        return _ringSide.GetCardOnTop();
-    }
-
-    public Card GetCardOnTopOfArsenal()
-    {
-        return _arsenal.GetCardOnTop();
-    }
-
+    public List<Play> GetAvailablePlays() { return PlayerUtils.GetAvailablePlays(_hand, _fortitude); }
+    public bool CheckIfPlayerHasMoreThanOneCardInArsenal() { return _arsenal.CheckIfHasMoreThanOneCard(); }
+    public bool CheckIfNeededToAskToUseAbilityAtBeginningOfTurn() { return _superstar.CheckIfNeedToAskToUseAbilityAtBeginningOfTurn(); }
+    public bool MustUseAbilityAtStartOfTurn() { return _superstar.CheckIfHasToUseAbilityAtStartOfTurn(); }
+    public bool NeedToAskToUseAbilityDuringTurn() { return _superstar.CheckIfNeedToAskToUseAbilityDuringTurn(); }
+    public bool MustUseAbilityDuringDrawSegment() { return _superstar.CheckIfHasToUseAbilityDuringDrawSegment(); }
+    public bool MustUseAbilityWhileReceivingDamage() { return _superstar.CheckIfHasToUseAbilityWhileReceivingDamage(); }
+    public bool CheckIfHasHigherFortitudeThanGiven(int fortitude) { return _fortitude >= fortitude; }
+    public Card GetCardOnTopOfRingside() { return _ringSide.GetCardOnTop(); }
+    public Card GetCardOnTopOfArsenal() { return _arsenal.GetCardOnTop(); }
 }
