@@ -36,7 +36,7 @@ public class KneeToTheGut: ReversalCard
         {
             return true;
         }
-
+    
         return false;
     }
 }

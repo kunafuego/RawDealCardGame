@@ -1,3 +1,4 @@
+using RawDeal.Preconditions;
 using RawDeal.ReversalCards;
 using RawDeal.Reversals;
 using RawDealView;
@@ -40,10 +41,10 @@ public class ReversalManager
         _effects[cardThatIsReversingManeuver.Title].PerformEffect(playThatIsBeingReversed, cardThatIsReversingManeuver, _playerNotPlayingRound, _playerPlayingRound);
     }
 
-    private bool CheckIfCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
+    private bool CheckIfCardCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
     {
-        ReversalCard reversalCardObject = _effects[cardThatCanPossibleReverse.Title];
-        return reversalCardObject.CheckIfCanReversePlay(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
+        Precondition cardPrecondition = cardThatCanPossibleReverse.Precondition;
+        return cardPrecondition.DoesMeetPrecondition(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
     }
     
     public void TryToReversePlayFromHand(Play playOpponentIsTryingToMake)
@@ -64,7 +65,7 @@ public class ReversalManager
     {
         Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(cardThatCanPossibleReverse => CheckIfCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
+            .Where(cardThatCanPossibleReverse => CheckIfCardCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
@@ -87,10 +88,10 @@ public class ReversalManager
         throw new CardWasReversedException(reversalCardSelected.Title);
     }
 
-    public void CheckIfManeuverCanBeReversedFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed)
+    public void CheckIfManeuverCanBeReversedFromDeckWithASpecificCard(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed)
     {
         Card cardThatWasTurnedOver = _playerNotPlayingRound.GetCardOnTopOfArsenal();
-        bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, new Play(cardPlayed, "MANEUVER"));
+        bool cardCanReverseReceivingDamage = CheckIfCardThatWasTurnedOverCanReverse(cardThatWasTurnedOver, new Play(cardPlayed, "MANEUVER"));
         if (cardCanReverseReceivingDamage)
         {
             ReversePlayFromDeck(amountOfDamageReceivedAtMoment, totalCardDamage, cardPlayed, cardThatWasTurnedOver);
@@ -110,14 +111,13 @@ public class ReversalManager
         throw new CardWasReversedException(cardThatWasTurnedOver.Title);
     }
 
-    private bool CheckIfCardCanReverseManeuver(Card cardThatWasTurnedOver, Play playPlayedByOpponent)
+    private bool CheckIfCardThatWasTurnedOverCanReverse(Card cardThatWasTurnedOver, Play playPlayedByOpponent)
     {
         bool cardIsReversal = ReversalUtils.CheckIfCardIsReversal(cardThatWasTurnedOver);
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver, playPlayedByOpponent.Card);
         if (cardIsReversal && playerHasHigherFortitudeThanCard)
         {
-            ReversalManager reversalManager = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
-            return reversalManager.CheckIfCanReverseThisPlay(cardThatWasTurnedOver, playPlayedByOpponent, "Deck", ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect));
+            return CheckIfCardCanReverseThisPlay(cardThatWasTurnedOver, playPlayedByOpponent, "Deck", ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect));
         }
         return false;
     }

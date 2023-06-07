@@ -41,7 +41,7 @@ public class ManeuverPlayer
         {
             SayThatCardWasOverturned(i, cardTotalDamage);
             ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _effectForThisMove);
-            reversalPerformer.CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage, cardPlayed);
+            reversalPerformer.CheckIfManeuverCanBeReversedFromDeckWithASpecificCard(i, cardTotalDamage, cardPlayed);
             DealSingleCardDamage(i, cardTotalDamage);
         }
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);

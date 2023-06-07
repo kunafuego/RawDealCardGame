@@ -1,11 +1,11 @@
 using RawDealView;
 namespace RawDeal.Effects.EffectsClasses;
 
-public class DrawCardWhenPlayFromHandEffect : Effect
+public class DrawCardWhenReversedFromHandEffect : Effect
 {
     private int _amountOfCardsToDrawInEffect;
     
-    public DrawCardWhenPlayFromHandEffect(int amountOfCardsToDrawInEffect)
+    public DrawCardWhenReversedFromHandEffect(int amountOfCardsToDrawInEffect)
     { 
         _amountOfCardsToDrawInEffect = amountOfCardsToDrawInEffect; 
     }
@@ -14,6 +14,9 @@ public class DrawCardWhenPlayFromHandEffect : Effect
     {
         if (playThatIsBeingReversed.PlayedAs != "Reversed From Hand") return;
         view.SayThatPlayerDrawCards(playerThatReversePlay.GetSuperstarName(), _amountOfCardsToDrawInEffect);
-        playerThatReversePlay.DrawSingleCard();
+        for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)
+        {
+            playerThatReversePlay.DrawSingleCard();
+        }
     }
 }

@@ -1,3 +1,5 @@
+using RawDeal.Preconditions;
+
 namespace RawDeal;
 
 public class CardFactory
@@ -11,6 +13,7 @@ public class CardFactory
             deserializedCard.Fortitude, 
             deserializedCard.Damage, 
             deserializedCard.StunValue, 
-            deserializedCard.CardEffect);
+            deserializedCard.CardEffect,
+            PreconditionCatalog.GetPrecondition(deserializedCard.Title));
     }
 }

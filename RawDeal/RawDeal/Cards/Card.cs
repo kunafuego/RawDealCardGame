@@ -1,5 +1,7 @@
 namespace RawDeal;
 using RawDealView.Formatters;
+using RawDeal.Effects;
+using RawDeal.Preconditions;
 public class Card : IViewableCardInfo
 {
     private readonly string _title;
@@ -9,7 +11,9 @@ public class Card : IViewableCardInfo
     private readonly string _damage;
     private int _reversalDamage;
     private readonly int _stunValue;
-    private readonly string _cardEffect;
+    private readonly string _cardEffectString;
+    private Effect _effectObject;
+    private Precondition _precondition;
 
     public List<string> SubTypes
     {
@@ -28,7 +32,7 @@ public class Card : IViewableCardInfo
     }
     public string CardEffect
     {
-        get { return _cardEffect; }
+        get { return _cardEffectString; }
     }
     public int Fortitude
     { get { return  _fortitude;} } 
@@ -36,15 +40,18 @@ public class Card : IViewableCardInfo
     { get { return  _stunValue;} } 
     public List<string> Types
     { get { return  _types;} }
-    public string Effect
-    { get { return  _cardEffect;} }
+    public string EffectString
+    { get { return  _cardEffectString;} }
+    
+    public Precondition Precondition
+    { get { return  _precondition;} }
 
     public int ReversalDamage
     {
         get { return _reversalDamage; }
         set { _reversalDamage = value; }
     }
-    public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffect)
+    public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffectString, Precondition preconditionObject)
     {
         _title = title;
         _types = types;
@@ -52,8 +59,9 @@ public class Card : IViewableCardInfo
         _fortitude = Convert.ToInt16(fortitude);
         _damage = damage;
         _stunValue = Convert.ToInt16(stunValue);
-        _cardEffect = cardEffect;
+        _cardEffectString = cardEffectString;
         _reversalDamage = 0;
+        _precondition = preconditionObject;
     }
     
     public int GetDamage()
