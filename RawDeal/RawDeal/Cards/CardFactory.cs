@@ -1,3 +1,4 @@
+using RawDeal.Effects;
 using RawDeal.Preconditions;
 
 namespace RawDeal;
@@ -14,6 +15,7 @@ public class CardFactory
             deserializedCard.Damage, 
             deserializedCard.StunValue, 
             deserializedCard.CardEffect,
-            PreconditionCatalog.GetPrecondition(deserializedCard.Title));
+            PreconditionCatalog.GetPrecondition(deserializedCard.Title),
+            EffectCatalog.GetEffect(deserializedCard.Title));
     }
 }

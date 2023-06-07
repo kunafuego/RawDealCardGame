@@ -60,7 +60,6 @@ public class ManeuverPlayer
             SayThatCardWasOverturned(i, cardTotalDamage);
             DealSingleCardDamage(i, cardTotalDamage);
         }
-        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
     
     private int ManageCardDamage(Card cardPlayed)

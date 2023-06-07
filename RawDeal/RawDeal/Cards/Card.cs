@@ -12,7 +12,7 @@ public class Card : IViewableCardInfo
     private int _reversalDamage;
     private readonly int _stunValue;
     private readonly string _cardEffectString;
-    private Effect _effectObject;
+    private List<Effect> _effectObject;
     private Precondition _precondition;
 
     public List<string> SubTypes
@@ -40,8 +40,8 @@ public class Card : IViewableCardInfo
     { get { return  _stunValue;} } 
     public List<string> Types
     { get { return  _types;} }
-    public string EffectString
-    { get { return  _cardEffectString;} }
+    public List<Effect> EffectObject
+    { get { return  _effectObject;} }
     
     public Precondition Precondition
     { get { return  _precondition;} }
@@ -51,7 +51,7 @@ public class Card : IViewableCardInfo
         get { return _reversalDamage; }
         set { _reversalDamage = value; }
     }
-    public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffectString, Precondition preconditionObject)
+    public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffectString, Precondition preconditionObject, List<Effect> effectsList)
     {
         _title = title;
         _types = types;
@@ -62,6 +62,7 @@ public class Card : IViewableCardInfo
         _cardEffectString = cardEffectString;
         _reversalDamage = 0;
         _precondition = preconditionObject;
+        _effectObject = effectsList;
     }
     
     public int GetDamage()

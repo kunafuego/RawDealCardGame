@@ -1,3 +1,4 @@
+using RawDeal.Effects;
 using RawDeal.Preconditions;
 using RawDeal.ReversalCards;
 using RawDeal.Reversals;
@@ -8,7 +9,6 @@ namespace RawDeal;
 public class ReversalManager
 {
     private View _view;
-    private Dictionary<string, ReversalCard> _effects;
     private Player _playerPlayingRound;
     private Player _playerNotPlayingRound;
     private EffectForNextMove _nextMoveEffect;
@@ -16,32 +16,35 @@ public class ReversalManager
     public ReversalManager(View view, Player playerPlayingRound, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect)
     {
         _view = view;
-        _effects = new Dictionary<string, ReversalCard>
-        {
-            { "Rolling Takedown", new RollingTakedown(view) },
-            { "Knee to the Gut", new KneeToTheGut(view) },
-            { "Elbow to the Face", new ElbowToTheFace(view) },
-            { "Manager Interferes", new ManagerInterferes(view) },
-            { "Chyna Interferes", new ChynaInterferes(view) },
-            { "Clean Break", new CleanBreak(view) },
-            { "Jockeying for Position", new JockeyingForPosition(view) },
-            { "Step Aside", new StepAside(view)},
-            { "Escape Move", new EscapeMove(view)},
-            { "Break the Hold", new BreakTheHold(view)},
-            { "No Chance in Hell", new NoChanceInHell(view)}
-        };
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
         _nextMoveEffect = nextMoveEffect;
     }
     
 
-    private void PerformEffect(Play playThatIsBeingReversed, Card cardThatIsReversingManeuver)
+    private void PerformEffect(Play playThatIsBeingReversed, Card cardThatIsReversingTurn)
     {
-        _effects[cardThatIsReversingManeuver.Title].PerformEffect(playThatIsBeingReversed, cardThatIsReversingManeuver, _playerNotPlayingRound, _playerPlayingRound);
+        List<Effect> cardEffects = cardThatIsReversingTurn.EffectObject;
+        foreach (Effect effect in cardEffects)
+        {
+            effect.Apply(playThatIsBeingReversed, _view, _playerNotPlayingRound, _playerPlayingRound);
+        }
+        MoveCardUsedForReversingTurn(playThatIsBeingReversed, cardThatIsReversingTurn);
     }
 
-    private bool CheckIfCardCanReverseThisPlay(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
+    private void MoveCardUsedForReversingTurn(Play playThatIsBeingReversed, Card cardThatIsReversing)
+    {
+        if (playThatIsBeingReversed.PlayedAs == "Reversed From Hand")
+        {
+            _playerNotPlayingRound.MoveCardFromHandToRingArea(cardThatIsReversing);
+        }
+        else if (playThatIsBeingReversed.PlayedAs == "REVERSED FROM DECK")
+        {
+            _playerNotPlayingRound.MoveArsenalTopCardToRingside();
+        }
+    }
+
+    private bool CheckIfCardMeetsPrecondition(Card cardThatCanPossibleReverse, Play playIsBeingMade, string askedFromDeckOrHand, int netDamageThatWillReceive)
     {
         Precondition cardPrecondition = cardThatCanPossibleReverse.Precondition;
         return cardPrecondition.DoesMeetPrecondition(playIsBeingMade, askedFromDeckOrHand, netDamageThatWillReceive);
@@ -65,7 +68,7 @@ public class ReversalManager
     {
         Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(cardThatCanPossibleReverse => CheckIfCardCanReverseThisPlay(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
+            .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse, playOpponentIsTryingToMake, "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
@@ -117,7 +120,7 @@ public class ReversalManager
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver, playPlayedByOpponent.Card);
         if (cardIsReversal && playerHasHigherFortitudeThanCard)
         {
-            return CheckIfCardCanReverseThisPlay(cardThatWasTurnedOver, playPlayedByOpponent, "Deck", ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect));
+            return CheckIfCardMeetsPrecondition(cardThatWasTurnedOver, playPlayedByOpponent, "Deck", ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect));
         }
         return false;
     }
