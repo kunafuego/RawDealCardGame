@@ -34,7 +34,7 @@ public class ManeuverPlayer
         int cardTotalDamage = ManageCardDamage(cardPlayed);
         if (cardTotalDamage > 0)
         {
-            _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
+            _view.SayThatSuperstarWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
         for (int i = 1; i <= cardTotalDamage && !_gameShouldEnd; i++)
@@ -42,7 +42,6 @@ public class ManeuverPlayer
             SayThatCardWasOverturned(i, cardTotalDamage);
             ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _effectForThisMove);
             reversalPerformer.CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage, cardPlayed);
-            // CheckIfManeuverCanBeReversedFromDeck(i, cardTotalDamage,cardPlayed);
             DealSingleCardDamage(i, cardTotalDamage);
         }
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
@@ -53,7 +52,7 @@ public class ManeuverPlayer
         int cardTotalDamage = ManageCardDamage(cardPlayed);
         if (cardTotalDamage > 0)
         {
-            _view.SayThatOpponentWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
+            _view.SayThatSuperstarWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
         }
         for (int i = 1; i <= cardTotalDamage && !_gameShouldEnd; i++)

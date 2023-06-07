@@ -8,7 +8,7 @@ class KaneAbility : SuperstarAbility
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
-        View.SayThatOpponentWillTakeSomeDamage(playerNotPlayingRound.GetSuperstarName(), 1);
+        View.SayThatSuperstarWillTakeSomeDamage(playerNotPlayingRound.GetSuperstarName(), 1);
         playerNotPlayingRound.MoveArsenalTopCardToRingside();
         Card cardThatWentToRingside = playerNotPlayingRound.GetCardOnTopOfRingside();
         View.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), 1, 1);

@@ -30,7 +30,7 @@ public class CleanBreak: ReversalCard
     {
         List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.Superstar.Name, playerThatHasToDiscard.Superstar.Name, amountOfCardsLeftToDiscard);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.GetSuperstarName(), playerThatHasToDiscard.GetSuperstarName(), amountOfCardsLeftToDiscard);
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
     

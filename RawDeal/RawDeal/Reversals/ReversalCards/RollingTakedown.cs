@@ -13,18 +13,9 @@ public class RollingTakedown: ReversalCard
             playerThatReversePlay.MoveArsenalTopCardToRingside();
         }
         int damage = ManageDamage(cardThatWasReversed, playerThatReversePlay);
-        Console.WriteLine("The damage that the reversal is going to make is " + Convert.ToString(damage));
-        // View.SayThatOpponentWillTakeSomeDamage(playerThatWasReversed.GetSuperstarName(), cardThatWasReversed.GetDamage());
-        // for (int i = 1; i <= cardThatWasReversed.GetDamage(); i++)
-        // {
-        //     Card cardThatWillGoToRingside = playerThatWasReversed.GetCardOnTopOfArsenal();
-        //     View.ShowCardOverturnByTakingDamage(cardThatWillGoToRingside.ToString(), i, cardThatWasReversed.GetDamage());
-        //     playerThatWasReversed.MoveArsenalTopCardToRingside();
-        // }
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(View, playerThatReversePlay, playerThatWasReversed, new EffectForNextMove(0,0));
         cardObject.ReversalDamage = damage;
         maneuverPlayer.PlayReversalAsManeuver(cardObject);
-        // playerThatReversePlay.MoveCardFromHandToRingside(cardObject);
     }
 
     private int ManageDamage(Card cardPlayed, Player playerThatReverse)

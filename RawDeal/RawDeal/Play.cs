@@ -8,10 +8,17 @@ public class Play : IViewablePlayInfo
 {
     private Card _card;
     private string _playedAs;
+    private Card _cardThatWasReversedBy;
 
     public Card Card
     {
         get { return _card; }
+    }
+    
+    public Card CardThatWasReversedBy
+    {
+        get { return _cardThatWasReversedBy; }
+        set { _cardThatWasReversedBy = value; }
     }
 
     public IViewableCardInfo CardInfo

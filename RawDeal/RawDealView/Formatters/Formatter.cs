@@ -21,7 +21,7 @@ public static class Formatter
     {
         string info = ". Info: ";
         info += $"{cardInfo.Fortitude}F/{cardInfo.Damage}D";
-        if (cardInfo.StunValue != 0)
+        if (Convert.ToString(cardInfo.StunValue) != "0")
             info += $"/{cardInfo.StunValue}SV";
         return info;
     }

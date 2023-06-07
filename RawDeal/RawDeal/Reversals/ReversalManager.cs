@@ -79,6 +79,7 @@ public class ReversalManager
     {
         Card reversalCardSelected = reversalSelected.Card;
         opponentPlay.PlayedAs = "Reversed From Hand";
+        opponentPlay.CardThatWasReversedBy = reversalCardSelected;
         _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
         _playerPlayingRound.MoveCardFromHandToRingside(opponentPlay.Card);
         ReversalUtils.SetDamageThatReversalShouldMake(reversalCardSelected, opponentPlay.Card, _nextMoveEffect);
@@ -92,15 +93,23 @@ public class ReversalManager
         bool cardCanReverseReceivingDamage = CheckIfCardCanReverseManeuver(cardThatWasTurnedOver, new Play(cardPlayed, "MANEUVER"));
         if (cardCanReverseReceivingDamage)
         {
-            Play playThatIsBeingReversed = new Play(cardPlayed, "Reversed From Deck");
-            _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-            PerformEffect(playThatIsBeingReversed, cardThatWasTurnedOver);
-            _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
-            if (amountOfDamageReceivedAtMoment < totalCardDamage) ReversalUtils.PlayerDrawCardsStunValueEffect(cardPlayed, _view, _playerPlayingRound);
-            throw new CardWasReversedException(cardThatWasTurnedOver.Title);
+            ReversePlayFromDeck(amountOfDamageReceivedAtMoment, totalCardDamage, cardPlayed, cardThatWasTurnedOver);
         }
     }
-    
+
+    private void ReversePlayFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed,
+        Card cardThatWasTurnedOver)
+    {
+        Play playThatIsBeingReversed = new Play(cardPlayed, "Reversed From Deck");
+        playThatIsBeingReversed.CardThatWasReversedBy = cardThatWasTurnedOver;
+        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+        PerformEffect(playThatIsBeingReversed, cardThatWasTurnedOver);
+        _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
+        if (amountOfDamageReceivedAtMoment < totalCardDamage)
+            ReversalUtils.PlayerDrawCardsStunValueEffect(cardPlayed, _view, _playerPlayingRound);
+        throw new CardWasReversedException(cardThatWasTurnedOver.Title);
+    }
+
     private bool CheckIfCardCanReverseManeuver(Card cardThatWasTurnedOver, Play playPlayedByOpponent)
     {
         bool cardIsReversal = ReversalUtils.CheckIfCardIsReversal(cardThatWasTurnedOver);

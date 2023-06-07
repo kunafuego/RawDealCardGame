@@ -14,14 +14,7 @@ public class ElbowToTheFace: ReversalCard
         }
         else
         {
-            if (playThatIsBeingReversed.PlayedAs == "Reversed From Hand")
-            {
-                playerThatReversePlay.MoveCardFromHandToRingArea(cardObject);
-            }
-            else if (playThatIsBeingReversed.PlayedAs == "REVERSED FROM DECK")
-            {
-                playerThatReversePlay.MoveArsenalTopCardToRingside();
-            }
+            playerThatReversePlay.MoveArsenalTopCardToRingside();
         }
     }
     
