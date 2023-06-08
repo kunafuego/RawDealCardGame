@@ -2,6 +2,8 @@ namespace RawDeal;
 
 public class DeckValidator
 {
+    private const int AmountOfCardsToBeEqualUnique = 1;
+    private const int AmountOfCardsToBeEqualSetup = 3;
     private string _superstarLogo;
     private List<Card> _cards;
     private SuperstarUtils _superstarUtils;
@@ -32,8 +34,8 @@ public class DeckValidator
         {
             List<string> subtypes = card.SubTypes;
             List<Card> cardsWithSameTitle = _cards.FindAll(x => x.Title == card.Title);
-            if (cardsWithSameTitle.Count > 1 && subtypes.Contains("Unique") ||
-                cardsWithSameTitle.Count > 3 && subtypes.Contains("SetUp") == false ||
+            if (cardsWithSameTitle.Count > AmountOfCardsToBeEqualUnique && subtypes.Contains("Unique") ||
+                cardsWithSameTitle.Count > AmountOfCardsToBeEqualSetup && subtypes.Contains("SetUp") == false ||
                 subtypes.Contains("Heel") && _cards.Any(x => x.SubTypes.Contains("Face")) ||
                 subtypes.Contains("Face") && _cards.Any(y => y.SubTypes.Contains("Heel")) ||
                 CheckIfCardIsFromAnotherSuperstar(subtypes))
@@ -46,14 +48,6 @@ public class DeckValidator
     private bool CheckIfCardIsFromAnotherSuperstar(List<string> subtypes)
     {
         List<string> listOfAllSuperstarsLogos = _superstarUtils.GetSuperstarLogos();
-        foreach (var subtype in subtypes)
-        {
-            if (listOfAllSuperstarsLogos.Contains(subtype) && subtype != _superstarLogo)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return subtypes.Any(subtype => listOfAllSuperstarsLogos.Contains(subtype) && subtype != _superstarLogo);
     }
 }

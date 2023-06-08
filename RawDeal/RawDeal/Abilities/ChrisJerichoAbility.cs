@@ -16,7 +16,9 @@ class ChrisJerichoAbility : SuperstarAbility
     {
         List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.GetSuperstarName(), playerThatHasToDiscard.Superstar.Name, 1);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, 
+            playerThatHasToDiscard.GetSuperstarName(), 
+            playerThatHasToDiscard.GetSuperstarName(), 1);
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 

@@ -4,6 +4,8 @@ namespace RawDeal;
 
 class TheUndertakerAbility : SuperstarAbility
 {
+    private const int AmountOfCardsToDiscard = 2;
+
     public TheUndertakerAbility(View view) : base(view) {}
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
@@ -14,7 +16,7 @@ class TheUndertakerAbility : SuperstarAbility
 
     private void DiscardTwoCards(Player playerThatWillDiscardCards)
     {
-        for (int numberOfCardsLeftToDiscard = 2; numberOfCardsLeftToDiscard > 0; numberOfCardsLeftToDiscard--)
+        for (int numberOfCardsLeftToDiscard = AmountOfCardsToDiscard; numberOfCardsLeftToDiscard > 0; numberOfCardsLeftToDiscard--)
         {
             DiscardCard(numberOfCardsLeftToDiscard, playerThatWillDiscardCards);
         }
@@ -24,7 +26,10 @@ class TheUndertakerAbility : SuperstarAbility
     {
         List<Card> handCardsObjectsToShow = playerThatWillDiscardCard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatWillDiscardCard.GetSuperstarName(), playerThatWillDiscardCard.GetSuperstarName(), numberOfCardDiscarding);
+        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, 
+            playerThatWillDiscardCard.GetSuperstarName(), 
+            playerThatWillDiscardCard.GetSuperstarName(), 
+            numberOfCardDiscarding);
         playerThatWillDiscardCard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 

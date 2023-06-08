@@ -11,8 +11,7 @@ public static class EffectCatalog
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
         _effectCatalog["Chop"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, discard 1 card of your choice from your hand.
-        _effectCatalog["Head Butt"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Head Butt"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
         // TODO:When successfully played, all Strike maneuvers are +1D for the rest of this turn.
         _effectCatalog["Haymaker"] = new List<Effect>() {new NoEffect()};
@@ -23,8 +22,7 @@ public static class EffectCatalog
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
         _effectCatalog["Shoulder Block"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile.
-        _effectCatalog["Kick"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Kick"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile()};
 
         // TODO:The card titled Irish Whip must be played before playing this card. May only reverse a maneuver played after the card titled Irish Whip.
         _effectCatalog["Cross Body Block"] = new List<Effect>() {new NoEffect()};
@@ -32,8 +30,7 @@ public static class EffectCatalog
         // TODO:May only reverse the maneuver titled Kick.
         _effectCatalog["Ensugiri"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile.
-        _effectCatalog["Running Elbow Smash"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Running Elbow Smash"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile()};
 
         // TODO:May only reverse the maneuver titled Drop Kick.
         _effectCatalog["Drop Kick"] = new List<Effect>() {new NoEffect()};
@@ -44,8 +41,7 @@ public static class EffectCatalog
         // TODO:When successfully played, +5D if played after a 5D or greater maneuver.
         _effectCatalog["Superkick"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Spinning Heel Kick"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Spinning Heel Kick"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
         _effectCatalog["Spear"] = new List<Effect>() {new NoEffect()};
@@ -57,7 +53,7 @@ public static class EffectCatalog
         _effectCatalog["Arm Bar Takedown"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, discard 1 card of your choice from your hand.
-        _effectCatalog["Arm Drag"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Arm Drag"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
         // TODO:When successfully played, if your next card played this turn is a Strike maneuver it is +2D.
         _effectCatalog["Snap Mare"] = new List<Effect>() {new NoEffect()};
@@ -98,7 +94,7 @@ public static class EffectCatalog
         // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. You may draw 1 card.
         _effectCatalog["Fisherman's Suplex"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. Opponent must discard 2 cards._effectCatalog["DDT"] = new NoEffect ();
+        _effectCatalog["DDT"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new OpponentDiscardCardEffect(2)};
 
         // TODO:When successfully played, opponent must discard 1 card.
         _effectCatalog["Power Slam"] = new List<Effect>() {new NoEffect()};
@@ -106,7 +102,8 @@ public static class EffectCatalog
         // TODO:When successfully played, you may draw 1 card. Add +1D for every maneuver with the word "slam" in its title in your Ring area.
         _effectCatalog["Powerbomb"] = new List<Effect>() {new NoEffect()};
 
-        // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. Opponent must discard 2 cards._effectCatalog["Press Slam"] = new NoEffect ();
+        // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. Opponent must discard 2 cards.
+        _effectCatalog["Press Slam"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new OpponentDiscardCardEffect(2)};
 
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
         _effectCatalog["Collar & Elbow Lockup"] = new List<Effect>() {new NoEffect()};
@@ -156,7 +153,7 @@ public static class EffectCatalog
         // TODO:When successfully played, opponent must discard 1 card.
         _effectCatalog["Figure Four Leg Lock"] = new List<Effect>() {new NoEffect()};
 
-        // LISTO
+
         _effectCatalog["Step Aside"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Reverse any Grapple maneuver and end your opponent's turn.
@@ -175,7 +172,7 @@ public static class EffectCatalog
         _effectCatalog["Elbow to the Face"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect()};
 
         // TODO:If played from your hand, may reverse the card titled Jockeying for Position. Opponent must discard 4 cards. End your opponent's turn. Draw 1 card.
-        _effectCatalog["Clean Break"] = new List<Effect>() {new DiscardCardEffect(4), new DrawCardEffect(1)};
+        _effectCatalog["Clean Break"] = new List<Effect>() {new OpponentDiscardCardEffect(4), new DrawCardEffect(1)};
 
         // TODO:Reverse any maneuver and end your opponent's turn. If played from your hand draw 1 card.
         _effectCatalog["Manager Interferes"] = new List<Effect>() {new DrawCardWhenReversedFromHandEffect(1), 
@@ -215,9 +212,8 @@ public static class EffectCatalog
         // TODO:Playable only if your Fortitude Rating is less than your opponent's Fortitude Rating. Remove any 1 card in opponent's Ring area with a 
         // D value less than or equal to your total Fortitude Rating and place it into his Ringside pile.
         _effectCatalog["Shake It Off"] = new List<Effect>() {new NoEffect()};
-
-        // TODO:Draw up to 3 cards, then discard 1 card.
-        _effectCatalog["Offer Handshake"] = new List<Effect>() {new NoEffect()};
+        
+        _effectCatalog["Offer Handshake"] = new List<Effect>() {new DrawCardEffect(3), new DiscardOwnCardEffect(1)};
 
         // TODO:Discard up to 2 cards from your hand to your Ringside pile. Return an equal number of cards of your choice to your hand from your Ringside pile.
         _effectCatalog["Roll Out of the Ring"] = new List<Effect>() {new NoEffect()};

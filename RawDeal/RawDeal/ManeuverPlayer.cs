@@ -1,4 +1,5 @@
 using RawDealView;
+using RawDeal.Effects;
 namespace RawDeal;
 
 public class ManeuverPlayer
@@ -44,6 +45,8 @@ public class ManeuverPlayer
             reversalPerformer.CheckIfManeuverCanBeReversedFromDeckWithASpecificCard(i, cardTotalDamage, cardPlayed);
             DealSingleCardDamage(i, cardTotalDamage);
         }
+
+        PerformManeuverEffect(cardPlayed);
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 
@@ -91,6 +94,15 @@ public class ManeuverPlayer
         if (cardIndex < cardDamage)
         {
             CheckIfGameAndTurnShouldEndWhileReceivingDamage();
+        }
+    }
+
+    private void PerformManeuverEffect(Card cardPlayed)
+    {
+        List<Effect> cardEffects = cardPlayed.EffectObject;
+        foreach (Effect effect in cardEffects)
+        {
+            effect.Apply(new Play(cardPlayed, "Maneuver"), _view, _playerNotPlayingRound, _playerPlayingRound);
         }
     }
 }

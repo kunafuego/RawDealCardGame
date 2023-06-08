@@ -38,30 +38,35 @@ public class CardPlayer
         List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
         List<string> availablePlaysInStringFormat = GetStringsOfPlays(playsToShow);
         int chosenPlay = _view.AskUserToSelectAPlay(availablePlaysInStringFormat);
-        if (chosenPlay != -1)
+        if (chosenPlay == -1) return;
+        try
         {
-            try
-            {
-                TryToPlayCard(playsToShow[chosenPlay]);
-            }
-            catch (CardWasReversedException error)
-            {
-                if (error.Message == "Jockeying for Position")
-                {
-                    SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
-                    _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
-                        ? new EffectForNextMove(4, 0)
-                        : new EffectForNextMove(0, 8);
-                }
-                else
-                {
-                    _nextMoveEffect = new EffectForNextMove(0, 0);
-                }
-                _turnEnded = true;
-            }
+            TryToPlayCard(playsToShow[chosenPlay]);
+        }
+        catch (CardWasReversedException error)
+        {
+            ManageReversalError(error);
         }
     }
-    
+
+    private void ManageReversalError(CardWasReversedException error)
+    {
+        if (error.Message == "Jockeying for Position")
+        {
+            SelectedEffect chosenOption =
+                _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
+            _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
+                ? new EffectForNextMove(4, 0)
+                : new EffectForNextMove(0, 8);
+        }
+        else
+        {
+            _nextMoveEffect = new EffectForNextMove(0, 0);
+        }
+
+        _turnEnded = true;
+    }
+
     private List<string> GetStringsOfPlays(List<Play> availablePlays)
     {
         List<string> playsToShow = new List<string>();

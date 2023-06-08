@@ -2,19 +2,19 @@ using RawDealView;
 using RawDealView.Options;
 namespace RawDeal.Effects;
 
-public class DiscardCardEffect : Effect
+public class DiscardOwnCardEffect : Effect
 {
     private int _amountOfCardsToDiscardInEffect;
     
-    public DiscardCardEffect(int amountOfCardsToDiscardInEffect)
+    public DiscardOwnCardEffect(int amountOfCardsToDiscardInEffect)
     { 
         _amountOfCardsToDiscardInEffect = amountOfCardsToDiscardInEffect; 
     }    
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatReversePlay, Player playerThatWasReversed)
+    public override void Apply(Play playThatIsBeingReversed, View view, Player playerNotPlayingRound, Player playerPlayingRound)
     {
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
-            DiscardCard(i, playerThatWasReversed, view);
+            DiscardCard(i, playerPlayingRound, view);
         }
     }
     

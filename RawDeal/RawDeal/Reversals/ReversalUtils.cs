@@ -18,10 +18,8 @@ public static class ReversalUtils
     
     public static void SetDamageThatReversalShouldMake(Card reversalCardSelected, Card cardOpponentWasTryingToPlay, EffectForNextMove nextMoveEffect)
     {
-        if (reversalCardSelected.Title == "Rolling Takedown" || reversalCardSelected.Title == "Knee to the Gut")
-        {
-            cardOpponentWasTryingToPlay.ReversalDamage = cardOpponentWasTryingToPlay.GetDamage() + nextMoveEffect.DamageChange;
-        }
+        if (reversalCardSelected.Title != "Rolling Takedown" && reversalCardSelected.Title != "Knee to the Gut") return;
+        cardOpponentWasTryingToPlay.ReversalDamage = cardOpponentWasTryingToPlay.GetDamage() + nextMoveEffect.DamageChange;
     }
     
     public static bool CheckIfCardIsReversal(Card card)
