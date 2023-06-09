@@ -1,3 +1,4 @@
+using RawDeal.Effects;
 using RawDealView;
 using RawDealView.Options;
 namespace RawDeal;
@@ -47,6 +48,11 @@ public class CardPlayer
         {
             ManageReversalError(error);
         }
+        catch (GameEndedBecauseOfCollateralDamage error)
+        {
+            _turnEnded = true;
+            _gameShouldEnd = true;
+        }
     }
 
     private void ManageReversalError(CardWasReversedException error)
@@ -83,6 +89,7 @@ public class CardPlayer
         _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(), chosenPlay.ToString());
         TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
+        PerformCardEffect(chosenPlay);
         if (chosenPlay.PlayedAs == "MANEUVER")
         {
             PlayManeuver(cardPlayed);
@@ -97,6 +104,16 @@ public class CardPlayer
     {
         ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
+    }
+    
+    private void PerformCardEffect(Play playSuccesfulyPlayed)
+    {
+        Card cardPlayed = playSuccesfulyPlayed.Card;
+        List<Effect> cardEffects = cardPlayed.EffectObject;
+        foreach (Effect effect in cardEffects)
+        {
+            effect.Apply(playSuccesfulyPlayed, _view, _playerPlayingRound, _playerNotPlayingRound);
+        }
     }
 
     private void PlayManeuver(Card cardPlayed)

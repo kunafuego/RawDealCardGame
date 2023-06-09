@@ -59,13 +59,13 @@ public static class EffectCatalog
         _effectCatalog["Snap Mare"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, you may draw 1 card.
-        _effectCatalog["Double Leg Takedown"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Double Leg Takedown"] = new List<Effect>() {new MayDrawCardsEffect(1)};
 
         // TODO:When successfully played, you may look at your opponent's hand.
         _effectCatalog["Fireman's Carry"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, opponent must draw 1 card.
-        _effectCatalog["Headlock Takedown"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Headlock Takedown"] = new List<Effect>() {new OpponentDrawCardEffect(1)};
 
         // TODO:May only reverse the maneuver titled Belly to Belly Suplex.
         _effectCatalog["Belly to Belly Suplex"] = new List<Effect>() {new NoEffect()};
@@ -80,16 +80,16 @@ public static class EffectCatalog
         _effectCatalog["Belly to Back Suplex"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, opponent must discard 2 cards.
-        _effectCatalog["Pump Handle Slam"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Pump Handle Slam"] = new List<Effect>() {new OpponentDiscardCardEffect(2)};
 
         // TODO:When successfully played, you may draw 1 card.
-        _effectCatalog["Reverse DDT"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Reverse DDT"] = new List<Effect>() {new MayDrawCardsEffect(1)};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Samoan Drop"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Samoan Drop"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, discard 1 card of your choice from your hand. Look at opponent's hand, then choose and discard 1 card from his hand.
-        _effectCatalog["Bulldog"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Bulldog"] = new List<Effect>() {new DiscardOwnCardEffect(1), new ChooseCardThatOpponentWillDiscardEffect(1)};
 
         // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. You may draw 1 card.
         _effectCatalog["Fisherman's Suplex"] = new List<Effect>() {new NoEffect()};
@@ -97,7 +97,7 @@ public static class EffectCatalog
         _effectCatalog["DDT"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new OpponentDiscardCardEffect(2)};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Power Slam"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Power Slam"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, you may draw 1 card. Add +1D for every maneuver with the word "slam" in its title in your Ring area.
         _effectCatalog["Powerbomb"] = new List<Effect>() {new NoEffect()};
@@ -109,22 +109,22 @@ public static class EffectCatalog
         _effectCatalog["Collar & Elbow Lockup"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, discard 1 card of your choice from your hand.
-        _effectCatalog["Arm Bar"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Arm Bar"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Bear Hug"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Bear Hug"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, look through your Arsenal for the card titled Maintain Hold and place that card in your hand, then shuffle your Arsenal.
         _effectCatalog["Full Nelson"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Choke Hold"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Choke Hold"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Ankle Lock"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Ankle Lock"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, opponent must draw 1 card.
-        _effectCatalog["Standing Side Headlock"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Standing Side Headlock"] = new List<Effect>() {new OpponentDrawCardEffect(1)};
 
         // TODO:When successfully played, look through your Arsenal for the card titled Maintain Hold and place that card in your hand, then shuffle your Arsenal.
         _effectCatalog["Cobra Clutch"] = new List<Effect>() {new NoEffect()};
@@ -139,19 +139,19 @@ public static class EffectCatalog
         _effectCatalog["Camel Clutch"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Boston Crab"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Boston Crab"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};;
 
         // TODO:When successfully played, opponent must discard 1 card and you may draw 1 card.
-        _effectCatalog["Guillotine Stretch"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Guillotine Stretch"] = new List<Effect>() {new OpponentDiscardCardEffect(1), new MayDrawCardsEffect(1)};;
 
         // TODO:When successfully played, you may discard 3 cards, search through your Arsenal and put 1 card into your hand, then shuffle your Arsenal.
         _effectCatalog["Abdominal Stretch"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Torture Rack"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Torture Rack"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:When successfully played, opponent must discard 1 card.
-        _effectCatalog["Figure Four Leg Lock"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Figure Four Leg Lock"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
 
         _effectCatalog["Step Aside"] = new List<Effect>() {new NoEffect()};
@@ -213,7 +213,8 @@ public static class EffectCatalog
         // D value less than or equal to your total Fortitude Rating and place it into his Ringside pile.
         _effectCatalog["Shake It Off"] = new List<Effect>() {new NoEffect()};
         
-        _effectCatalog["Offer Handshake"] = new List<Effect>() {new DrawCardEffect(3), new DiscardOwnCardEffect(1)};
+        // TODO: Draw up to 3 cards, then discard 1 card
+        _effectCatalog["Offer Handshake"] = new List<Effect>() {new MayDrawCardsEffect(3), new DiscardOwnCardEffect(1)};
 
         // TODO:Discard up to 2 cards from your hand to your Ringside pile. Return an equal number of cards of your choice to your hand from your Ringside pile.
         _effectCatalog["Roll Out of the Ring"] = new List<Effect>() {new NoEffect()};
@@ -296,7 +297,7 @@ public static class EffectCatalog
         _effectCatalog["Double Arm DDT"] = new List<Effect>() {new NoEffect()};
 
         // TODO:May not be reversed. When successfully played, opponent must discard 2 cards.
-        _effectCatalog["Tree of Woe"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Tree of Woe"] = new List<Effect>() {new OpponentDiscardCardEffect(2)};
 
         // TODO:-6F on this card if Mr. Socko card is in your Ring area. You may play the card titled Maintain Hold after this card as if it were a Submission maneuver.
         _effectCatalog["Mandible Claw"] = new List<Effect>() {new NoEffect()};

@@ -17,13 +17,13 @@ public class Superstar
     public string Logo { get { return _logo; } }
     public string Name {get { return _name; } }
     
-    public Superstar(string name, string logo, int handSize, int superstarValue, string superstarAbility)
+    public Superstar(DeserializedSuperstars serializedSuperstar)
     {
-        _name = name;
-        _logo = logo;
-        _handSize = handSize;
-        _superstarValue = superstarValue;
-        _superstarAbility = superstarAbility;
+        _name = serializedSuperstar.Name;
+        _logo = serializedSuperstar.Logo;
+        _handSize = serializedSuperstar.HandSize;
+        _superstarValue = serializedSuperstar.SuperstarValue;
+        _superstarAbility = serializedSuperstar.SuperstarAbility;
     }
 
     public bool CheckIfNeedToAskToUseAbilityAtBeginningOfTurn()

@@ -1,21 +1,21 @@
 using RawDealView;
 namespace RawDeal.Effects;
 
-public class DrawCardEffect : Effect
+public class OpponentDrawCardEffect : Effect
 {
     private int _amountOfCardsToDrawInEffect;
     
-    public DrawCardEffect(int amountOfCardsToDrawInEffect)
+    public OpponentDrawCardEffect(int amountOfCardsToDrawInEffect)
     { 
         _amountOfCardsToDrawInEffect = amountOfCardsToDrawInEffect; 
     }
     
     public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
     {
-        view.SayThatPlayerDrawCards(playerThatPlayedCard.GetSuperstarName(), _amountOfCardsToDrawInEffect);
+        view.SayThatPlayerDrawCards(opponent.GetSuperstarName(), _amountOfCardsToDrawInEffect);
         for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)
         {
-            playerThatPlayedCard.DrawSingleCard();
+            opponent.DrawSingleCard();
         }
     }
 }

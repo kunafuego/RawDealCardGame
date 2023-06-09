@@ -27,9 +27,7 @@ public class SuperstarFactory
     
     private Superstar CreateSuperstarObject(DeserializedSuperstars serializedSuperstar)
     {
-        Superstar superstarObject = new Superstar(serializedSuperstar.Name, serializedSuperstar.Logo, serializedSuperstar.HandSize, 
-            serializedSuperstar.SuperstarValue,
-            serializedSuperstar.SuperstarAbility);
+        Superstar superstarObject = new Superstar(serializedSuperstar);
         return superstarObject;
     }
 }

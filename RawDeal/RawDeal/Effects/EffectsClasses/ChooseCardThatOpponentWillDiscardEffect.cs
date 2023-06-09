@@ -2,11 +2,11 @@ using RawDealView;
 using RawDealView.Options;
 namespace RawDeal.Effects;
 
-public class OpponentDiscardCardEffect : Effect
+public class ChooseCardThatOpponentWillDiscardEffect : Effect
 {
-    private int _amountOfCardsToDiscardInEffect;
+    private readonly int _amountOfCardsToDiscardInEffect;
     
-    public OpponentDiscardCardEffect(int amountOfCardsToDiscardInEffect)
+    public ChooseCardThatOpponentWillDiscardEffect(int amountOfCardsToDiscardInEffect)
     { 
         _amountOfCardsToDiscardInEffect = amountOfCardsToDiscardInEffect; 
     }    
@@ -14,17 +14,16 @@ public class OpponentDiscardCardEffect : Effect
     {
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
-            DiscardCard(i, opponent, view);
+            DiscardOpponentsCard(i, playerThatPlayedCard, opponent, view);
         }
     }
     
-    private void DiscardCard(int amountOfCardsLeftToDiscard, Player playerThatHasToDiscard, View view)
+    private void DiscardOpponentsCard(int amountOfCardsLeftToDiscard, Player playerThatWillChooseCard, Player playerThatHasToDiscard, View view)
     {
         List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
         if (!stringsOfHandCards.Any()) return;
-        int handCardIndex = view.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.GetSuperstarName(), 
-                                        playerThatHasToDiscard.GetSuperstarName(), amountOfCardsLeftToDiscard);
+        int handCardIndex = view.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.GetSuperstarName(), playerThatWillChooseCard.GetSuperstarName(), amountOfCardsLeftToDiscard);
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
     

@@ -12,7 +12,6 @@ class KaneAbility : SuperstarAbility
         playerNotPlayingRound.MoveArsenalTopCardToRingside();
         Card cardThatWentToRingside = playerNotPlayingRound.GetCardOnTopOfRingside();
         View.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), 1, 1);
-        playerPlayingRound.UpdateFortitude();
     }
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)

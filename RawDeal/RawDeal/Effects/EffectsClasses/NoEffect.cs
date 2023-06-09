@@ -3,5 +3,5 @@ namespace RawDeal.Effects;
 
 public class NoEffect : Effect
 {
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerPlayingRound, Player playerNotPlayingRound) { }
+    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent) { }
 }

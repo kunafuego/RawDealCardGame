@@ -51,15 +51,15 @@ public class Card : IViewableCardInfo
         get { return _reversalDamage; }
         set { _reversalDamage = value; }
     }
-    public Card(string title, List<string> types, List<string> subtypes, string fortitude, string damage, string stunValue, string cardEffectString, Precondition preconditionObject, List<Effect> effectsList)
+    public Card(DeserializedCards deserializedCard, Precondition preconditionObject, List<Effect> effectsList)
     {
-        _title = title;
-        _types = types;
-        _subTypes = subtypes;
-        _fortitude = Convert.ToInt16(fortitude);
-        _damage = damage;
-        _stunValue = Convert.ToInt16(stunValue);
-        _cardEffectString = cardEffectString;
+        _title = deserializedCard.Title;
+        _types = deserializedCard.Types;
+        _subTypes = deserializedCard.Subtypes;
+        _fortitude = Convert.ToInt16(deserializedCard.Fortitude);
+        _damage = deserializedCard.Damage;
+        _stunValue = Convert.ToInt16(deserializedCard.StunValue);
+        _cardEffectString = deserializedCard.CardEffect;
         _reversalDamage = 0;
         _precondition = preconditionObject;
         _effectObject = effectsList;

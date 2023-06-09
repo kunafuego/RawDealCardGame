@@ -4,24 +4,26 @@ namespace RawDeal.Effects;
 
 public class DiscardOwnCardEffect : Effect
 {
-    private int _amountOfCardsToDiscardInEffect;
+    private readonly int _amountOfCardsToDiscardInEffect;
     
     public DiscardOwnCardEffect(int amountOfCardsToDiscardInEffect)
     { 
         _amountOfCardsToDiscardInEffect = amountOfCardsToDiscardInEffect; 
     }    
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerNotPlayingRound, Player playerPlayingRound)
+    public override void Apply(Play playThatIsBeingReversedOrPlayed, View view, Player playerThatPlayedCard, Player opponent)
     {
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
-            DiscardCard(i, playerPlayingRound, view);
+            DiscardCard(i, playerThatPlayedCard, view, playThatIsBeingReversedOrPlayed.Card);
         }
     }
     
-    private void DiscardCard(int amountOfCardsLeftToDiscard, Player playerThatHasToDiscard, View view)
+    private void DiscardCard(int amountOfCardsLeftToDiscard, Player playerThatHasToDiscard, View view, Card cardThatIsBeingPlayed)
     {
         List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
+        handCardsObjectsToShow.Remove(cardThatIsBeingPlayed);
         List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
+        if (!stringsOfHandCards.Any()) return;
         int handCardIndex = view.AskPlayerToSelectACardToDiscard(stringsOfHandCards, playerThatHasToDiscard.GetSuperstarName(), playerThatHasToDiscard.GetSuperstarName(), amountOfCardsLeftToDiscard);
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
