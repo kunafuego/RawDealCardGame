@@ -8,14 +8,17 @@ public class MoveTopCardOfArsenalToRingsidePile : Effect
     {
         view.SayThatPlayerDamagedHimself(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
         view.SayThatSuperstarWillTakeSomeDamage(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
+        CheckIfGameIsFinished(view, playerThatPlayedCard);
         playerThatPlayedCard.MoveArsenalTopCardToRingside();
         Card cardThatWentToRingside = playerThatPlayedCard.GetCardOnTopOfRingside();
         view.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), AmountOfDamageToMake, 
             AmountOfDamageToMake);
-        if (!playerThatPlayedCard.HasCardsInArsenal())
-        {
-            view.SayThatPlayerLostDueToSelfDamage(playerThatPlayedCard.GetSuperstarName());
-            throw new GameEndedBecauseOfCollateralDamage("");
-        }
+    }
+
+    private void CheckIfGameIsFinished(View view, Player playerThatPlayedCard)
+    {
+        if (playerThatPlayedCard.HasCardsInArsenal()) return;
+        view.SayThatPlayerLostDueToSelfDamage(playerThatPlayedCard.GetSuperstarName());
+        throw new GameEndedBecauseOfCollateralDamage("");
     }
 }

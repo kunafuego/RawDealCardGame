@@ -7,7 +7,9 @@ public static class PlayerUtils
         List<Play> playsThatCanBePlayed = new List<Play>();
         foreach (Card card in hand.Cards)
         {
-            if (CanPlayCard(card, fortitude))
+            if (card.Title == "Undertaker's Tombstone Piledriver") 
+                CheckIfAddUndertakerTombstone(card, playsThatCanBePlayed, fortitude);
+            else if (CanPlayCard(card, fortitude))
             {
                 AddPlayablePlays(card, playsThatCanBePlayed);
             }
@@ -25,11 +27,16 @@ public static class PlayerUtils
     {
         foreach (string type in card.Types)
         {
-            if (type != "Reversal")
-            {
-                Play play = new Play(card, type);
-                playsThatCanBePlayed.Add(play);
-            }
+            if (type == "Reversal") continue;
+            Play play = new Play(card, type);
+            playsThatCanBePlayed.Add(play);
         }
     }
+
+    private static void CheckIfAddUndertakerTombstone(Card card, List<Play> playsThatCanBePlayed, int fortitude)
+    {
+        if(fortitude >= 0) playsThatCanBePlayed.Add(new Play(card, "Action"));
+        if(fortitude >= 30) playsThatCanBePlayed.Add(new Play(card, "Maneuver"));
+    }
+    
 }

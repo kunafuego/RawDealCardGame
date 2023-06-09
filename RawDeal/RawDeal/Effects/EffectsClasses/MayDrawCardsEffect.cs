@@ -16,10 +16,5 @@ public class MayDrawCardsEffect : Effect
             _maxAmountOfCardsToDrawInEffect);
         Effect drawCardEffect = new DrawCardEffect(amountOfCardsToDiscard);
         drawCardEffect.Apply(playThatIsBeingReversed, view, playerThatPlayedCard, opponent);
-        // view.SayThatPlayerDrawCards(playerThatPlayedCard.GetSuperstarName(), _maxAmountOfCardsToDrawInEffect);
-        // for (int i = 0; i < _maxAmountOfCardsToDrawInEffect; i++)
-        // {
-        //     playerThatPlayedCard.DrawSingleCard();
-        // }
     }
 }

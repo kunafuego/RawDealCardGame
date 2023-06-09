@@ -227,7 +227,7 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Recovery"] = new NoPrecondition();
 
         // TODO:Can only be played when you have 2 or more cards in your hand. Discard 1 card and then your opponent discards 4 cards.
-        _preconditionsCatalog["Spit At Opponent"] = new NoPrecondition();
+        _preconditionsCatalog["Spit At Opponent"] = new TwoOrMoreCardsInHand();
 
         // TODO:Draw 1 card. Your next maneuver this turn is +4D and opponent's reversals are +12F.
         _preconditionsCatalog["Get Crowd Support"] = new NoPrecondition();

@@ -92,7 +92,7 @@ public static class EffectCatalog
         _effectCatalog["Bulldog"] = new List<Effect>() {new DiscardOwnCardEffect(1), new ChooseCardThatOpponentWillDiscardEffect(1)};
 
         // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile. You may draw 1 card.
-        _effectCatalog["Fisherman's Suplex"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Fisherman's Suplex"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new MayDrawCardsEffect(1)};
 
         _effectCatalog["DDT"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new OpponentDiscardCardEffect(2)};
 
@@ -226,7 +226,7 @@ public static class EffectCatalog
         _effectCatalog["Recovery"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Can only be played when you have 2 or more cards in your hand. Discard 1 card and then your opponent discards 4 cards.
-        _effectCatalog["Spit At Opponent"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Spit At Opponent"] = new List<Effect>() {new DiscardOwnCardEffect(1), new OpponentDiscardCardEffect(4)};
 
         // TODO:Draw 1 card. Your next maneuver this turn is +4D and opponent's reversals are +12F.
         _effectCatalog["Get Crowd Support"] = new List<Effect>() {new NoEffect()};
