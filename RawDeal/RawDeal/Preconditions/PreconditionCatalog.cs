@@ -5,7 +5,7 @@ public static class PreconditionCatalog
 {
     private static Dictionary<string, Precondition> _preconditionsCatalog = new Dictionary<string, Precondition>();
 
-    static PreconditionCatalog()
+    public static void SetPreconditionCatalog(LastPlay lastPlayInstance)
     {
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
         _preconditionsCatalog["Chop"] = new NoPrecondition();
@@ -156,34 +156,34 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Figure Four Leg Lock"] = new NoPrecondition();
 
         // LISTO
-        _preconditionsCatalog["Step Aside"] = new ReverseAnyManeuverStrike();
+        _preconditionsCatalog["Step Aside"] = new ReverseAnyManeuverStrike(lastPlayInstance);
 
         // TODO:Reverse any Grapple maneuver and end your opponent's turn.
-        _preconditionsCatalog["Escape Move"] = new ReverseAnyManeuverGrapple();
+        _preconditionsCatalog["Escape Move"] = new ReverseAnyManeuverGrapple(lastPlayInstance);
 
         // TODO:Reverse any Submission maneuver and end your opponent's turn.
-        _preconditionsCatalog["Break the Hold"] = new ReverseAnyManeuverSubmission();
+        _preconditionsCatalog["Break the Hold"] = new ReverseAnyManeuverSubmission(lastPlayInstance);
 
         // TODO:Can only reverse a Grapple that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
-        _preconditionsCatalog["Rolling Takedown"] = new ReverseGrappleWithLessThan7();
+        _preconditionsCatalog["Rolling Takedown"] = new ReverseGrappleWithLessThan7(lastPlayInstance);
 
         // TODO:Can only reverse a Strike that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
-        _preconditionsCatalog["Knee to the Gut"] = new ReverseStrikeWithLessThan7();
+        _preconditionsCatalog["Knee to the Gut"] = new ReverseStrikeWithLessThan7(lastPlayInstance);
 
         // TODO:May reverse any maneuver that does 7D or less. End your opponent's turn.
-        _preconditionsCatalog["Elbow to the Face"] = new ManeuverWithLessThan7();
+        _preconditionsCatalog["Elbow to the Face"] = new ManeuverWithLessThan7(lastPlayInstance);
 
         // TODO:If played from your hand, may reverse the card titled Jockeying for Position. Opponent must discard 4 cards. End your opponent's tur Draw 1 card.
-        _preconditionsCatalog["Clean Break"] = new ReverseJockeyingFromHand();
+        _preconditionsCatalog["Clean Break"] = new ReverseJockeyingFromHand(lastPlayInstance);
 
         // TODO:Reverse any maneuver and end your opponent's turn. If played from your hand draw 1 card.
-        _preconditionsCatalog["Manager Interferes"] = new ReverseAnyManeuver();
+        _preconditionsCatalog["Manager Interferes"] = new ReverseAnyManeuver(lastPlayInstance);
 
         // TODO:Reverse any HEEL maneuver or reversal card if that opponent has 5 or more HEEL cards in his Ring area. Opponent is Disqualified and you win the game. This effect happens even if the card titled Disqualification is placed into your Ringside pile while applying damage from a HEEL maneuver or reversal card.
         _preconditionsCatalog["Disqualification!"] = new NoPrecondition();
 
         // TODO:Reverse any ACTION card being played by your opponent from his hand. It is unsuccessful, goes to his Ringside pile, has no effect and ends his turn.
-        _preconditionsCatalog["No Chance in Hell"] = new ReverseAnyAction();
+        _preconditionsCatalog["No Chance in Hell"] = new ReverseAnyAction(lastPlayInstance);
 
         // TODO:Look at the top 5 cards of your Arsenal. You may either arrange them in any order or shuffle your Arsenal.
         _preconditionsCatalog["Hmmm"] = new NoPrecondition();
@@ -199,7 +199,7 @@ public static class PreconditionCatalog
 
         // TODO:As an action, if your next card played is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be 
         // +8F. As a reversal, may only reverse the card titled Jockeying for Position. If so, you end opponent's turn; and if your next card played on your turn is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be +8F.
-        _preconditionsCatalog["Jockeying for Position"] = new ReverseJockeyingForPosition();
+        _preconditionsCatalog["Jockeying for Position"] = new ReverseSpecificTitle("Jockeying for Position", lastPlayInstance);
 
         // TODO:As an action, if your next card played is a Strike maneuver it is +5D. As a reversal, may only reverse the card titled Irish Whip. If so, you end opponent's turn; and if your next card played on your turn is a Strike maneuver it is +5D.
         _preconditionsCatalog["Irish Whip"] = new NoPrecondition();
@@ -319,7 +319,7 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Pedigree"] = new NoPrecondition();
 
         // TODO:Reverses any maneuver and ends your opponent's turn. If played from your hand, draw 2 cards.
-        _preconditionsCatalog["Chyna Interferes"] = new ReverseAnyManeuver();
+        _preconditionsCatalog["Chyna Interferes"] = new ReverseAnyManeuver(lastPlayInstance);
 
         // TODO:Draw 1 card. Look at your opponent's hand. Your next maneuver this turn is +6D.
         _preconditionsCatalog["Smackdown Hotel"] = new NoPrecondition();

@@ -10,21 +10,29 @@ public class CardPlayer
     private readonly Player _playerPlayingRound;
     private readonly Player _playerNotPlayingRound;
     private EffectForNextMove _nextMoveEffect;
+    private LastPlay _lastPlayInstance;
     private bool _turnEnded;
     private bool _gameShouldEnd;
 
-    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect)
+    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, 
+        EffectForNextMove nextMoveEffect, LastPlay lastPlayInstance)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
         _nextMoveEffect = nextMoveEffect;
+        _lastPlayInstance = lastPlayInstance;
     }
 
     public EffectForNextMove NextMoveEffect
     {
         get { return _nextMoveEffect; }
     }
+    
+    // public LastPlay LastPlayPlayed
+    // {
+    //     get { return _lastPlayInstance; }
+    // }
 
     public bool TurnEnded
     {
@@ -37,14 +45,15 @@ public class CardPlayer
     }
     public void ManagePlayingCards()
     {
+        Console.WriteLine(_lastPlayInstance);
         List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
-        // CheckIfPlaysMeetPrecondition(playsToShow);
         List<string> availablePlaysInStringFormat = GetStringsOfPlays(playsToShow);
         int chosenPlay = _view.AskUserToSelectAPlay(availablePlaysInStringFormat);
         if (chosenPlay == -1) return;
         try
         {
             TryToPlayCard(playsToShow[chosenPlay]);
+            ManageLastPlay(playsToShow[chosenPlay]);
         }
         catch (CardWasReversedException error)
         {
@@ -57,6 +66,25 @@ public class CardPlayer
         }
     }
 
+    private void ManageLastPlay(Play playThatWasJustPlayed)
+    {
+        if (_lastPlayInstance.LastPlayPlayed == null)
+        {
+            _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
+            // _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
+            // _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
+            return;
+        }
+        _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
+        // Play playPlayedBeforeTheOneJustPlayed = _lastPlayInstance.LastPlayPlayed;
+        // Card cardPlayedBeforeTheOneJustPlayed = playPlayedBeforeTheOneJustPlayed.Card;
+        // bool cardWasPlayedAfterIrishWhip = (cardPlayedBeforeTheOneJustPlayed.Title == "Irish Whip" &&
+        //                                     playPlayedBeforeTheOneJustPlayed.PlayedAs == "MANEUVER");
+    //     _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
+    //     _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
+    //     _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = cardWasPlayedAfterIrishWhip;
+    // }
+
     // private void CheckIfPlaysMeetPrecondition(List<Play> playsToShow)
     // {
     //     foreach (Play play in playsToShow)
@@ -66,7 +94,7 @@ public class CardPlayer
     //         if(cardPrecondition.DoesMeetPrecondition(play, "Hand", 1)) return;;
     //         playsToShow.Remove(play);
     //     }
-    // }
+    }
 
     private void ManageReversalError(CardWasReversedException error)
     {
@@ -115,7 +143,7 @@ public class CardPlayer
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
@@ -123,7 +151,7 @@ public class CardPlayer
     {
         Card cardToPlay = chosenPlay.Card;
         Precondition cardEffectPrecondition = cardToPlay.Precondition;
-        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(chosenPlay, "Hand", 1);
+        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand", 1);
         if (meetsPrecondition)
         {
             PerformCardEffect(chosenPlay);
@@ -143,7 +171,8 @@ public class CardPlayer
 
     private void PlayManeuver(Card cardPlayed)
     {
-        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, 
+            _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
         maneuverPlayer.PlayManeuver(cardPlayed);
         _nextMoveEffect = new EffectForNextMove(0, 0);
         _turnEnded = maneuverPlayer.TurnEnded;

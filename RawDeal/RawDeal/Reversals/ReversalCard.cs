@@ -10,5 +10,5 @@ public abstract class ReversalCard
     }
     public abstract void PerformEffect(Play typeOfReversal, Card cardObject, Player playerThatReversePlay, Player playerThatWasReversed);
 
-    public abstract bool CheckIfCanReversePlay(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive);
+    public abstract bool CheckIfCanReversePlay(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive);
 }

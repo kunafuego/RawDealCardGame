@@ -2,9 +2,15 @@ namespace RawDeal.Preconditions.PreconditionClasses;
 
 public class ReverseAnyAction : Precondition
 {
-    public override bool DoesMeetPrecondition(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    private LastPlay _lastPlayInstance;
+    public ReverseAnyAction(LastPlay lastPlayInstance)
     {
-        return playThatIsBeingPlayed.PlayedAs == "ACTION";
+        _lastPlayInstance = lastPlayInstance;
+    }
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    {
+        Play lastPlay = _lastPlayInstance.LastPlayPlayed;
+        return lastPlay.PlayedAs == "ACTION";
     }
 
 }

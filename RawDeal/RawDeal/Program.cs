@@ -1,8 +1,8 @@
 ﻿using RawDeal;
 using RawDealView;
 
-string folder = "09-SimpleEffects";
-int idTest = 13;
+string folder = "08-Reversals";
+int idTest = 11;
 string pathToTest = Path.Combine("data", $"{folder}-Tests", $"{idTest}.txt");
 
 // Esta vista permite verificar el comportamiento de un test particular.

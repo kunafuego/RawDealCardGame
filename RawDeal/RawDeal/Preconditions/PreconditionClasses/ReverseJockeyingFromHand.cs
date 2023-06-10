@@ -2,10 +2,16 @@ namespace RawDeal.Preconditions.PreconditionClasses;
 
 public class ReverseJockeyingFromHand : Precondition
 {
-    public override bool DoesMeetPrecondition(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    private LastPlay _lastPlayInstance;
+    public ReverseJockeyingFromHand(LastPlay lastPlayInstance)
     {
-        Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
-        if(askedFromDeskOrHand == "Hand") return cardThatIsBeingPlayed.Title == "Jockeying for Position";
+        _lastPlayInstance = lastPlayInstance;
+    }
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    {
+        Play possibleLastPlay = _lastPlayInstance.LastPlayPlayed;
+        Card cardThatIsBeingPlayed = possibleLastPlay.Card;
+        if(askedFromDeskOrHand == "Hand")    return cardThatIsBeingPlayed.Title == "Jockeying for Position";
         return false;
     }
 

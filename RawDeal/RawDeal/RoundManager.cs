@@ -10,8 +10,10 @@ public class RoundManager
     private Player _playerNotPlayingRound;
     private View _view;
     private EffectForNextMove _nextMoveEffect;
+    private LastPlay _lastPlayInstance;
     
-    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view, EffectForNextMove effectForNextMove)
+    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view, 
+        EffectForNextMove effectForNextMove, LastPlay lastPlayInstance)
     {
         _gameShouldEnd = false;
         _turnEnded = false;
@@ -19,12 +21,18 @@ public class RoundManager
         _playerNotPlayingRound = playerNotPlayingRound;
         _view = view;
         _nextMoveEffect = effectForNextMove;
+        _lastPlayInstance = lastPlayInstance;
     }
 
     public EffectForNextMove NextMoveEffect
     {
         get { return _nextMoveEffect; }
     }
+    
+    // public LastPlay LastPlayInstance
+    // {
+    //     get { return _lastPlayInstance; }
+    // }
 
     public bool GameShouldEnd
     {
@@ -98,7 +106,7 @@ public class RoundManager
 
     private void ManagePlayingCards()
     {
-        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect);
+        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
         cardPlayer.ManagePlayingCards();
         _nextMoveEffect = cardPlayer.NextMoveEffect;
         _turnEnded = cardPlayer.TurnEnded;

@@ -2,11 +2,17 @@ namespace RawDeal.Preconditions.PreconditionClasses;
 
 public class ReverseGrappleWithLessThan7 : Precondition
 {
-    public override bool DoesMeetPrecondition(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    private LastPlay _lastPlayInstance;
+    public ReverseGrappleWithLessThan7(LastPlay lastPlayInstance)
     {
-        Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
+        _lastPlayInstance = lastPlayInstance;
+    }
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    {
+        Play possibleLastPlay = _lastPlayInstance.LastPlayPlayed;
+        Card cardThatIsBeingPlayed = possibleLastPlay.Card;
         List<string> cardsSubtypes = cardThatIsBeingPlayed.Subtypes;
-        if (netDamageThatWillReceive <= 7 && playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Grapple"))
+        if (netDamageThatWillReceive <= 7 && possibleLastPlay.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Grapple"))
         {
             return true;
         }

@@ -6,7 +6,7 @@ public static class EffectCatalog
 {
     private static Dictionary<string, List<Effect>> _effectCatalog = new Dictionary<string, List<Effect>>();
 
-    static EffectCatalog()
+    public static void SetEffectCatalog(LastPlay lastPlayInstance)
     {
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
         _effectCatalog["Chop"] = new List<Effect>() {new NoEffect()};
@@ -163,20 +163,20 @@ public static class EffectCatalog
         _effectCatalog["Break the Hold"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Can only reverse a Grapple that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
-        _effectCatalog["Rolling Takedown"] = new List<Effect>() {new ReturnHashtagDamageEffect()};
+        _effectCatalog["Rolling Takedown"] = new List<Effect>() {new ReturnHashtagDamageEffect(lastPlayInstance)};
 
         // TODO:Can only reverse a Strike that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
-        _effectCatalog["Knee to the Gut"] = new List<Effect>() {new ReturnHashtagDamageEffect()};
+        _effectCatalog["Knee to the Gut"] = new List<Effect>() {new ReturnHashtagDamageEffect(lastPlayInstance)};
 
         // TODO:May reverse any maneuver that does 7D or less. End your opponent's turn.
-        _effectCatalog["Elbow to the Face"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect()};
+        _effectCatalog["Elbow to the Face"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance)};
 
         // TODO:If played from your hand, may reverse the card titled Jockeying for Position. Opponent must discard 4 cards. End your opponent's turn. Draw 1 card.
         _effectCatalog["Clean Break"] = new List<Effect>() {new OpponentDiscardCardEffect(4), new DrawCardEffect(1)};
 
         // TODO:Reverse any maneuver and end your opponent's turn. If played from your hand draw 1 card.
         _effectCatalog["Manager Interferes"] = new List<Effect>() {new DrawCardWhenReversedFromHandEffect(1), 
-                                                                    new ReturnPredeterminedDamageWhenReversedFromHandEffect()};
+                                                                    new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance)};
 
         // TODO:Reverse any HEEL maneuver or reversal card if that opponent has 5 or more HEEL cards in his Ring area. Opponent is Disqualified and you win the game. This effect happens even if the card titled Disqualification is placed into your Ringside pile while applying damage from a HEEL maneuver or reversal card.
         _effectCatalog["Disqualification!"] = new List<Effect>() {new NoEffect()};
@@ -306,7 +306,7 @@ public static class EffectCatalog
         _effectCatalog["Mr. Socko"] = new List<Effect>() {new NoEffect()};
 
         // TODO:May not be reversed. You must play the card titled Irish Whip before playing this card. When successfully played, opponent discards 1 card.
-        _effectCatalog["Leaping Knee to the Face"] = new List<Effect>() {new ReturnHashtagDamageEffect()};
+        _effectCatalog["Leaping Knee to the Face"] = new List<Effect>() {new ReturnHashtagDamageEffect(lastPlayInstance)};
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 2 cards.
         _effectCatalog["Facebuster"] = new List<Effect>() {new NoEffect()};
@@ -318,7 +318,7 @@ public static class EffectCatalog
         _effectCatalog["Pedigree"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Reverses any maneuver and ends your opponent's turn. If played from your hand, draw 2 cards.
-        _effectCatalog["Chyna Interferes"] = new List<Effect>() { new DrawCardWhenReversedFromHandEffect(2), new ReturnPredeterminedDamageWhenReversedFromHandEffect() };
+        _effectCatalog["Chyna Interferes"] = new List<Effect>() { new DrawCardWhenReversedFromHandEffect(2), new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance) };
 
         // TODO:Draw 1 card. Look at your opponent's hand. Your next maneuver this turn is +6D.
         _effectCatalog["Smackdown Hotel"] = new List<Effect>() {new NoEffect()};

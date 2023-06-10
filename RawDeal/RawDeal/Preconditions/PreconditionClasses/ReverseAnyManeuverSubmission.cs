@@ -2,15 +2,16 @@ namespace RawDeal.Preconditions.PreconditionClasses;
 
 public class ReverseAnyManeuverSubmission : Precondition
 {
-    public override bool DoesMeetPrecondition(Play playThatIsBeingPlayed, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    private LastPlay _lastPlayInstance;
+    public ReverseAnyManeuverSubmission(LastPlay lastPlayInstance)
     {
-        Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
+        _lastPlayInstance = lastPlayInstance;
+    }
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    {
+        Play lastPlay = _lastPlayInstance.LastPlayPlayed;
+        Card cardThatIsBeingPlayed = lastPlay.Card;
         List<string> cardSubTypes = cardThatIsBeingPlayed.SubTypes;
-        if (playThatIsBeingPlayed.PlayedAs == "MANEUVER" && cardSubTypes.Contains("Submission"))
-        {
-            return true;
-        }
-
-        return false;
+        return lastPlay.PlayedAs == "MANEUVER" && cardSubTypes.Contains("Submission");
     }
 }

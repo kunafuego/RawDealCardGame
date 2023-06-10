@@ -8,12 +8,14 @@ public class Game
     private string _deckFolder;
     private Player _playerPlayingRound = new ();
     private Player _playerNotPlayingRound = new ();
+    private LastPlay _lastPlayInstance = new LastPlay();
     private RoundManager _actualRoundManager;
 
     public Game(View view, string deckFolder)
     {
         _view = view;
         _deckFolder = deckFolder;
+        InitiateLastPlayInstance();
     }
 
     public void Play()
@@ -44,7 +46,7 @@ public class Game
     
     private void PlayersSelectTheirDecks()
     {
-        DeckSelectionManager deckSelectionManager = new DeckSelectionManager(_view, _deckFolder);
+        DeckSelectionManager deckSelectionManager = new DeckSelectionManager(_view, _deckFolder, _lastPlayInstance);
         foreach (var player in new List<Player>() { _playerPlayingRound, _playerNotPlayingRound })
         {
             deckSelectionManager.SelectDeck(player);
@@ -68,7 +70,9 @@ public class Game
     private void PlayRound()
     {
         EffectForNextMove effectForNextRound = GetPossibleEffectFromLastRound();
-        _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view, effectForNextRound);
+        // LastPlay lastPlayFromLastRound = GetLastPlayFromLastRound();
+        _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view, 
+            effectForNextRound, _lastPlayInstance);
         _actualRoundManager.PlayRound();
         _actualRoundManager.CheckIfGameShouldEnd();
     }
@@ -83,6 +87,13 @@ public class Game
         {
             return new EffectForNextMove(0, 0);
         }
+    }
+
+    private void InitiateLastPlayInstance()
+    {
+        _lastPlayInstance.LastPlayPlayed = null;
+        _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
+        _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = false;
     }
     
     private void SwapPlayers()

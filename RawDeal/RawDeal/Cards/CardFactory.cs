@@ -5,6 +5,13 @@ namespace RawDeal;
 
 public class CardFactory
 {
+    private LastPlay _lastPlayInstance;
+    public CardFactory(LastPlay lastPlayInstance)
+    {
+        PreconditionCatalog.SetPreconditionCatalog(lastPlayInstance);
+        EffectCatalog.SetEffectCatalog(lastPlayInstance);
+    }
+    
     public Card CreateCard(DeserializedCards deserializedCard)
     {
         return new Card(deserializedCard,
