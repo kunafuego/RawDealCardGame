@@ -9,7 +9,7 @@ public class ReverseSpecificTitle : Precondition
         _nameOfCard = nameOfCardThatCanReverse;
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
         Play playThatYouWantToReverse = _lastPlayInstance.LastPlayPlayed;
         Card cardThatIsBeingPlayed = playThatYouWantToReverse.Card;

@@ -7,10 +7,10 @@ public class ManeuverWithLessThan7 : Precondition
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
         Play lastPlay = _lastPlayInstance.LastPlayPlayed;
-        if (netDamageThatWillReceive <= 7 && lastPlay.PlayedAs == "MANEUVER")
+        if (_lastPlayInstance.ActualDamageMade <= 7 && lastPlay.PlayedAs == "MANEUVER")
         {
             return true;
         }

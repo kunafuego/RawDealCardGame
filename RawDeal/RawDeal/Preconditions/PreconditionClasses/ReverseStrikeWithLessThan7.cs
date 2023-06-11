@@ -7,12 +7,12 @@ public class ReverseStrikeWithLessThan7 : Precondition
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
         Play possibleLastPlay = _lastPlayInstance.LastPlayPlayed;
         Card cardThatIsBeingPlayed = possibleLastPlay.Card;
         List<string> cardsSubtypes = cardThatIsBeingPlayed.Subtypes;
-        if (netDamageThatWillReceive <= 7 && possibleLastPlay.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Strike"))
+        if (_lastPlayInstance.ActualDamageMade <= 7 && possibleLastPlay.PlayedAs == "MANEUVER" && cardsSubtypes.Contains("Strike"))
         {
             return true;
         }

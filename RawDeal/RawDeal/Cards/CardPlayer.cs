@@ -151,7 +151,7 @@ public class CardPlayer
     {
         Card cardToPlay = chosenPlay.Card;
         Precondition cardEffectPrecondition = cardToPlay.Precondition;
-        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand", 1);
+        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand");
         if (meetsPrecondition)
         {
             PerformCardEffect(chosenPlay);

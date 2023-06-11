@@ -47,10 +47,10 @@ public class ReversalManager
         }
     }
 
-    private bool CheckIfCardMeetsPrecondition(Card cardThatCanPossibleReverse, string askedFromDeckOrHand, int netDamageThatWillReceive)
+    private bool CheckIfCardMeetsPrecondition(Card cardThatCanPossibleReverse, string askedFromDeckOrHand)
     {
         Precondition cardPrecondition = cardThatCanPossibleReverse.Precondition;
-        return cardPrecondition.DoesMeetPrecondition(_playerNotPlayingRound, askedFromDeckOrHand, netDamageThatWillReceive);
+        return cardPrecondition.DoesMeetPrecondition(_playerNotPlayingRound, askedFromDeckOrHand);
     }
     
     public void TryToReversePlayFromHand(Play playOpponentIsTryingToMake)
@@ -74,9 +74,9 @@ public class ReversalManager
         Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
         _lastPlayInstance.LastPlayPlayed = playOpponentIsTryingToMake;
+        _lastPlayInstance.ActualDamageMade = cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange;
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
-            .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse, 
-                "Hand", cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange)).ToList();
+            .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse,"Hand")).ToList();
         _lastPlayInstance.LastPlayPlayed = actualLastPlay;
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
@@ -133,9 +133,11 @@ public class ReversalManager
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver, playPlayedByOpponent.Card);
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
         _lastPlayInstance.LastPlayPlayed = playPlayedByOpponent;
+        _lastPlayInstance.ActualDamageMade =
+            ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect);
         if (cardIsReversal && playerHasHigherFortitudeThanCard)
         {
-            bool doesItMeetPrecondition = CheckIfCardMeetsPrecondition(cardThatWasTurnedOver, "Deck", ReversalUtils.ManageCardDamage(playPlayedByOpponent.Card, _playerNotPlayingRound, _nextMoveEffect));
+            bool doesItMeetPrecondition = CheckIfCardMeetsPrecondition(cardThatWasTurnedOver, "Deck");
             _lastPlayInstance.LastPlayPlayed = actualLastPlay;
             return doesItMeetPrecondition;
         }

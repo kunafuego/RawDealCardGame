@@ -7,7 +7,7 @@ public class ReverseAnyAction : Precondition
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
         Play lastPlay = _lastPlayInstance.LastPlayPlayed;
         return lastPlay.PlayedAs == "ACTION";

@@ -7,7 +7,7 @@ public class ReverseAnyManeuverGrapple : Precondition
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand, int netDamageThatWillReceive)
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
         Play lastPlay = _lastPlayInstance.LastPlayPlayed;
         Card cardThatIsBeingPlayed = lastPlay.Card;
