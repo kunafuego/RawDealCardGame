@@ -10,7 +10,7 @@ public class OpponentDrawCardEffect : Effect
         _amountOfCardsToDrawInEffect = amountOfCardsToDrawInEffect; 
     }
     
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
         view.SayThatPlayerDrawCards(opponent.GetSuperstarName(), _amountOfCardsToDrawInEffect);
         for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)

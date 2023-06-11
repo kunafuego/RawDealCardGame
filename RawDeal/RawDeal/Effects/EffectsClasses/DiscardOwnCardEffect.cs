@@ -10,11 +10,11 @@ public class DiscardOwnCardEffect : Effect
     { 
         _amountOfCardsToDiscardInEffect = amountOfCardsToDiscardInEffect; 
     }    
-    public override void Apply(Play playThatIsBeingReversedOrPlayed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play playThatIsBeingPlayed, View view, Player playerThatPlayedCard, Player opponent)
     {
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
-            DiscardCard(i, playerThatPlayedCard, view, playThatIsBeingReversedOrPlayed.Card);
+            DiscardCard(i, playerThatPlayedCard, view, playThatIsBeingPlayed.Card);
         }
     }
     

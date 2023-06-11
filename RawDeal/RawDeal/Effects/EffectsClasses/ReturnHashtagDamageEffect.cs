@@ -9,19 +9,19 @@ public class ReturnHashtagDamageEffect : Effect
         _lastPlayInstance = lastPlayInstance;
     }
     
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
-        Card cardThatWasReversed = playThatIsBeingReversed.Card;
-        Card cardThatReverted = playThatIsBeingReversed.CardThatWasReversedBy;
-        int damageThatReversalHasToMake = ManageDamage(cardThatWasReversed, playerThatPlayedCard);
-        cardThatReverted.ReversalDamage = damageThatReversalHasToMake;
+        Card cardThatReverted = actualPlay.Card;
+        cardThatReverted.ReversalDamage = ManageDamage(playerThatPlayedCard);
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, new EffectForNextMove(0,0), _lastPlayInstance);
-        maneuverPlayer.PlayReversalAsManeuver(playThatIsBeingReversed.CardThatWasReversedBy);
+        maneuverPlayer.PlayReversalAsManeuver(cardThatReverted);
     }
     
-    private int ManageDamage(Card cardPlayed, Player playerThatReverse)
+    private int ManageDamage(Player playerThatReverse)
     {
-        int initialDamage = cardPlayed.ReversalDamage;
+        Play lastPlay = _lastPlayInstance.LastPlayPlayed;
+        Card lastCardPlayed = lastPlay.Card;
+        int initialDamage = lastCardPlayed.ReversalDamage;
         if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(playerThatReverse))
         {
             initialDamage -= 1;

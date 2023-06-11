@@ -25,23 +25,24 @@ public class ReversalManager
     }
     
 
-    private void PerformEffect(Play playThatIsBeingReversed, Card cardThatIsReversingTurn)
+    private void PerformEffect(Play reversalPlay)
     {
+        Card cardThatIsReversingTurn = reversalPlay.Card;
         List<Effect> cardEffects = cardThatIsReversingTurn.EffectObject;
         foreach (Effect effect in cardEffects)
         {
-            effect.Apply(playThatIsBeingReversed, _view, _playerNotPlayingRound, _playerPlayingRound);
+            effect.Apply(reversalPlay, _view, _playerNotPlayingRound, _playerPlayingRound);
         }
-        MoveCardUsedForReversingTurn(playThatIsBeingReversed, cardThatIsReversingTurn);
+        MoveCardUsedForReversingTurn(reversalPlay);
     }
 
-    private void MoveCardUsedForReversingTurn(Play playThatIsBeingReversed, Card cardThatIsReversing)
+    private void MoveCardUsedForReversingTurn(Play reversalPlay)
     {
-        if (playThatIsBeingReversed.PlayedAs == "Reversed From Hand")
+        if (reversalPlay.PlayedAs == "REVERSAL HAND")
         {
-            _playerNotPlayingRound.MoveCardFromHandToRingArea(cardThatIsReversing);
+            _playerNotPlayingRound.MoveCardFromHandToRingArea(reversalPlay.Card);
         }
-        else if (playThatIsBeingReversed.PlayedAs == "REVERSED FROM DECK")
+        else if (reversalPlay.PlayedAs == "REVERSAL DECK")
         {
             _playerNotPlayingRound.MoveArsenalTopCardToRingside();
         }
@@ -91,12 +92,12 @@ public class ReversalManager
     private void ReversePlayFromHand(Play opponentPlay, Play reversalSelected)
     {
         Card reversalCardSelected = reversalSelected.Card;
-        opponentPlay.PlayedAs = "Reversed From Hand";
-        opponentPlay.CardThatWasReversedBy = reversalCardSelected;
         _view.SayThatPlayerReversedTheCard(_playerNotPlayingRound.GetSuperstarName(), reversalSelected.ToString());
+        reversalSelected.PlayedAs = "REVERSAL HAND";
+        _lastPlayInstance.LastPlayPlayed = opponentPlay;
         _playerPlayingRound.MoveCardFromHandToRingside(opponentPlay.Card);
         ReversalUtils.SetDamageThatReversalShouldMake(reversalCardSelected, opponentPlay.Card, _nextMoveEffect);
-        PerformEffect(opponentPlay, reversalCardSelected);
+        PerformEffect(reversalSelected);
         _lastPlayInstance.LastPlayPlayed = reversalSelected;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = false;
         
@@ -116,14 +117,13 @@ public class ReversalManager
     private void ReversePlayFromDeck(int amountOfDamageReceivedAtMoment, int totalCardDamage, Card cardPlayed,
         Card cardThatWasTurnedOver)
     {
-        Play playThatIsBeingReversed = new Play(cardPlayed, "Reversed From Deck");
-        playThatIsBeingReversed.CardThatWasReversedBy = cardThatWasTurnedOver;
+        Play reversalPlay = new Play(cardThatWasTurnedOver, "REVERSAL DECK");
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-        PerformEffect(playThatIsBeingReversed, cardThatWasTurnedOver);
+        PerformEffect(reversalPlay);
         _view.SayThatCardWasReversedByDeck(_playerNotPlayingRound.GetSuperstarName());
         if (amountOfDamageReceivedAtMoment < totalCardDamage)
             ReversalUtils.PlayerDrawCardsStunValueEffect(cardPlayed, _view, _playerPlayingRound);
-        _lastPlayInstance.LastPlayPlayed = new Play(cardThatWasTurnedOver, "Reversal");
+        _lastPlayInstance.LastPlayPlayed = reversalPlay;
         throw new CardWasReversedException(cardThatWasTurnedOver.Title);
     }
 

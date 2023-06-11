@@ -8,10 +8,10 @@ public class ReturnPredeterminedDamageWhenReversedFromHandEffect : Effect
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
-        if (playThatIsBeingReversed.PlayedAs != "Reversed From Hand") return;
+        if (actualPlay.PlayedAs != "REVERSAL HAND") return;
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, new EffectForNextMove(0,0), _lastPlayInstance);
-        maneuverPlayer.PlayReversalAsManeuver(playThatIsBeingReversed.CardThatWasReversedBy);
+        maneuverPlayer.PlayReversalAsManeuver(actualPlay.Card);
     }
 }

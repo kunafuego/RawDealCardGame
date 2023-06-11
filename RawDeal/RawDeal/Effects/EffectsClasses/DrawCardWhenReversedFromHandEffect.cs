@@ -10,9 +10,9 @@ public class DrawCardWhenReversedFromHandEffect : Effect
         _amountOfCardsToDrawInEffect = amountOfCardsToDrawInEffect; 
     }
 
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
-        if (playThatIsBeingReversed.PlayedAs != "Reversed From Hand") return;
+        if (actualPlay.PlayedAs != "REVERSAL HAND") return;
         view.SayThatPlayerDrawCards(playerThatPlayedCard.GetSuperstarName(), _amountOfCardsToDrawInEffect);
         for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)
         {

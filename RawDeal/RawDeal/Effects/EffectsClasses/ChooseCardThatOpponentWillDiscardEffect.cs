@@ -10,7 +10,7 @@ public class ChooseCardThatOpponentWillDiscardEffect : Effect
     { 
         _amountOfCardsToDiscardInEffect = amountOfCardsToDiscardInEffect; 
     }    
-    public override void Apply(Play playThatIsBeingReversed, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
         for (int i = _amountOfCardsToDiscardInEffect; i > 0; i--)
         {
