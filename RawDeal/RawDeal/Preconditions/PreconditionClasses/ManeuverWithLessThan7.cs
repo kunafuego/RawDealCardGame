@@ -15,7 +15,7 @@ public class ManeuverWithLessThan7 : Precondition
         // Console.WriteLine("\n");
         if (_lastPlayInstance.LastPlayPlayed is null) return true;
         Play lastPlay = _lastPlayInstance.LastPlayPlayed;
-        if (_lastPlayInstance.ActualDamageMade <= 7 && lastPlay.PlayedAs is "MANEUVER" or "REVERSAL FROM HAND" or "REVERSAL FROM DECK")
+        if (_lastPlayInstance.ActualDamageMade <= 7 && lastPlay.PlayedAs is "MANEUVER")
         {
             return true;
         }

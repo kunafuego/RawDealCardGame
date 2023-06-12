@@ -14,13 +14,6 @@ public class Play : IViewablePlayInfo
     {
         get { return _card; }
     }
-    
-    public Card CardThatWasReversedBy
-    {
-        get { return _cardThatWasReversedBy; }
-        set { _cardThatWasReversedBy = value; }
-    }
-
     public IViewableCardInfo CardInfo
     {
         get { return _card; }
