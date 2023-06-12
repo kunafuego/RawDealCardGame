@@ -13,5 +13,7 @@ public class ReturnPredeterminedDamageWhenReversedFromHandEffect : Effect
         if (actualPlay.PlayedAs != "REVERSAL HAND") return;
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, new EffectForNextMove(0,0), _lastPlayInstance);
         maneuverPlayer.PlayReversalAsManeuver(actualPlay.Card);
+        // Play lastPlayPlayed = _lastPlayInstance.LastPlayPlayed;
+        // lastPlayPlayed.PlayedAs = "MANEUVER";
     }
 }

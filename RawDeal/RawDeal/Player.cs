@@ -14,6 +14,13 @@ public class Player
     private Deck _hand = new(new List<Card>());
 
     public Superstar Superstar { get { return _superstar; } }
+    
+    public Deck Hand 
+    { get { return _hand; } }
+    
+    public int Fortitude
+    { get { return  _fortitude;} } 
+    
     public void AssignSuperstar(Superstar superstar) { _superstar = superstar; }
 
     public void AssignArsenal(Deck arsenal) { _arsenal = arsenal; }
@@ -30,7 +37,6 @@ public class Player
             { CardSet.Arsenal, _arsenal }
         };
     }
-
 
     public List<Card> GetReversalCardsThatPlayerCanPlay(EffectForNextMove effectFromPastMove, Card cardOpponentIsTryingToPlay)
     {
@@ -157,7 +163,7 @@ public class Player
         Deck cardsToCheck = _cardSetToDeck[deckToCheck];
         return cardsToCheck.CheckIfHasMoreThanOneCard();
     }
-    public List<Play> GetAvailablePlays() { return PlayerUtils.GetAvailablePlays(_hand, _fortitude); }
+    public List<Play> GetAvailablePlays() { return PlayerUtils.GetAvailablePlays(this); }
     public bool CheckIfPlayerHasMoreThanOneCardInArsenal() { return _arsenal.CheckIfHasMoreThanOneCard(); }
     public bool CheckIfNeededToAskToUseAbilityAtBeginningOfTurn() { return _superstar.CheckIfNeedToAskToUseAbilityAtBeginningOfTurn(); }
     public bool MustUseAbilityAtStartOfTurn() { return _superstar.CheckIfHasToUseAbilityAtStartOfTurn(); }

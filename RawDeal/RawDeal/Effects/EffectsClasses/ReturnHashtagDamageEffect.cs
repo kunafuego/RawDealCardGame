@@ -15,6 +15,8 @@ public class ReturnHashtagDamageEffect : Effect
         cardThatReverted.ReversalDamage = ManageDamage(playerThatPlayedCard);
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, new EffectForNextMove(0,0), _lastPlayInstance);
         maneuverPlayer.PlayReversalAsManeuver(cardThatReverted);
+        // Play lastPlayPlayed = _lastPlayInstance.LastPlayPlayed;
+        // lastPlayPlayed.PlayedAs = "MANEUVER";
     }
     
     private int ManageDamage(Player playerThatReverse)

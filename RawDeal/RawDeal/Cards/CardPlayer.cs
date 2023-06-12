@@ -68,13 +68,13 @@ public class CardPlayer
 
     private void ManageLastPlay(Play playThatWasJustPlayed)
     {
-        if (_lastPlayInstance.LastPlayPlayed == null)
-        {
-            _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
-            // _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
-            // _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
-            return;
-        }
+        // if (_lastPlayInstance.LastPlayPlayed == null)
+        // {
+        //     _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
+        //     // _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
+        //     // _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
+        //     return;
+        // }
         _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
         // Play playPlayedBeforeTheOneJustPlayed = _lastPlayInstance.LastPlayPlayed;
         // Card cardPlayedBeforeTheOneJustPlayed = playPlayedBeforeTheOneJustPlayed.Card;
@@ -130,14 +130,23 @@ public class CardPlayer
         _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(), chosenPlay.ToString());
         TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
-        bool effectWasPerformed = ManageCardEffect(chosenPlay);
-        if (chosenPlay.PlayedAs == "MANEUVER")
+        bool effectWasPerformed = CheckIfEffectWillBePerformed(cardPlayed);
+        ManageCardEffect(chosenPlay);
+        Console.WriteLine("\n");
+        Console.WriteLine(chosenPlay.PlayedAs);
+        Console.WriteLine(effectWasPerformed);
+        Console.WriteLine("\n");
+        switch (chosenPlay.PlayedAs)
         {
-            PlayManeuver(cardPlayed);
-        }
-        else if (chosenPlay.PlayedAs == "ACTION")
-        {
-            PlayAction(cardPlayed);
+            case "MANEUVER":
+                PlayManeuver(cardPlayed);
+                break;
+            case "ACTION" when !effectWasPerformed:
+                PlayAction(cardPlayed);
+                break;
+            case "ACTION" when effectWasPerformed:
+                MoveActionCard(cardPlayed);
+                break;
         }
     }
 
@@ -147,7 +156,7 @@ public class CardPlayer
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
-    private bool ManageCardEffect(Play chosenPlay)
+    private void ManageCardEffect(Play chosenPlay)
     {
         Card cardToPlay = chosenPlay.Card;
         Precondition cardEffectPrecondition = cardToPlay.Precondition;
@@ -156,7 +165,6 @@ public class CardPlayer
         {
             PerformCardEffect(chosenPlay);
         }
-        return meetsPrecondition;
     }
 
     private void PerformCardEffect(Play playSuccesfulyPlayed)
@@ -167,6 +175,14 @@ public class CardPlayer
         {
             effect.Apply(playSuccesfulyPlayed, _view, _playerPlayingRound, _playerNotPlayingRound);
         }
+    }
+
+    private bool CheckIfEffectWillBePerformed(Card cardPlayed)
+    {
+        Precondition cardEffectPrecondition = cardPlayed.Precondition;
+        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand");
+        List<Effect> cardEffects = cardPlayed.EffectObject;
+        return meetsPrecondition && !cardEffects.Any(obj => obj is NoEffect);
     }
 
     private void PlayManeuver(Card cardPlayed)
@@ -196,6 +212,17 @@ public class CardPlayer
             _view.SayThatPlayerDrawCards(_playerPlayingRound.GetSuperstarName(), 1);
             _playerPlayingRound.MoveCardFromHandToRingside(cardPlayed);
         }
+    }
+
+    private void MoveActionCard(Card cardPlayed)
+    {
+        Console.WriteLine("\n");
+
+        Console.WriteLine("MOVING CARD from hand to ringside");
+        Console.WriteLine(cardPlayed.ToString());
+        Console.WriteLine("\n");
+
+        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 
 }

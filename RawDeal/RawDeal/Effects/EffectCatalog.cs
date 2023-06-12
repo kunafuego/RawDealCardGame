@@ -130,7 +130,7 @@ public static class EffectCatalog
         _effectCatalog["Cobra Clutch"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, shuffle 2 cards from your Ringside pile into your Arsenal.
-        _effectCatalog["Chicken Wing"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Chicken Wing"] = new List<Effect>() {new MoveFromRingsidePileToArsenal(2)};
 
         // TODO:When successfully played, look through your Arsenal for the card titled Maintain Hold and place that card in your hand, then shuffle your Arsenal.
         _effectCatalog["Sleeper"] = new List<Effect>() {new NoEffect()};
@@ -223,7 +223,7 @@ public static class EffectCatalog
         _effectCatalog["Distract the Ref"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Shuffle any 2 cards from your Ringside pile back into your Arsenal. Then draw 1 card.
-        _effectCatalog["Recovery"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Recovery"] = new List<Effect>() {new MoveFromRingsidePileToArsenal(2), new DrawCardEffect(1)};
 
         // TODO:Can only be played when you have 2 or more cards in your hand. Discard 1 card and then your opponent discards 4 cards.
         _effectCatalog["Spit At Opponent"] = new List<Effect>() {new DiscardOwnCardEffect(1), new OpponentDiscardCardEffect(4)};
@@ -250,7 +250,7 @@ public static class EffectCatalog
         _effectCatalog["Marking Out"] = new List<Effect>() {new NoEffect()};
 
         // TODO:Shuffle up to 5 cards from your Ringside pile into your Arsenal. Then draw 2 cards.
-        _effectCatalog["Puppies! Puppies!"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Puppies! Puppies!"] = new List<Effect>() {new MoveFromRingsidePileToArsenal(5), new DrawCardEffect(2)};
 
         // TODO:While this card is in your Ring area, at the start of your turn, before your draw segment, opponent must take the top card from his Arsenal and place it into his Ringside pile.
         _effectCatalog["Shane O'Mac"] = new List<Effect>() {new NoEffect()};

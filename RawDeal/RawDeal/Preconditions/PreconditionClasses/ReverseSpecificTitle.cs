@@ -11,6 +11,8 @@ public class ReverseSpecificTitle : Precondition
     }
     public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
+        if (_lastPlayInstance.LastPlayPlayed is null) return true;
+        if (askedFromDeskOrHand == "Checking To Play Action") return true;
         Play playThatYouWantToReverse = _lastPlayInstance.LastPlayPlayed;
         Card cardThatIsBeingPlayed = playThatYouWantToReverse.Card;
         return cardThatIsBeingPlayed.Title == _nameOfCard;

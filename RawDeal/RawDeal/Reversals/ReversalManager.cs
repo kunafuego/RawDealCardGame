@@ -75,7 +75,9 @@ public class ReversalManager
         Card cardOpponentIsTryingToMake = playOpponentIsTryingToMake.Card;
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
         _lastPlayInstance.LastPlayPlayed = playOpponentIsTryingToMake;
-        _lastPlayInstance.ActualDamageMade = cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange;
+        _lastPlayInstance.ActualDamageMade =
+            ReversalUtils.ManageCardDamage(playOpponentIsTryingToMake.Card, _playerNotPlayingRound, _nextMoveEffect);
+        // _lastPlayInstance.ActualDamageMade = cardOpponentIsTryingToMake.GetDamage() + _nextMoveEffect.DamageChange;
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
             .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse,"Hand")).ToList();
         _lastPlayInstance.LastPlayPlayed = actualLastPlay;

@@ -1,15 +1,19 @@
+using RawDeal.Preconditions;
+
 namespace RawDeal;
 
 public static class PlayerUtils
 {
-    public static List<Play> GetAvailablePlays(Deck hand, int fortitude)
+    // public static List<Play> GetAvailablePlays(Deck hand, int fortitude)
+    public static List<Play> GetAvailablePlays(Player player)
     {
+        Deck hand = player.Hand;
         List<Play> playsThatCanBePlayed = new List<Play>();
         foreach (Card card in hand.Cards)
         {
             if (card.Title == "Undertaker's Tombstone Piledriver") 
-                CheckIfAddUndertakerTombstone(card, playsThatCanBePlayed, fortitude);
-            else if (CanPlayCard(card, fortitude))
+                CheckIfAddUndertakerTombstone(card, playsThatCanBePlayed, player.Fortitude);
+            else if (CanPlayCard(card, player))
             {
                 AddPlayablePlays(card, playsThatCanBePlayed);
             }
@@ -18,9 +22,11 @@ public static class PlayerUtils
         return playsThatCanBePlayed;
     }
     
-    private static bool CanPlayCard(Card card, int fortitude)
+    private static bool CanPlayCard(Card card, Player player)
     {
-        return card.Fortitude <= fortitude;
+        Precondition cardEffectPrecondition = card.Precondition;
+        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(player, "Checking To Play Action");
+        return card.Fortitude <= player.Fortitude && meetsPrecondition;
     }
 
     private static void AddPlayablePlays(Card card, List<Play> playsThatCanBePlayed)

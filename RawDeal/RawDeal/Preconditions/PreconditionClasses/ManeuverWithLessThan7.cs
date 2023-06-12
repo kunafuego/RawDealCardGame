@@ -9,8 +9,13 @@ public class ManeuverWithLessThan7 : Precondition
     }
     public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
+        // Console.WriteLine("\n");
+        // Console.WriteLine(_lastPlayInstance.ActualDamageMade);
+        // Console.WriteLine(_lastPlayInstance.LastPlayPlayed.PlayedAs);
+        // Console.WriteLine("\n");
+        if (_lastPlayInstance.LastPlayPlayed is null) return true;
         Play lastPlay = _lastPlayInstance.LastPlayPlayed;
-        if (_lastPlayInstance.ActualDamageMade <= 7 && lastPlay.PlayedAs == "MANEUVER")
+        if (_lastPlayInstance.ActualDamageMade <= 7 && lastPlay.PlayedAs is "MANEUVER" or "REVERSAL FROM HAND" or "REVERSAL FROM DECK")
         {
             return true;
         }
