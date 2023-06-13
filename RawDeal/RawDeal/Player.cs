@@ -44,6 +44,7 @@ public class Player
         List<Card> reversalCardsThatCanBePlayed = reversalCards.Where(card => cardOpponentIsTryingToPlay.CheckIfSubtypesContain("Grapple")
             ? _fortitude >= card.Fortitude + effectFromPastMove.FortitudeChange
             :  _fortitude >= card.Fortitude).ToList();
+        if(cardOpponentIsTryingToPlay.Title is "Tree of Woe" or "Austin Elbow Smash" or "Leaping Knee to the Face") reversalCardsThatCanBePlayed.Clear();
         return reversalCardsThatCanBePlayed;
     }
 

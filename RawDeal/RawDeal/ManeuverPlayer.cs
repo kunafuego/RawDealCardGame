@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDealView;
 using RawDeal.Effects;
 namespace RawDeal;
@@ -10,8 +11,11 @@ public class ManeuverPlayer
     private bool _gameShouldEnd;
     private bool _turnEnded;
     private readonly EffectForNextMove _effectForThisMove;
-    private LastPlay _lastPlayInstance;
-    public ManeuverPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, EffectForNextMove effectForThisMove, LastPlay lastPlayInstance)
+    private BonusManager _bonusManager;
+    private readonly LastPlay _lastPlayInstance;
+
+    public ManeuverPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound,
+        EffectForNextMove effectForThisMove, LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
@@ -19,6 +23,7 @@ public class ManeuverPlayer
         _gameShouldEnd = false;
         _turnEnded = false;
         _effectForThisMove = effectForThisMove;
+        _bonusManager = bonusManager;
         _lastPlayInstance = lastPlayInstance;
     }
 
@@ -43,7 +48,7 @@ public class ManeuverPlayer
         for (int i = 1; i <= cardTotalDamage && !_gameShouldEnd; i++)
         {
             SayThatCardWasOverturned(i, cardTotalDamage);
-            ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _effectForThisMove, _lastPlayInstance);
+            ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _effectForThisMove, _bonusManager, _lastPlayInstance);
             reversalPerformer.CheckIfManeuverCanBeReversedFromDeckWithASpecificCard(i, cardTotalDamage, cardPlayed);
             DealSingleCardDamage(i, cardTotalDamage);
         }

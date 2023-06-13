@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDeal.Effects;
 using RawDeal.Preconditions;
 using RawDealView;
@@ -10,29 +11,26 @@ public class CardPlayer
     private readonly Player _playerPlayingRound;
     private readonly Player _playerNotPlayingRound;
     private EffectForNextMove _nextMoveEffect;
+    private BonusManager _bonusManager;
     private LastPlay _lastPlayInstance;
     private bool _turnEnded;
     private bool _gameShouldEnd;
 
     public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, 
-        EffectForNextMove nextMoveEffect, LastPlay lastPlayInstance)
+        EffectForNextMove nextMoveEffect, LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
         _nextMoveEffect = nextMoveEffect;
         _lastPlayInstance = lastPlayInstance;
+        _bonusManager = bonusManager;
     }
 
     public EffectForNextMove NextMoveEffect
     {
         get { return _nextMoveEffect; }
     }
-    
-    // public LastPlay LastPlayPlayed
-    // {
-    //     get { return _lastPlayInstance; }
-    // }
 
     public bool TurnEnded
     {
@@ -58,6 +56,8 @@ public class CardPlayer
         catch (CardWasReversedException error)
         {
             ManageReversalError(error);
+            _lastPlayInstance.WasItASuccesfulReversal = true;
+
         }
         catch (GameEndedBecauseOfCollateralDamage error)
         {
@@ -68,32 +68,9 @@ public class CardPlayer
 
     private void ManageLastPlay(Play playThatWasJustPlayed)
     {
-        // if (_lastPlayInstance.LastPlayPlayed == null)
-        // {
-        //     _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
-        //     // _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
-        //     // _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
-        //     return;
-        // }
-        _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
-        // Play playPlayedBeforeTheOneJustPlayed = _lastPlayInstance.LastPlayPlayed;
-        // Card cardPlayedBeforeTheOneJustPlayed = playPlayedBeforeTheOneJustPlayed.Card;
-        // bool cardWasPlayedAfterIrishWhip = (cardPlayedBeforeTheOneJustPlayed.Title == "Irish Whip" &&
-        //                                     playPlayedBeforeTheOneJustPlayed.PlayedAs == "MANEUVER");
-    //     _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
-    //     _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
-    //     _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = cardWasPlayedAfterIrishWhip;
-    // }
 
-    // private void CheckIfPlaysMeetPrecondition(List<Play> playsToShow)
-    // {
-    //     foreach (Play play in playsToShow)
-    //     {
-    //         Card cardToplay = play.Card;
-    //         Precondition cardPrecondition = cardToplay.Precondition;
-    //         if(cardPrecondition.DoesMeetPrecondition(play, "Hand", 1)) return;;
-    //         playsToShow.Remove(play);
-    //     }
+        _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
+        _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
     }
 
     private void ManageReversalError(CardWasReversedException error)
@@ -152,7 +129,7 @@ public class CardPlayer
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
+        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _bonusManager, _lastPlayInstance);
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
@@ -188,7 +165,7 @@ public class CardPlayer
     private void PlayManeuver(Card cardPlayed)
     {
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, 
-            _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
+            _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance, _bonusManager);
         maneuverPlayer.PlayManeuver(cardPlayed);
         _nextMoveEffect = new EffectForNextMove(0, 0);
         _turnEnded = maneuverPlayer.TurnEnded;
@@ -216,12 +193,6 @@ public class CardPlayer
 
     private void MoveActionCard(Card cardPlayed)
     {
-        Console.WriteLine("\n");
-
-        Console.WriteLine("MOVING CARD from hand to ringside");
-        Console.WriteLine(cardPlayed.ToString());
-        Console.WriteLine("\n");
-
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 

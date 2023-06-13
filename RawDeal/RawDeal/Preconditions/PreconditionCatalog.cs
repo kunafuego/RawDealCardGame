@@ -263,7 +263,7 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Pat & Gerry"] = new NoPrecondition();
 
         // TODO:May not be reversed. Can only be played after a maneuver that does 5D or greater.
-        _preconditionsCatalog["Austin Elbow Smash"] = new NoPrecondition();
+        _preconditionsCatalog["Austin Elbow Smash"] = new AfterXDOrGreaterManeuver(lastPlayInstance, 5);
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 1 card.
         _preconditionsCatalog["Lou Thesz Press"] = new NoPrecondition();
@@ -352,7 +352,7 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Hellfire & Brimstone"] = new NoPrecondition();
 
         // TODO:Can only be played after a 4D or greater maneuver. When successfully played, opponent must discard 1 card.
-        _preconditionsCatalog["Lionsault"] = new NoPrecondition();
+        _preconditionsCatalog["Lionsault"] = new AfterXDOrGreaterManeuver(lastPlayInstance, 4);
 
         // TODO:Draw up to 5 Cards or force opponent to discard up to 5 cards.
         _preconditionsCatalog["Y2J"] = new NoPrecondition();

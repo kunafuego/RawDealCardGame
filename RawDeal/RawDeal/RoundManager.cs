@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDealView.Options;
 using RawDealView;
 namespace RawDeal;
@@ -11,9 +12,10 @@ public class RoundManager
     private View _view;
     private EffectForNextMove _nextMoveEffect;
     private LastPlay _lastPlayInstance;
+    private BonusManager _bonusManager;
     
     public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view, 
-        EffectForNextMove effectForNextMove, LastPlay lastPlayInstance)
+        EffectForNextMove effectForNextMove, LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _gameShouldEnd = false;
         _turnEnded = false;
@@ -22,17 +24,13 @@ public class RoundManager
         _view = view;
         _nextMoveEffect = effectForNextMove;
         _lastPlayInstance = lastPlayInstance;
+        _bonusManager = bonusManager;
     }
 
     public EffectForNextMove NextMoveEffect
     {
         get { return _nextMoveEffect; }
     }
-    
-    // public LastPlay LastPlayInstance
-    // {
-    //     get { return _lastPlayInstance; }
-    // }
 
     public bool GameShouldEnd
     {
@@ -61,6 +59,9 @@ public class RoundManager
             effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
             ManageChosenOption(nextPlayOptionChosen);
         } while (!_turnEnded);
+
+        _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = _lastPlayInstance.WasItASuccesfulReversal;
+        _lastPlayInstance.WasItASuccesfulReversal = false;
     }
     
     private void PlayerDrawCards()
@@ -106,7 +107,7 @@ public class RoundManager
 
     private void ManagePlayingCards()
     {
-        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance);
+        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance, _bonusManager);
         cardPlayer.ManagePlayingCards();
         _nextMoveEffect = cardPlayer.NextMoveEffect;
         _turnEnded = cardPlayer.TurnEnded;

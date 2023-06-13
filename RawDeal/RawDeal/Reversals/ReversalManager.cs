@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDeal.Effects;
 using RawDeal.Preconditions;
 using RawDeal.ReversalCards;
@@ -12,16 +13,18 @@ public class ReversalManager
     private Player _playerPlayingRound;
     private Player _playerNotPlayingRound;
     private EffectForNextMove _nextMoveEffect;
+    private BonusManager _bonusManager;
     private LastPlay _lastPlayInstance;
 
     public ReversalManager(View view, Player playerPlayingRound, Player playerNotPlayingRound, 
-        EffectForNextMove nextMoveEffect, LastPlay lastPlayInstance)
+        EffectForNextMove nextMoveEffect, BonusManager bonusManager, LastPlay lastPlayInstance)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
         _nextMoveEffect = nextMoveEffect;
         _lastPlayInstance = lastPlayInstance;
+        _bonusManager = bonusManager;
     }
     
 

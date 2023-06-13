@@ -1,3 +1,5 @@
+using RawDeal.Bonus;
+using RawDeal.Bonus.BonusClasses;
 using RawDealView;
 
 namespace RawDeal;
@@ -9,6 +11,7 @@ public class Game
     private Player _playerPlayingRound = new ();
     private Player _playerNotPlayingRound = new ();
     private LastPlay _lastPlayInstance = new LastPlay();
+    private BonusManager _bonusManager;
     private RoundManager _actualRoundManager;
 
     public Game(View view, string deckFolder)
@@ -16,6 +19,7 @@ public class Game
         _view = view;
         _deckFolder = deckFolder;
         InitiateLastPlayInstance();
+        InitiateBonusManager();
     }
 
     public void Play()
@@ -46,7 +50,7 @@ public class Game
     
     private void PlayersSelectTheirDecks()
     {
-        DeckSelectionManager deckSelectionManager = new DeckSelectionManager(_view, _deckFolder, _lastPlayInstance);
+        DeckSelectionManager deckSelectionManager = new DeckSelectionManager(_view, _deckFolder, _lastPlayInstance, _bonusManager);
         foreach (var player in new List<Player>() { _playerPlayingRound, _playerNotPlayingRound })
         {
             deckSelectionManager.SelectDeck(player);
@@ -70,9 +74,8 @@ public class Game
     private void PlayRound()
     {
         EffectForNextMove effectForNextRound = GetPossibleEffectFromLastRound();
-        // LastPlay lastPlayFromLastRound = GetLastPlayFromLastRound();
         _actualRoundManager = new RoundManager(_playerPlayingRound, _playerNotPlayingRound, _view, 
-            effectForNextRound, _lastPlayInstance);
+            effectForNextRound, _lastPlayInstance, _bonusManager);
         _actualRoundManager.PlayRound();
         _actualRoundManager.CheckIfGameShouldEnd();
     }
@@ -94,6 +97,14 @@ public class Game
         _lastPlayInstance.LastPlayPlayed = null;
         _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = false;
+        _lastPlayInstance.WasItASuccesfulReversal = false;
+    }
+
+    private void InitiateBonusManager()
+    {
+        _bonusManager = new BonusManager(_lastPlayInstance);
+        DamageBonus mankindBonus = new MankindDamageBonus();
+        _bonusManager.AddDamageBonus(mankindBonus);
     }
     
     private void SwapPlayers()

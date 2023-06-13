@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDealView;
 namespace RawDeal;
 
@@ -6,18 +7,20 @@ public class DeckSelectionManager
     private readonly View _view;
     private readonly string _deckFolder;
     private LastPlay _lastPlayInstance;
+    private BonusManager _bonusManager;
 
-    public DeckSelectionManager(View view, string deckFolder, LastPlay lastPlayInstance)
+    public DeckSelectionManager(View view, string deckFolder, LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _view = view;
         _deckFolder = deckFolder;
         _lastPlayInstance = lastPlayInstance;
+        _bonusManager = bonusManager;
     }
 
     public void SelectDeck(Player player)
     {
         List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-        DeckCreator deckCreator = new DeckCreator(_lastPlayInstance);
+        DeckCreator deckCreator = new DeckCreator(_lastPlayInstance, _bonusManager);
         Deck deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
         Superstar superstar = deckCreator.GetDeckSuperstar();
         ValidateDeck(deck, superstar);

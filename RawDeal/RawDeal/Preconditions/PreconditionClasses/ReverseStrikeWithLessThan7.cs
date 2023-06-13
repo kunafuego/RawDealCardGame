@@ -9,6 +9,7 @@ public class ReverseStrikeWithLessThan7 : Precondition
     }
     public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
+        
         if (_lastPlayInstance.LastPlayPlayed is null) return true;
         Play possibleLastPlay = _lastPlayInstance.LastPlayPlayed;
         Card cardThatIsBeingPlayed = possibleLastPlay.Card;
