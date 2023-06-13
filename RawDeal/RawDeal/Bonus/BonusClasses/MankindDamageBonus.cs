@@ -2,7 +2,7 @@ namespace RawDeal.Bonus.BonusClasses;
 
 public class MankindDamageBonus : DamageBonus
 {
-    private const int BonusAmount = 1;
+    private const int BonusAmount = -1;
     public MankindDamageBonus()
     {
         
@@ -20,6 +20,6 @@ public class MankindDamageBonus : DamageBonus
 
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
-        return opponent.GetSuperstarName() == "Mankind";
+        return opponent.GetSuperstarName() == "MANKIND";
     }
 }

@@ -39,7 +39,7 @@ public class ManeuverPlayer
     
     public void PlayManeuver(Card cardPlayed)
     {
-        int cardTotalDamage = ManageCardDamage(cardPlayed);
+        int cardTotalDamage = ManageCardDamage(cardPlayed, "Maneuver");
         if (cardTotalDamage > 0)
         {
             _view.SayThatSuperstarWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
@@ -57,7 +57,7 @@ public class ManeuverPlayer
 
     public void PlayReversalAsManeuver(Card cardPlayed)
     {
-        int cardTotalDamage = ManageCardDamage(cardPlayed);
+        int cardTotalDamage = ManageCardDamage(cardPlayed, "Reversal");
         if (cardTotalDamage > 0)
         {
             _view.SayThatSuperstarWillTakeSomeDamage(_playerNotPlayingRound.GetSuperstarName(), cardTotalDamage);
@@ -70,15 +70,11 @@ public class ManeuverPlayer
         }
     }
     
-    private int ManageCardDamage(Card cardPlayed)
+    private int ManageCardDamage(Card cardPlayed, string playedAs)
     {
-        int initialDamage = cardPlayed.GetDamage();
-        if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(_playerNotPlayingRound))
-        {
-            initialDamage -= 1;
-        }
+        int netDamage = _bonusManager.GetPlayDamage(new Play(cardPlayed, playedAs), _playerNotPlayingRound);
         int extraDamage = (cardPlayed.CheckIfSubtypesContain("Grapple")) ? _effectForThisMove.DamageChange : 0;
-        return initialDamage + extraDamage;
+        return netDamage + extraDamage;
     }
     
     private void CheckIfGameAndTurnShouldEndWhileReceivingDamage()

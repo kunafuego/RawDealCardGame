@@ -23,6 +23,23 @@ public class BonusManager
         _fortitudeBonusList.Add(bonus);
     }
 
+    public int GetPlayDamage(Play playThatIsBeingPlayed, Player opponent)
+    {
+        Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
+        Console.WriteLine("Obteniendo el damage que debería hacer");
+        int netDamage = cardThatIsBeingPlayed.GetDamage();
+        Console.WriteLine(netDamage);
+        foreach (DamageBonus damageBonus in _damageBonusList)
+        {
+            if (damageBonus.CheckIfBonusCanApplyToPlay(playThatIsBeingPlayed, opponent))
+                netDamage += damageBonus.GetBonusAmount();
+            Console.WriteLine(damageBonus.CheckIfBonusCanApplyToPlay(playThatIsBeingPlayed, opponent));
+        }
+
+        return netDamage;
+    }
+
+
     public void CheckIfBonusExpire()
     {
         foreach (var damageBonus in _damageBonusList.Where(damageBonus => damageBonus.CheckIfBonusExpired()))
@@ -35,8 +52,6 @@ public class BonusManager
             _fortitudeBonusList.Remove(fortitudeBonus);
         }
     }
-    
-    public void GetPlayDamage(){}
     
     public void GetPlayFortitude(){}
     

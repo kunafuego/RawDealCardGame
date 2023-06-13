@@ -1,3 +1,4 @@
+using RawDeal.Bonus;
 using RawDealView;
 
 namespace RawDeal.Reversals;
@@ -43,14 +44,10 @@ public static class ReversalUtils
         }
     }
     
-    public static int ManageCardDamage(Card cardPlayed, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect)
+    public static int ManageCardDamage(Play play, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect, BonusManager bonusManager)
     {
-        int initialDamage = cardPlayed.GetDamage();
-        if (AbilitiesManager.CheckIfHasAbilityWhenReceivingDamage(playerNotPlayingRound))
-        {
-            initialDamage -= 1;
-        }
-        int extraDamage = (cardPlayed.CheckIfSubtypesContain("Grapple")) ? nextMoveEffect.DamageChange : 0;
-        return initialDamage + extraDamage;
+        int netDamage = bonusManager.GetPlayDamage(play, playerNotPlayingRound);
+        int extraDamage = (play.Card.CheckIfSubtypesContain("Grapple")) ? nextMoveEffect.DamageChange : 0;
+        return netDamage + extraDamage;
     }
 }

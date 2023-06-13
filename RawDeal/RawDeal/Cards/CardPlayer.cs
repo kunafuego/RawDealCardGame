@@ -109,10 +109,6 @@ public class CardPlayer
         _view.SayThatPlayerSuccessfullyPlayedACard();
         bool effectWasPerformed = CheckIfEffectWillBePerformed(cardPlayed);
         ManageCardEffect(chosenPlay);
-        Console.WriteLine("\n");
-        Console.WriteLine(chosenPlay.PlayedAs);
-        Console.WriteLine(effectWasPerformed);
-        Console.WriteLine("\n");
         switch (chosenPlay.PlayedAs)
         {
             case "MANEUVER":
