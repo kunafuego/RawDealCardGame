@@ -3,8 +3,7 @@ namespace RawDeal.Effects;
 
 public class DrawCardEffect : Effect
 {
-    private int _amountOfCardsToDrawInEffect;
-    
+    private readonly int _amountOfCardsToDrawInEffect;
     public DrawCardEffect(int amountOfCardsToDrawInEffect)
     { 
         _amountOfCardsToDrawInEffect = amountOfCardsToDrawInEffect; 

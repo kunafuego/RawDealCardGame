@@ -11,27 +11,21 @@ public class CardPlayer
     private readonly View _view;
     private readonly Player _playerPlayingRound;
     private readonly Player _playerNotPlayingRound;
-    private EffectForNextMove _nextMoveEffect;
     private BonusManager _bonusManager;
     private LastPlay _lastPlayInstance;
     private bool _turnEnded;
     private bool _gameShouldEnd;
 
-    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, 
-        EffectForNextMove nextMoveEffect, LastPlay lastPlayInstance, BonusManager bonusManager)
+    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
-        _nextMoveEffect = nextMoveEffect;
         _lastPlayInstance = lastPlayInstance;
         _bonusManager = bonusManager;
     }
 
-    public EffectForNextMove NextMoveEffect
-    {
-        get { return _nextMoveEffect; }
-    }
+
 
     public bool TurnEnded
     {
@@ -76,24 +70,7 @@ public class CardPlayer
 
     private void ManageReversalError(CardWasReversedException error)
     {
-        if (error.Message == "Jockeying for Position")
-        {
-            SelectedEffect chosenOption =
-                _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
-            
-            switch (chosenOption)
-            {
-                case SelectedEffect.NextGrappleIsPlus4D:
-                    _bonusManager.AddDamageBonus(new JockeyingDamageBonus());
-                    _bonusManager.CheckIfFortitudeBonusExpire();
-                    break;
-                case SelectedEffect.NextGrapplesReversalIsPlus8F:
-                    _bonusManager.AddFortitudeBonus(new JockeyingFortitudeBonus());
-                    _bonusManager.CheckIfBonusExpire();
-                    break;
-            }
-        }
-        else
+        if (error.Message != "Jockeying for Position")
         {
             _bonusManager.CheckIfFortitudeBonusExpire();
             _bonusManager.CheckIfBonusExpire();
@@ -117,26 +94,21 @@ public class CardPlayer
         _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(), chosenPlay.ToString());
         TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
-        bool effectWasPerformed = CheckIfEffectWillBePerformed(cardPlayed);
         ManageCardEffect(chosenPlay);
         switch (chosenPlay.PlayedAs)
         {
             case "MANEUVER":
                 PlayManeuver(cardPlayed);
                 break;
-            case "ACTION" when !effectWasPerformed:
-                PlayAction(cardPlayed);
-                break;
-            case "ACTION" when effectWasPerformed:
+            case "ACTION":
                 MoveActionCard(cardPlayed);
                 break;
         }
-
     }
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _nextMoveEffect, _bonusManager, _lastPlayInstance);
+        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _bonusManager, _lastPlayInstance);
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
@@ -144,7 +116,7 @@ public class CardPlayer
     {
         Card cardToPlay = chosenPlay.Card;
         Precondition cardEffectPrecondition = cardToPlay.Precondition;
-        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand");
+        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Checking To Play Action");
         if (meetsPrecondition)
         {
             PerformCardEffect(chosenPlay);
@@ -161,54 +133,23 @@ public class CardPlayer
         }
     }
 
-    private bool CheckIfEffectWillBePerformed(Card cardPlayed)
-    {
-        Precondition cardEffectPrecondition = cardPlayed.Precondition;
-        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Hand");
-        List<Effect> cardEffects = cardPlayed.EffectObject;
-        return meetsPrecondition && !cardEffects.Any(obj => obj is NoEffect);
-    }
-
     private void PlayManeuver(Card cardPlayed)
     {
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, 
-            _playerNotPlayingRound, _nextMoveEffect, _lastPlayInstance, _bonusManager);
+            _playerNotPlayingRound, _lastPlayInstance, _bonusManager);
         maneuverPlayer.PlayManeuver(cardPlayed);
-        _nextMoveEffect = new EffectForNextMove(0, 0);
         _turnEnded = maneuverPlayer.TurnEnded;
         _gameShouldEnd = maneuverPlayer.GameShouldEnd;
     }
 
-    private void PlayAction(Card cardPlayed)
-    {
-        if (cardPlayed.Title == "Jockeying for Position")
-        {
-            SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerPlayingRound.GetSuperstarName());
-            // _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
-            //     ? new EffectForNextMove(4, 0)
-            //     : new EffectForNextMove(0, 8);
-            if (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
-            {
-                _bonusManager.AddDamageBonus(new JockeyingDamageBonus());
-            }
-            else if (chosenOption == SelectedEffect.NextGrapplesReversalIsPlus8F)
-            {
-                _bonusManager.AddFortitudeBonus(new JockeyingFortitudeBonus());
-            }
-            _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-        }
-        else
-        {
-            _playerPlayingRound.DrawSingleCard();
-            _view.SayThatPlayerMustDiscardThisCard(_playerPlayingRound.GetSuperstarName(), cardPlayed.Title);
-            _view.SayThatPlayerDrawCards(_playerPlayingRound.GetSuperstarName(), 1);
-            _playerPlayingRound.MoveCardFromHandToRingside(cardPlayed);
-        }
-    }
-
     private void MoveActionCard(Card cardPlayed)
     {
-        _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+        List<Effect> cardEffects = cardPlayed.EffectObject;
+        bool alreadyMoveCard = cardEffects.Any(obj => obj is DiscardCardToDrawOne);
+        if (cardPlayed.Title == "Jockeying for Position" || !alreadyMoveCard)
+        {
+            _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+        }
     }
 
 }

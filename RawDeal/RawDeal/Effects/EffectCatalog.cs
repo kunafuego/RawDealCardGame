@@ -10,7 +10,7 @@ public static class EffectCatalog
     public static void SetEffectCatalog(LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
-        _effectCatalog["Chop"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Chop"] = new List<Effect>() {new DiscardCardToDrawOne()};
 
         _effectCatalog["Head Butt"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
@@ -51,7 +51,7 @@ public static class EffectCatalog
         _effectCatalog["Clothesline"] = new List<Effect>() {new NoEffect()};
 
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
-        _effectCatalog["Arm Bar Takedown"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Arm Bar Takedown"] = new List<Effect>() {new DiscardCardToDrawOne()};
 
         // TODO:When successfully played, discard 1 card of your choice from your hand.
         _effectCatalog["Arm Drag"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
@@ -107,7 +107,7 @@ public static class EffectCatalog
         _effectCatalog["Press Slam"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile(), new OpponentDiscardCardEffect(2)};
 
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
-        _effectCatalog["Collar & Elbow Lockup"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Collar & Elbow Lockup"] = new List<Effect>() {new DiscardCardToDrawOne()};
 
         // TODO:When successfully played, discard 1 card of your choice from your hand.
         _effectCatalog["Arm Bar"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
@@ -199,7 +199,7 @@ public static class EffectCatalog
 
         // TODO:As an action, if your next card played is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be 
         // +8F. As a reversal, may only reverse the card titled Jockeying for Position. If so, you end opponent's turn; and if your next card played on your turn is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be +8F.
-        _effectCatalog["Jockeying for Position"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Jockeying for Position"] = new List<Effect>() {new JockeyingEffect(bonusManager)};
 
         // TODO:As an action, if your next card played is a Strike maneuver it is +5D. As a reversal, may only reverse the card titled Irish Whip. If so, you end opponent's turn; and if your next card played on your turn is a Strike maneuver it is +5D.
         _effectCatalog["Irish Whip"] = new List<Effect>() {new NoEffect()};
@@ -285,7 +285,7 @@ public static class EffectCatalog
         _effectCatalog["Undertaker Sits Up!"] = new List<Effect>() {new NoEffect()};
 
         // TODO:As an action, this card is -30F and -25D, discard this card and draw 1 card.
-        _effectCatalog["Undertaker's Tombstone Piledriver"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Undertaker's Tombstone Piledriver"] = new List<Effect>() {new DiscardCardToDrawOne()};
 
         // TODO:+5D to all your maneuvers and +20F to all of opponent's reversals for the rest of this turn.
         _effectCatalog["Power of Darkness"] = new List<Effect>() {new NoEffect()};

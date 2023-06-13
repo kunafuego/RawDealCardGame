@@ -48,7 +48,7 @@ public static class ReversalUtils
         }
     }
     
-    public static int ManageCardDamage(Play play, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect, BonusManager bonusManager)
+    public static int ManageCardDamage(Play play, Player playerNotPlayingRound, BonusManager bonusManager)
     {
         return bonusManager.GetPlayDamage(play, playerNotPlayingRound);
     }
