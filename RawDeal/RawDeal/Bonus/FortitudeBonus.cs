@@ -2,14 +2,16 @@ namespace RawDeal.Bonus;
 
 public abstract class FortitudeBonus
 {
-    private int _bonusAmount;
+    // private int _bonusAmount;
+    //
+    // protected DamageBonus(int bonusAmount)
+    // {
+    //     _bonusAmount = bonusAmount;
+    // }
 
-    protected FortitudeBonus(int bonusAmount, ExpireOptions expireCondition)
-    {
-        _bonusAmount = bonusAmount;
-    }
-
-    public abstract bool CheckIfBonusExpired();
-    public abstract bool CheckIfBonusCanApplyToPlay();
+    public abstract int GetBonusAmount();
+    
+    public abstract bool CheckIfFortitudeBonusExpired();
+    public abstract bool CheckIfBonusCanApplyToPlay(Card cardThatIsTryingToBePlayed);
 
 }

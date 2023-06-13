@@ -1,6 +1,6 @@
 namespace RawDeal.Bonus.BonusClasses;
 
-public class MankindDamageBonus : DamageBonus
+public class MankindDamageBonus : Bonus
 {
     private const int BonusAmount = -1;
     public MankindDamageBonus()

@@ -103,7 +103,7 @@ public class Game
     private void InitiateBonusManager()
     {
         _bonusManager = new BonusManager(_lastPlayInstance);
-        DamageBonus mankindBonus = new MankindDamageBonus();
+        Bonus.Bonus mankindBonus = new MankindDamageBonus();
         _bonusManager.AddDamageBonus(mankindBonus);
     }
     

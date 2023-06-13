@@ -59,7 +59,7 @@ public class ReversalManager
     
     public void TryToReversePlayFromHand(Play playOpponentIsTryingToMake)
     {
-        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay(_nextMoveEffect, 
+        List<Card> reversalCardsThatPlayerCanPlay = _playerNotPlayingRound.GetReversalCardsThatPlayerCanPlay(_bonusManager, 
                                                                                             playOpponentIsTryingToMake.Card);
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = GetReversalCardsThatPlayerCanPlayOnThisCard(reversalCardsThatPlayerCanPlay, 
                                                                                                             playOpponentIsTryingToMake);
@@ -100,7 +100,7 @@ public class ReversalManager
         reversalSelected.PlayedAs = "REVERSAL HAND";
         _lastPlayInstance.LastPlayPlayed = opponentPlay;
         _playerPlayingRound.MoveCardFromHandToRingside(opponentPlay.Card);
-        ReversalUtils.SetDamageThatReversalShouldMake(reversalCardSelected, opponentPlay.Card, _nextMoveEffect);
+        ReversalUtils.SetDamageThatReversalShouldMake(_playerNotPlayingRound, opponentPlay, _bonusManager, reversalCardSelected);
         PerformEffect(reversalSelected);
         _lastPlayInstance.LastPlayPlayed = reversalSelected;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = false;
@@ -150,7 +150,7 @@ public class ReversalManager
 
     private bool CheckIfPlayerHasHigherFortitudeThanCard(Card cardThatCouldReverseManeuver, Card cardThatCanBeReversed)
     {
-        int extraFortitude = (cardThatCanBeReversed.CheckIfSubtypesContain("Grapple")) ? _nextMoveEffect.FortitudeChange : 0;
-        return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanGiven(cardThatCouldReverseManeuver.Fortitude + extraFortitude);
+        int fortitudeOfCardTryingToReverse = _bonusManager.GetPlayFortitude(cardThatCanBeReversed, cardThatCouldReverseManeuver);
+        return _playerNotPlayingRound.CheckIfHasHigherFortitudeThanGiven(fortitudeOfCardTryingToReverse);
     }
 }

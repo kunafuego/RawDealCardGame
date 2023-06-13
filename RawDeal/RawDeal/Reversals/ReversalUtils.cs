@@ -16,11 +16,15 @@ public static class ReversalUtils
 
         return playsToReturn;
     }
-    
-    public static void SetDamageThatReversalShouldMake(Card reversalCardSelected, Card cardOpponentWasTryingToPlay, EffectForNextMove nextMoveEffect)
+
+    public static void SetDamageThatReversalShouldMake(Player playerNotPlayingRound, Play playOpponentWasTryingToPlay,
+        BonusManager bonusManager, Card reversalCardSelected)
     {
+        Card cardOpponentWasTryingToPlay = playOpponentWasTryingToPlay.Card;
         if (reversalCardSelected.Title != "Rolling Takedown" && reversalCardSelected.Title != "Knee to the Gut") return;
-        cardOpponentWasTryingToPlay.ReversalDamage = cardOpponentWasTryingToPlay.GetDamage() + nextMoveEffect.DamageChange;
+        int damageWithBonus = bonusManager.GetPlayDamage(playOpponentWasTryingToPlay, playerNotPlayingRound);
+        if (playerNotPlayingRound.GetSuperstarName() == "MANKIND") damageWithBonus += 1;
+        cardOpponentWasTryingToPlay.ReversalDamage = damageWithBonus;
     }
     
     public static bool CheckIfCardIsReversal(Card card)
@@ -46,8 +50,6 @@ public static class ReversalUtils
     
     public static int ManageCardDamage(Play play, Player playerNotPlayingRound, EffectForNextMove nextMoveEffect, BonusManager bonusManager)
     {
-        int netDamage = bonusManager.GetPlayDamage(play, playerNotPlayingRound);
-        int extraDamage = (play.Card.CheckIfSubtypesContain("Grapple")) ? nextMoveEffect.DamageChange : 0;
-        return netDamage + extraDamage;
+        return bonusManager.GetPlayDamage(play, playerNotPlayingRound);
     }
 }

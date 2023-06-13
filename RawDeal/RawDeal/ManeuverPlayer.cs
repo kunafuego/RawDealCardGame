@@ -11,7 +11,7 @@ public class ManeuverPlayer
     private bool _gameShouldEnd;
     private bool _turnEnded;
     private readonly EffectForNextMove _effectForThisMove;
-    private BonusManager _bonusManager;
+    private readonly BonusManager _bonusManager;
     private readonly LastPlay _lastPlayInstance;
 
     public ManeuverPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound,
@@ -52,6 +52,8 @@ public class ManeuverPlayer
             reversalPerformer.CheckIfManeuverCanBeReversedFromDeckWithASpecificCard(i, cardTotalDamage, cardPlayed);
             DealSingleCardDamage(i, cardTotalDamage);
         }
+        _bonusManager.CheckIfFortitudeBonusExpire();
+        _bonusManager.CheckIfBonusExpire();
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 
@@ -72,9 +74,9 @@ public class ManeuverPlayer
     
     private int ManageCardDamage(Card cardPlayed, string playedAs)
     {
-        int netDamage = _bonusManager.GetPlayDamage(new Play(cardPlayed, playedAs), _playerNotPlayingRound);
-        int extraDamage = (cardPlayed.CheckIfSubtypesContain("Grapple")) ? _effectForThisMove.DamageChange : 0;
-        return netDamage + extraDamage;
+        int damage = _bonusManager.GetPlayDamage(new Play(cardPlayed, playedAs), _playerNotPlayingRound);
+        // _bonusManager.CheckIfBonusExpire();
+        return damage;
     }
     
     private void CheckIfGameAndTurnShouldEndWhileReceivingDamage()

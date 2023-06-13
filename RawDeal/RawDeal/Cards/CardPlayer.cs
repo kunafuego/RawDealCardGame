@@ -1,4 +1,5 @@
 using RawDeal.Bonus;
+using RawDeal.Bonus.BonusClasses;
 using RawDeal.Effects;
 using RawDeal.Preconditions;
 using RawDealView;
@@ -79,15 +80,24 @@ public class CardPlayer
         {
             SelectedEffect chosenOption =
                 _view.AskUserToSelectAnEffectForJockeyForPosition(_playerNotPlayingRound.GetSuperstarName());
-            _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
-                ? new EffectForNextMove(4, 0)
-                : new EffectForNextMove(0, 8);
+            
+            switch (chosenOption)
+            {
+                case SelectedEffect.NextGrappleIsPlus4D:
+                    _bonusManager.AddDamageBonus(new JockeyingDamageBonus());
+                    _bonusManager.CheckIfFortitudeBonusExpire();
+                    break;
+                case SelectedEffect.NextGrapplesReversalIsPlus8F:
+                    _bonusManager.AddFortitudeBonus(new JockeyingFortitudeBonus());
+                    _bonusManager.CheckIfBonusExpire();
+                    break;
+            }
         }
         else
         {
-            _nextMoveEffect = new EffectForNextMove(0, 0);
+            _bonusManager.CheckIfFortitudeBonusExpire();
+            _bonusManager.CheckIfBonusExpire();
         }
-
         _turnEnded = true;
     }
 
@@ -121,6 +131,7 @@ public class CardPlayer
                 MoveActionCard(cardPlayed);
                 break;
         }
+
     }
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
@@ -173,9 +184,17 @@ public class CardPlayer
         if (cardPlayed.Title == "Jockeying for Position")
         {
             SelectedEffect chosenOption = _view.AskUserToSelectAnEffectForJockeyForPosition(_playerPlayingRound.GetSuperstarName());
-            _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
-                ? new EffectForNextMove(4, 0)
-                : new EffectForNextMove(0, 8);
+            // _nextMoveEffect = (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
+            //     ? new EffectForNextMove(4, 0)
+            //     : new EffectForNextMove(0, 8);
+            if (chosenOption == SelectedEffect.NextGrappleIsPlus4D)
+            {
+                _bonusManager.AddDamageBonus(new JockeyingDamageBonus());
+            }
+            else if (chosenOption == SelectedEffect.NextGrapplesReversalIsPlus8F)
+            {
+                _bonusManager.AddFortitudeBonus(new JockeyingFortitudeBonus());
+            }
             _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
         }
         else

@@ -1,6 +1,6 @@
 namespace RawDeal.Bonus;
 
-public abstract class DamageBonus
+public abstract class Bonus
 {
     // private int _bonusAmount;
     //

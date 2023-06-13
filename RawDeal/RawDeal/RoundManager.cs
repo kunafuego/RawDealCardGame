@@ -60,8 +60,15 @@ public class RoundManager
             ManageChosenOption(nextPlayOptionChosen);
         } while (!_turnEnded);
 
+        if (!_lastPlayInstance.WasItASuccesfulReversal)
+        {
+            _bonusManager.CheckIfBonusExpire();
+            _bonusManager.CheckIfFortitudeBonusExpire();
+        }
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = _lastPlayInstance.WasItASuccesfulReversal;
         _lastPlayInstance.WasItASuccesfulReversal = false;
+
+
     }
     
     private void PlayerDrawCards()
