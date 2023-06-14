@@ -8,12 +8,6 @@ public class JockeyingDamageBonus : Bonus
         BonusAmount = ConstBonusAmount;
     }
 
-
-    public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
-    {
-        return true;
-    }
-
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
         Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
