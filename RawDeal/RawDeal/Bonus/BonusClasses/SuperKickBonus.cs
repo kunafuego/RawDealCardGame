@@ -3,15 +3,10 @@ using RawDeal.Bonus;
 
 public class SuperKickBonus : Bonus
 {
-    private const int BonusAmount = 5;
+    private const int ConstBonusAmount = 5;
     public SuperKickBonus()
     {
-        
-    }
-
-    public override int GetBonusAmount()
-    {
-        return BonusAmount;
+        BonusAmount = ConstBonusAmount;
     }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)

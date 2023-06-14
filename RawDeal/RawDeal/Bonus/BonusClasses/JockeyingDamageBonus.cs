@@ -2,16 +2,12 @@ namespace RawDeal.Bonus.BonusClasses;
 
 public class JockeyingDamageBonus : Bonus
 {
-    private const int BonusAmount = 4;
+    private const int ConstBonusAmount = 4;
     public JockeyingDamageBonus()
     {
-        
+        BonusAmount = ConstBonusAmount;
     }
 
-    public override int GetBonusAmount()
-    {
-        return BonusAmount;
-    }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {

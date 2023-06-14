@@ -5,20 +5,15 @@ using RawDeal.Effects.EffectsClasses;
 
 public class NextManeuverBonusDamage : Bonus
 {
-    private int _bonusAmount;
     private int _playsThatHavePassed;
     private LastPlay _lastPlayInstance;
     public NextManeuverBonusDamage(int bonusAmount, LastPlay lastPlayInstance)
     {
-        _bonusAmount = bonusAmount;
+        BonusAmount = bonusAmount;
         _playsThatHavePassed = 0;
         _lastPlayInstance = lastPlayInstance;
     }
 
-    public override int GetBonusAmount()
-    {
-        return _bonusAmount;
-    }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {

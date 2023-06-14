@@ -1,13 +1,11 @@
-using RawDeal;
-using RawDeal.Bonus;
+namespace RawDeal.Bonus.BonusClasses;
 
-public class EndOfTurnManeuverBonus : Bonus
+public class EndOfTurnBonus : Bonus
 {
-    public EndOfTurnManeuverBonus(int bonusAmount)
+    public EndOfTurnBonus(int bonusAmount)
     {
         BonusAmount = bonusAmount;
     }
-
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {
@@ -17,6 +15,7 @@ public class EndOfTurnManeuverBonus : Bonus
 
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
-        return playThatIsTryingToBePlayed.PlayedAs == "MANEUVER";
+        Card cardTryingToBePlayed = playThatIsTryingToBePlayed.Card;
+        return cardTryingToBePlayed.CheckIfSubtypesContain("Strike");
     }
 }

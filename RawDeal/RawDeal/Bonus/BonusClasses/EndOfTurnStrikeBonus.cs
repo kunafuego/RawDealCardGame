@@ -2,16 +2,11 @@ namespace RawDeal.Bonus.BonusClasses;
 
 public class EndOfTurnStrikeBonus : Bonus
 {
-    private int _bonusAmount;
     public EndOfTurnStrikeBonus(int bonusAmount)
     {
-        _bonusAmount = bonusAmount;
+        BonusAmount = bonusAmount;
     }
 
-    public override int GetBonusAmount()
-    {
-        return _bonusAmount;
-    }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {

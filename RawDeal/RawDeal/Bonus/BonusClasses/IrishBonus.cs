@@ -3,16 +3,12 @@ using RawDeal.Bonus;
 
 public class IrishBonus : Bonus
 {
-    private const int BonusAmount = 5;
+    private const int ConstBonusAmount = 5;
     public IrishBonus()
     {
-        
+        BonusAmount = ConstBonusAmount;
     }
 
-    public override int GetBonusAmount()
-    {
-        return BonusAmount;
-    }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {

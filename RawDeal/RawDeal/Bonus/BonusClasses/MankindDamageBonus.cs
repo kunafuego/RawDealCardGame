@@ -2,15 +2,10 @@ namespace RawDeal.Bonus.BonusClasses;
 
 public class MankindDamageBonus : Bonus
 {
-    private const int BonusAmount = -1;
+    private const int ConstBonusAmount = -1;
     public MankindDamageBonus()
     {
-        
-    }
-
-    public override int GetBonusAmount()
-    {
-        return BonusAmount;
+        BonusAmount = ConstBonusAmount;
     }
 
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)

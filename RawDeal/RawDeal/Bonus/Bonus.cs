@@ -2,9 +2,14 @@ namespace RawDeal.Bonus;
 
 public abstract class Bonus
 {
-    public abstract int GetBonusAmount();
+    protected int BonusAmount { get; set; }
+
     
     public abstract bool CheckIfBonusExpired(ExpireOptions expireOptions);
     public abstract bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent);
 
+    public int GetBonusAmount()
+    {
+        return BonusAmount;
+    }
 }
