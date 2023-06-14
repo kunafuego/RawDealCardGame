@@ -55,13 +55,11 @@ public class RoundManager
 
         if (!_lastPlayInstance.WasItASuccesfulReversal)
         {
-            _bonusManager.CheckIfBonusExpire();
+            _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
             _bonusManager.CheckIfFortitudeBonusExpire();
         }
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = _lastPlayInstance.WasItASuccesfulReversal;
         _lastPlayInstance.WasItASuccesfulReversal = false;
-
-
     }
     
     private void PlayerDrawCards()

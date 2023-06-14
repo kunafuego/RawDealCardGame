@@ -76,6 +76,14 @@ public class ReversalManager
         _lastPlayInstance.LastPlayPlayed = playOpponentIsTryingToMake;
         _lastPlayInstance.ActualDamageMade =
             ReversalUtils.ManageCardDamage(playOpponentIsTryingToMake, _playerNotPlayingRound, _bonusManager);
+        if (actualLastPlay != null)
+        {
+            Card lastCard = actualLastPlay.Card;
+            _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip =
+                playOpponentIsTryingToMake.PlayedAs == "MANEUVER" && lastCard.Title == "Irish Whip";
+            Console.WriteLine(lastCard.Title);
+        }
+        Console.WriteLine($"Antes de empezar a Chequear desde mano vemos si lo que vamos a intentar revertir fue un maneuver jugado desps de irish whip: {_lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip}");
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
             .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse,"Hand")).ToList();
         _lastPlayInstance.LastPlayPlayed = actualLastPlay;
@@ -132,15 +140,25 @@ public class ReversalManager
         bool cardIsReversal = ReversalUtils.CheckIfCardIsReversal(cardThatWasTurnedOver);
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver, playPlayedByOpponent.Card);
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
+        // if (actualLastPlay != null)
+        // {
+        //     Card lastCard = actualLastPlay.Card;
+        //     _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip =
+        //         lastCard.Title == "Irish Whip";
+        //     Console.WriteLine(lastCard.Title);
+        //
+        // }
         _lastPlayInstance.LastPlayPlayed = playPlayedByOpponent;
         _lastPlayInstance.ActualDamageMade =
             ReversalUtils.ManageCardDamage(playPlayedByOpponent, _playerNotPlayingRound, _bonusManager);
+        Console.WriteLine($"Antes de empezar a Chequear desde mazo vemos si lo que vamos a intentar revertir fue un maneuver jugado desps de irish whip: {_lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip}");
         if (cardIsReversal && playerHasHigherFortitudeThanCard)
         {
             bool doesItMeetPrecondition = CheckIfCardMeetsPrecondition(cardThatWasTurnedOver, "Deck");
             _lastPlayInstance.LastPlayPlayed = actualLastPlay;
             return doesItMeetPrecondition;
         }
+        _lastPlayInstance.LastPlayPlayed = actualLastPlay;
         return false;
     }
 

@@ -1,5 +1,6 @@
 using RawDeal.Bonus;
 using RawDeal.Effects.EffectsClasses;
+using RawDeal.Preconditions.PreconditionClasses;
 
 namespace RawDeal.Effects;
 
@@ -15,26 +16,26 @@ public static class EffectCatalog
         _effectCatalog["Head Butt"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
         // TODO:When successfully played, all Strike maneuvers are +1D for the rest of this turn.
-        _effectCatalog["Haymaker"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Haymaker"] = new List<Effect>() {new AddBonusUntilEndOfTurn(bonusManager, 1, "STRIKE")};
 
         // TODO:The card titled Irish Whip must be played before playing this card. When successfully played, you may either draw 2 cards, or force opponent to discard 2 cards.
-        _effectCatalog["Back Body Drop"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Back Body Drop"] = new List<Effect>() {new ChooseBetweenDrawOrDiscard(2)};
 
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
-        _effectCatalog["Shoulder Block"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Shoulder Block"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         _effectCatalog["Kick"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile()};
 
         // TODO:The card titled Irish Whip must be played before playing this card. May only reverse a maneuver played after the card titled Irish Whip.
-        _effectCatalog["Cross Body Block"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Cross Body Block"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:May only reverse the maneuver titled Kick.
-        _effectCatalog["Ensugiri"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Ensugiri"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         _effectCatalog["Running Elbow Smash"] = new List<Effect>() {new MoveTopCardOfArsenalToRingsidePile()};
 
         // TODO:May only reverse the maneuver titled Drop Kick.
-        _effectCatalog["Drop Kick"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Drop Kick"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:Reversals to this maneuver are +2D.
         _effectCatalog["Discus Punch"] = new List<Effect>() {new NoEffect()};
@@ -45,7 +46,7 @@ public static class EffectCatalog
         _effectCatalog["Spinning Heel Kick"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
-        _effectCatalog["Spear"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Spear"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
         _effectCatalog["Clothesline"] = new List<Effect>() {new NoEffect()};
@@ -69,16 +70,16 @@ public static class EffectCatalog
         _effectCatalog["Headlock Takedown"] = new List<Effect>() {new OpponentDrawCardEffect(1)};
 
         // TODO:May only reverse the maneuver titled Belly to Belly Suplex.
-        _effectCatalog["Belly to Belly Suplex"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Belly to Belly Suplex"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
         _effectCatalog["Atomic Drop"] = new List<Effect>() {new NoEffect()};
 
         // TODO:May only reverse the maneuver titled Vertical Suplex.
-        _effectCatalog["Vertical Suplex"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Vertical Suplex"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:May only reverse the maneuver titled Belly to Back Suplex.
-        _effectCatalog["Belly to Back Suplex"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Belly to Back Suplex"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:When successfully played, opponent must discard 2 cards.
         _effectCatalog["Pump Handle Slam"] = new List<Effect>() {new OpponentDiscardCardEffect(2)};
@@ -202,7 +203,7 @@ public static class EffectCatalog
         _effectCatalog["Jockeying for Position"] = new List<Effect>() {new JockeyingEffect(bonusManager)};
 
         // TODO:As an action, if your next card played is a Strike maneuver it is +5D. As a reversal, may only reverse the card titled Irish Whip. If so, you end opponent's turn; and if your next card played on your turn is a Strike maneuver it is +5D.
-        _effectCatalog["Irish Whip"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Irish Whip"] = new List<Effect>() {new IrishWhipEffect(bonusManager)};
 
         // TODO:Draw 1 card. Look at opponent's hand, and then make him discard all HEEL cards.
         _effectCatalog["Flash in the Pan"] = new List<Effect>() {new NoEffect()};
@@ -218,7 +219,7 @@ public static class EffectCatalog
         _effectCatalog["Offer Handshake"] = new List<Effect>() {new MayDrawCardsEffect(3), new DiscardOwnCardEffect(1)};
 
         // TODO:Discard up to 2 cards from your hand to your Ringside pile. Return an equal number of cards of your choice to your hand from your Ringside pile.
-        _effectCatalog["Roll Out of the Ring"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Roll Out of the Ring"] = new List<Effect>() {new DiscardCardsAndReturnToHand()};
 
         // TODO:Draw 1 card. Look at opponent's hand. If he has any cards titled Disqualification! he must discard them.
         _effectCatalog["Distract the Ref"] = new List<Effect>() {new NoEffect()};
@@ -266,7 +267,7 @@ public static class EffectCatalog
         _effectCatalog["Austin Elbow Smash"] = new List<Effect>() {new NoEffect()};
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 1 card.
-        _effectCatalog["Lou Thesz Press"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Lou Thesz Press"] = new List<Effect>() {new MayDrawCardsEffect(1), new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:Reverse any Strike, Grapple or Submission maneuver. End your opponent's turn. If played from your hand, opponent must discard 2 cards, 
         // then take the top 2 cards from his Arsenal and put them into his Ringside pile.
@@ -295,7 +296,7 @@ public static class EffectCatalog
         _effectCatalog["Have a Nice Day!"] = new List<Effect>() {new NoEffect()};
 
         // TODO:May only reverse the maneuver titled Back Body Drop.
-        _effectCatalog["Double Arm DDT"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Double Arm DDT"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:May not be reversed. When successfully played, opponent must discard 2 cards.
         _effectCatalog["Tree of Woe"] = new List<Effect>() {new OpponentDiscardCardEffect(2)};
@@ -307,13 +308,13 @@ public static class EffectCatalog
         _effectCatalog["Mr. Socko"] = new List<Effect>() {new NoEffect()};
 
         // TODO:May not be reversed. You must play the card titled Irish Whip before playing this card. When successfully played, opponent discards 1 card.
-        _effectCatalog["Leaping Knee to the Face"] = new List<Effect>() {new ReturnHashtagDamageEffect(lastPlayInstance, bonusManager)};
+        _effectCatalog["Leaping Knee to the Face"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 2 cards.
-        _effectCatalog["Facebuster"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Facebuster"] = new List<Effect>() {new MayDrawCardsEffect(2), new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:All your maneuvers are +3D for the rest of this turn. Draw 2 cards, or force opponent to discard 2 cards.
-        _effectCatalog["I Am the Game"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["I Am the Game"] = new List<Effect>() {new AddBonusUntilEndOfTurn(bonusManager, 3, "MANEUVER"),new ChooseBetweenDrawOrDiscard(2)};
 
         // TODO:When successfully played, +2D if played after a Strike maneuver. May only reverse the maneuver titled Back Body Drop.
         _effectCatalog["Pedigree"] = new List<Effect>() {new NoEffect()};
@@ -355,7 +356,7 @@ public static class EffectCatalog
         _effectCatalog["Lionsault"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
         // TODO:Draw up to 5 Cards or force opponent to discard up to 5 cards.
-        _effectCatalog["Y2J"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Y2J"] = new List<Effect>() {new ChooseBetweenDrawOrDiscard(5)};
 
         // TODO:Reverse any Strike, Grapple or Submission maneuver. End your opponent's turn. If played from your hand, opponent must discard 2 cards and all your maneuvers next turn are +2D.
         _effectCatalog["Don't You Never... EVER!"] = new List<Effect>() {new NoEffect()};

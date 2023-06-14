@@ -14,7 +14,7 @@ public class IrishBonus : Bonus
         return BonusAmount;
     }
 
-    public override bool CheckIfBonusExpired()
+    public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {
         return true;
     }
@@ -22,8 +22,7 @@ public class IrishBonus : Bonus
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
         Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
-        // Console.WriteLine(cardBeingPlayed.ToString());
-        Console.WriteLine($"\n Es grapple? {cardBeingPlayed.CheckIfSubtypesContain("Strike")}");
+        Console.WriteLine($"\n Es Strike? {cardBeingPlayed.CheckIfSubtypesContain("Strike")}");
         return cardBeingPlayed.CheckIfSubtypesContain("Strike");
     }
 }

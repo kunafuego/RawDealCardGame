@@ -63,17 +63,24 @@ public class CardPlayer
 
     private void ManageLastPlay(Play playThatWasJustPlayed)
     {
-
+        Play lastPlay = _lastPlayInstance.LastPlayPlayed;
+        _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
+        if (lastPlay != null)
+        {
+            Card lastCard = lastPlay.Card;
+            _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip =
+                playThatWasJustPlayed.PlayedAs == "MANEUVER" && lastCard.Title == "Irish Whip";
+        }
         _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
     }
 
     private void ManageReversalError(CardWasReversedException error)
     {
-        if (error.Message != "Jockeying for Position")
+        if (error.Message != "Jockeying for Position" && error.Message != "Irish Whip")
         {
             _bonusManager.CheckIfFortitudeBonusExpire();
-            _bonusManager.CheckIfBonusExpire();
+            _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
         }
         _turnEnded = true;
     }
@@ -149,6 +156,11 @@ public class CardPlayer
         if (cardPlayed.Title == "Jockeying for Position" || !alreadyMoveCard)
         {
             _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+        }
+        if (cardPlayed.Title != "Jockeying for Position" && cardPlayed.Title != "Irish Whip")
+        {
+            _bonusManager.CheckIfFortitudeBonusExpire();
+            _bonusManager.CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
         }
     }
 

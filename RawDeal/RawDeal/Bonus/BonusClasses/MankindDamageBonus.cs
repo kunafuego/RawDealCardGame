@@ -13,7 +13,7 @@ public class MankindDamageBonus : Bonus
         return BonusAmount;
     }
 
-    public override bool CheckIfBonusExpired()
+    public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {
         return false;
     }

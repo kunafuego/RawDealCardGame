@@ -13,7 +13,7 @@ public class JockeyingDamageBonus : Bonus
         return BonusAmount;
     }
 
-    public override bool CheckIfBonusExpired()
+    public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {
         return true;
     }
@@ -21,8 +21,6 @@ public class JockeyingDamageBonus : Bonus
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
         Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
-        // Console.WriteLine(cardBeingPlayed.ToString());
-        Console.WriteLine($"\n Es grapple? {cardBeingPlayed.CheckIfSubtypesContain("Grapple")}");
         return cardBeingPlayed.CheckIfSubtypesContain("Grapple");
     }
 }

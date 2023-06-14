@@ -50,7 +50,7 @@ public class ManeuverPlayer
             DealSingleCardDamage(i, cardTotalDamage);
         }
         _bonusManager.CheckIfFortitudeBonusExpire();
-        _bonusManager.CheckIfBonusExpire();
+        _bonusManager.CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
     }
 
@@ -72,7 +72,6 @@ public class ManeuverPlayer
     private int ManageCardDamage(Card cardPlayed, string playedAs)
     {
         int damage = _bonusManager.GetPlayDamage(new Play(cardPlayed, playedAs), _playerNotPlayingRound);
-        // _bonusManager.CheckIfBonusExpire();
         return damage;
     }
     

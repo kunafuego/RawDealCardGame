@@ -14,6 +14,7 @@ public class ReturnPredeterminedDamageWhenReversedFromHandEffect : Effect
     public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
         if (actualPlay.PlayedAs != "REVERSAL HAND") return;
+        _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, _lastPlayInstance, _bonusManager);
         maneuverPlayer.PlayReversalAsManeuver(actualPlay.Card);
         // Play lastPlayPlayed = _lastPlayInstance.LastPlayPlayed;
