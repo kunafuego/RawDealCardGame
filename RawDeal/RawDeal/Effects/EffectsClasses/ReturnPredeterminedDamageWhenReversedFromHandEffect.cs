@@ -17,7 +17,5 @@ public class ReturnPredeterminedDamageWhenReversedFromHandEffect : Effect
         _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
         ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, _lastPlayInstance, _bonusManager);
         maneuverPlayer.PlayReversalAsManeuver(actualPlay.Card);
-        // Play lastPlayPlayed = _lastPlayInstance.LastPlayPlayed;
-        // lastPlayPlayed.PlayedAs = "MANEUVER";
     }
 }

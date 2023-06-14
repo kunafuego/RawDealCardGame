@@ -4,7 +4,6 @@ namespace RawDeal;
 
 public static class PlayerUtils
 {
-    // public static List<Play> GetAvailablePlays(Deck hand, int fortitude)
     public static List<Play> GetAvailablePlays(Player player)
     {
         Deck hand = player.Hand;
