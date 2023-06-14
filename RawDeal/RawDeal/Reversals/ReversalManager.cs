@@ -73,6 +73,7 @@ public class ReversalManager
     private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
     {
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
+        int actualDamage = _lastPlayInstance.ActualDamageMade;
         _lastPlayInstance.LastPlayPlayed = playOpponentIsTryingToMake;
         _lastPlayInstance.ActualDamageMade =
             ReversalUtils.ManageCardDamage(playOpponentIsTryingToMake, _playerNotPlayingRound, _bonusManager);
@@ -87,6 +88,7 @@ public class ReversalManager
         List<Card> reversalCardsThatPlayerCanPlayOnThisCard = reversalCardsThatPlayerCanPlay
             .Where(cardThatCanPossibleReverse => CheckIfCardMeetsPrecondition(cardThatCanPossibleReverse,"Hand")).ToList();
         _lastPlayInstance.LastPlayPlayed = actualLastPlay;
+        _lastPlayInstance.ActualDamageMade = actualDamage;
         return reversalCardsThatPlayerCanPlayOnThisCard;
     }
 
@@ -140,14 +142,7 @@ public class ReversalManager
         bool cardIsReversal = ReversalUtils.CheckIfCardIsReversal(cardThatWasTurnedOver);
         bool playerHasHigherFortitudeThanCard = CheckIfPlayerHasHigherFortitudeThanCard(cardThatWasTurnedOver, playPlayedByOpponent.Card);
         Play actualLastPlay = _lastPlayInstance.LastPlayPlayed;
-        // if (actualLastPlay != null)
-        // {
-        //     Card lastCard = actualLastPlay.Card;
-        //     _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip =
-        //         lastCard.Title == "Irish Whip";
-        //     Console.WriteLine(lastCard.Title);
-        //
-        // }
+        int actualDamage = _lastPlayInstance.ActualDamageMade;
         _lastPlayInstance.LastPlayPlayed = playPlayedByOpponent;
         _lastPlayInstance.ActualDamageMade =
             ReversalUtils.ManageCardDamage(playPlayedByOpponent, _playerNotPlayingRound, _bonusManager);
@@ -159,6 +154,7 @@ public class ReversalManager
             return doesItMeetPrecondition;
         }
         _lastPlayInstance.LastPlayPlayed = actualLastPlay;
+        _lastPlayInstance.ActualDamageMade = actualDamage;
         return false;
     }
 

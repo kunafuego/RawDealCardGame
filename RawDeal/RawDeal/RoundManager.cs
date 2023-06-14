@@ -59,7 +59,6 @@ public class RoundManager
             _bonusManager.CheckIfFortitudeBonusExpire();
         }
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = _lastPlayInstance.WasItASuccesfulReversal;
-        _lastPlayInstance.WasItASuccesfulReversal = false;
     }
     
     private void PlayerDrawCards()

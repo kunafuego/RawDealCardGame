@@ -73,6 +73,7 @@ public class CardPlayer
         }
         _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
+        _lastPlayInstance.WasItASuccesfulReversal = false;
     }
 
     private void ManageReversalError(CardWasReversedException error)
@@ -162,6 +163,8 @@ public class CardPlayer
             _bonusManager.CheckIfFortitudeBonusExpire();
             _bonusManager.CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
         }
+
+        _lastPlayInstance.ActualDamageMade = 0;
     }
 
 }

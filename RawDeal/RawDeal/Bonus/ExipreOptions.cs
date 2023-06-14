@@ -2,5 +2,5 @@ namespace RawDeal.Bonus;
 
 public enum ExpireOptions
 {
-    EndOfTurn, OneMoreCardWasPlayed
+    EndOfTurn, OneMoreCardWasPlayed, AddingBonusBeforeNextPlay
 }

@@ -15,7 +15,7 @@ public class BonusManager
 
     public void AddDamageBonus(Bonus bonus)
     {
-        CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
+        if(bonus is IrishBonus) CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
         Console.WriteLine("DAMAGE BONUS ADDED");
         _damageBonusList.Add(bonus);
     }

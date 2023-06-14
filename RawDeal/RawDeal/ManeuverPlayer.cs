@@ -52,6 +52,7 @@ public class ManeuverPlayer
         _bonusManager.CheckIfFortitudeBonusExpire();
         _bonusManager.CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
         _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
+        _lastPlayInstance.ActualDamageMade = cardTotalDamage;
     }
 
     public void PlayReversalAsManeuver(Card cardPlayed)

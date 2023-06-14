@@ -41,7 +41,7 @@ public static class EffectCatalog
         _effectCatalog["Discus Punch"] = new List<Effect>() {new NoEffect()};
 
         // TODO:When successfully played, +5D if played after a 5D or greater maneuver.
-        _effectCatalog["Superkick"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Superkick"] = new List<Effect>() {new AddBonusAfterXDamage(bonusManager, lastPlayInstance)};
 
         _effectCatalog["Spinning Heel Kick"] = new List<Effect>() {new OpponentDiscardCardEffect(1)};
 
@@ -49,7 +49,7 @@ public static class EffectCatalog
         _effectCatalog["Spear"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
-        _effectCatalog["Clothesline"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Clothesline"] = new List<Effect>() {new AddBonusEffect(bonusManager, new NextManeuverBonusDamage(2, lastPlayInstance))};
 
         // TODO:As an action, you may discard this card to draw 1 card. Doing this will not cause any damage to opponent.
         _effectCatalog["Arm Bar Takedown"] = new List<Effect>() {new DiscardCardToDrawOne()};
@@ -58,7 +58,7 @@ public static class EffectCatalog
         _effectCatalog["Arm Drag"] = new List<Effect>() {new DiscardOwnCardEffect(1)};
 
         // TODO:When successfully played, if your next card played this turn is a Strike maneuver it is +2D.
-        _effectCatalog["Snap Mare"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Snap Mare"] = new List<Effect>() {new AddBonusEffect(bonusManager, new NextManeuverStrikeDamage(2, lastPlayInstance))};
 
         // TODO:When successfully played, you may draw 1 card.
         _effectCatalog["Double Leg Takedown"] = new List<Effect>() {new MayDrawCardsEffect(1)};
@@ -73,7 +73,7 @@ public static class EffectCatalog
         _effectCatalog["Belly to Belly Suplex"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
-        _effectCatalog["Atomic Drop"] = new List<Effect>() {new NoEffect()};
+        _effectCatalog["Atomic Drop"] = new List<Effect>() {new AddBonusEffect(bonusManager, new NextManeuverBonusDamage(2, lastPlayInstance))};
 
         // TODO:May only reverse the maneuver titled Vertical Suplex.
         _effectCatalog["Vertical Suplex"] = new List<Effect>() {new ReturnPredeterminedDamageWhenReversedFromHandEffect(lastPlayInstance, bonusManager)};
