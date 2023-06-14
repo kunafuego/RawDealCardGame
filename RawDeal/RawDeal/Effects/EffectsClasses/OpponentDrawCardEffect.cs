@@ -12,10 +12,7 @@ public class OpponentDrawCardEffect : Effect
     
     public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
     {
-        view.SayThatPlayerDrawCards(opponent.GetSuperstarName(), _amountOfCardsToDrawInEffect);
-        for (int i = 0; i < _amountOfCardsToDrawInEffect; i++)
-        {
-            opponent.DrawSingleCard();
-        }
+        Effect drawCardEffect = new DrawCardEffect(_amountOfCardsToDrawInEffect);
+        drawCardEffect.Apply(actualPlay, view, opponent, playerThatPlayedCard);
     }
 }
