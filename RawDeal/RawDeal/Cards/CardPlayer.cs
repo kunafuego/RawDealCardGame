@@ -38,7 +38,6 @@ public class CardPlayer
     }
     public void ManagePlayingCards()
     {
-        Console.WriteLine(_lastPlayInstance);
         List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
         List<string> availablePlaysInStringFormat = GetStringsOfPlays(playsToShow);
         int chosenPlay = _view.AskUserToSelectAPlay(availablePlaysInStringFormat);

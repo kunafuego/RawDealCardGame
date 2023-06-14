@@ -16,13 +16,11 @@ public class BonusManager
     public void AddDamageBonus(Bonus bonus)
     {
         if(bonus is IrishBonus) CheckIfBonusExpire(ExpireOptions.OneMoreCardWasPlayed);
-        Console.WriteLine("DAMAGE BONUS ADDED");
         _damageBonusList.Add(bonus);
     }
 
     public void AddFortitudeBonus(FortitudeBonus bonus)
     {
-        Console.WriteLine("FORTITUDE BONUS ADDED");
         _fortitudeBonusList.Add(bonus);
     }
 
@@ -30,13 +28,11 @@ public class BonusManager
     {
         Card cardThatIsBeingPlayed = playThatIsBeingPlayed.Card;
         int netDamage = cardThatIsBeingPlayed.GetDamage();
-        Console.WriteLine($"\nObteniendo el damage que debería hacer la jugada, teniendo como damage inicial {netDamage}");
         foreach (Bonus damageBonus in _damageBonusList)
         {
             if (damageBonus.CheckIfBonusCanApplyToPlay(playThatIsBeingPlayed, opponent))
             {
                 netDamage += damageBonus.GetBonusAmount();
-                Console.WriteLine($"El damage aumentó a {netDamage}");
             }
         }
         return netDamage;
@@ -50,7 +46,6 @@ public class BonusManager
             if (fortitudeBonus.CheckIfBonusCanApplyToPlay(cardThatIsTryingToBePlayed))
                 netFortitude += fortitudeBonus.GetBonusAmount();
         }
-        Console.WriteLine($"El fortitude que requiere esta carta es: {netFortitude}");
         return netFortitude;
     }
 
@@ -61,7 +56,6 @@ public class BonusManager
         foreach (var damageBonus in expiredDamageBonuses)
         {
             _damageBonusList.Remove(damageBonus);
-            Console.WriteLine("DAMAGE BONUS DELETED");
         }
     }
     
@@ -70,7 +64,6 @@ public class BonusManager
         foreach (var fortitudeBonus in expiredFortitudeBonuses)
         {
             _fortitudeBonusList.Remove(fortitudeBonus);
-            Console.WriteLine("FORTITUDE BONUS DELETED");
 
         }
     }

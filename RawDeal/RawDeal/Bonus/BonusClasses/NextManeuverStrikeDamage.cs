@@ -18,7 +18,6 @@ public class NextManeuverStrikeDamage : Bonus
     public override bool CheckIfBonusExpired(ExpireOptions expireOptions)
     {
         _playsThatHavePassed += 1;
-        Console.WriteLine($"HAN PASADO {_playsThatHavePassed} jugadas desde que creamos el bonus");
         return _playsThatHavePassed == 2;
         
     }
@@ -26,7 +25,6 @@ public class NextManeuverStrikeDamage : Bonus
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
         Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
-        Console.WriteLine($"La útlima fue reversal? {_lastPlayInstance.WasItASuccesfulReversal}");
         if (_lastPlayInstance.WasItASuccesfulReversal) return false;
         return cardBeingPlayed.CheckIfSubtypesContain("Strike") && _playsThatHavePassed >= 1;    
     }

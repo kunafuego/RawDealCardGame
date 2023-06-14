@@ -10,7 +10,6 @@ public class CrossBodyBlock : Precondition
     }
     public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
     {
-        Console.WriteLine($"QUE VERGA {askedFromDeskOrHand}");
         if (askedFromDeskOrHand == "Checking To Play Action")
         {
             AfterPlayingIrishWhip precondition = new AfterPlayingIrishWhip(_lastPlayInstance);

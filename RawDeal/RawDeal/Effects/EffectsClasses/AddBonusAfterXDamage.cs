@@ -20,7 +20,6 @@ public class AddBonusAfterXDamage : Effect
     {
         if (_lastPlayInstance.LastPlayPlayed is null) return;
         if (!_lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay) return;
-        Console.WriteLine($"El damage hecho por la última maniobra fue {_lastPlayInstance.ActualDamageMade}");
         if(_lastPlayInstance.ActualDamageMade >= DamageThatShouldBeMade) 
             _bonusManager.AddDamageBonus(new SuperKickBonus());
     }

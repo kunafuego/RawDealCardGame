@@ -12,7 +12,6 @@ public class IrishBonus : Bonus
     public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
     {
         Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
-        Console.WriteLine($"\n Es Strike? {cardBeingPlayed.CheckIfSubtypesContain("Strike")}");
         return cardBeingPlayed.CheckIfSubtypesContain("Strike");
     }
 }

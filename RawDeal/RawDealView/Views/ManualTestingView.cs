@@ -60,7 +60,6 @@ class ManualTestingView:TestingView
     {
         _isOutputCorrectSoFar = false;
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"[ERROR] el valor esperado acá era: \"{GetExpectedLine()}\"");
     }
 
     private string GetNormalizedTest(string text)
