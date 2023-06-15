@@ -20,7 +20,7 @@ public class DeckSelectionManager
     public void SelectDeck(Player player)
     {
         List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-        DeckCreator deckCreator = new DeckCreator(_lastPlayInstance, _bonusManager);
+        DeckCreator deckCreator = new DeckCreator(_lastPlayInstance, _bonusManager, _view);
         Deck deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
         Superstar superstar = deckCreator.GetDeckSuperstar();
         ValidateDeck(deck, superstar);

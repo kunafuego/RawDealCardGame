@@ -16,7 +16,7 @@ public class AddBonusAfterXDamage : Effect
         _lastPlayInstance = lastPlayInstance;
     }
     
-    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, Player playerThatPlayedCard, Player opponent)
     {
         if (_lastPlayInstance.LastPlayPlayed is null) return;
         if (!_lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay) return;

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using RawDeal.Bonus;
+using RawDealView;
 
 namespace RawDeal;
 
@@ -10,10 +11,10 @@ public class DeckCreator
     private readonly CardFactory _cardFactory;
     private readonly SuperstarFactory _superstarFactory;
 
-    public DeckCreator(LastPlay lastPlayInstance, BonusManager bonusManager)
+    public DeckCreator(LastPlay lastPlayInstance, BonusManager bonusManager, View view)
     {
         _cardLoader = new CardLoader();
-        _cardFactory = new CardFactory(lastPlayInstance, bonusManager);
+        _cardFactory = new CardFactory(lastPlayInstance, bonusManager, view);
         _superstarFactory = new SuperstarFactory();
     }
 

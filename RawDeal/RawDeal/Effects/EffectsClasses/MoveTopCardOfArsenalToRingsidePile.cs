@@ -4,21 +4,28 @@ namespace RawDeal.Effects.EffectsClasses;
 public class MoveTopCardOfArsenalToRingsidePile : Effect
 {
     private const int AmountOfDamageToMake = 1;
-    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
+    private View _view;
+
+    public MoveTopCardOfArsenalToRingsidePile(View view)
     {
-        view.SayThatPlayerDamagedHimself(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
-        view.SayThatSuperstarWillTakeSomeDamage(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
-        CheckIfGameIsFinished(view, playerThatPlayedCard);
+        _view = view;
+    }
+    
+    public override void Apply(Play actualPlay, Player playerThatPlayedCard, Player opponent)
+    {
+        _view.SayThatPlayerDamagedHimself(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
+        _view.SayThatSuperstarWillTakeSomeDamage(playerThatPlayedCard.GetSuperstarName(), AmountOfDamageToMake);
+        CheckIfGameIsFinished(playerThatPlayedCard);
         playerThatPlayedCard.MoveArsenalTopCardToRingside();
         Card cardThatWentToRingside = playerThatPlayedCard.GetCardOnTopOfRingside();
-        view.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), AmountOfDamageToMake, 
+        _view.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), AmountOfDamageToMake, 
             AmountOfDamageToMake);
     }
 
-    private void CheckIfGameIsFinished(View view, Player playerThatPlayedCard)
+    private void CheckIfGameIsFinished(Player playerThatPlayedCard)
     {
         if (playerThatPlayedCard.HasCardsInArsenal()) return;
-        view.SayThatPlayerLostDueToSelfDamage(playerThatPlayedCard.GetSuperstarName());
+        _view.SayThatPlayerLostDueToSelfDamage(playerThatPlayedCard.GetSuperstarName());
         throw new GameEndedBecauseOfCollateralDamage("");
     }
 }

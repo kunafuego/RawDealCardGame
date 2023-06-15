@@ -6,17 +6,19 @@ public class ReturnHashtagDamageEffect : Effect
 {
     private LastPlay _lastPlayInstance;
     private BonusManager _bonusManager;
-    public ReturnHashtagDamageEffect(LastPlay lastPlayInstance, BonusManager bonusManager)
+    private View _view;
+    public ReturnHashtagDamageEffect(LastPlay lastPlayInstance, BonusManager bonusManager, View view)
     {
         _lastPlayInstance = lastPlayInstance;
         _bonusManager = bonusManager;
+        _view = view;
     }
     
-    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, Player playerThatPlayedCard, Player opponent)
     {
         Card cardThatReverted = actualPlay.Card;
         cardThatReverted.ReversalDamage = ManageDamage(playerThatPlayedCard);
-        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(view, playerThatPlayedCard, opponent, _lastPlayInstance, _bonusManager);
+        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, playerThatPlayedCard, opponent, _lastPlayInstance, _bonusManager);
         if(_lastPlayInstance.LastPlayPlayed.Card.Title != "Rolling Takedown")
             maneuverPlayer.PlayReversalAsManeuver(cardThatReverted);
     }

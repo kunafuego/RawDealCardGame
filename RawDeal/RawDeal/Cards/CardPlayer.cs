@@ -136,7 +136,7 @@ public class CardPlayer
         List<Effect> cardEffects = cardPlayed.EffectObject;
         foreach (Effect effect in cardEffects)
         {
-            effect.Apply(playSuccesfulyPlayed, _view, _playerPlayingRound, _playerNotPlayingRound);
+            effect.Apply(playSuccesfulyPlayed, _playerPlayingRound, _playerNotPlayingRound);
         }
     }
 

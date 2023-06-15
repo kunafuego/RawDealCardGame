@@ -31,7 +31,7 @@ public class ReversalManager
         List<Effect> cardEffects = cardThatIsReversingTurn.EffectObject;
         foreach (Effect effect in cardEffects)
         {
-            effect.Apply(reversalPlay, _view, _playerNotPlayingRound, _playerPlayingRound);
+            effect.Apply(reversalPlay, _playerNotPlayingRound, _playerPlayingRound);
         }
         MoveCardUsedForReversingTurn(reversalPlay);
     }

@@ -13,7 +13,7 @@ public class IrishWhipEffect : Effect
         _bonusManager = bonusManager;
     }
     
-    public override void Apply(Play actualPlay, View view, Player playerThatPlayedCard, Player opponent)
+    public override void Apply(Play actualPlay, Player playerThatPlayedCard, Player opponent)
     {
         _bonusManager.AddDamageBonus(new IrishBonus());
     }
