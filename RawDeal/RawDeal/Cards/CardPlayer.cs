@@ -76,7 +76,7 @@ public class CardPlayer
         TurnEnded = true;
     }
 
-    private List<string> GetStringsOfPlays(List<Play> availablePlays)
+    private List<string> GetStringsOfPlays(PlaysList availablePlays)
     {
         var playsToShow = new List<string>();
         foreach (var playObject in availablePlays) playsToShow.Add(playObject.ToString());

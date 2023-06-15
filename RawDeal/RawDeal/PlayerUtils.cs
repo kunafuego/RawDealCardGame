@@ -2,10 +2,10 @@ namespace RawDeal;
 
 public static class PlayerUtils
 {
-    public static List<Play> GetAvailablePlays(Player player)
+    public static PlaysList GetAvailablePlays(Player player)
     {
         var hand = player.Hand;
-        var playsThatCanBePlayed = new List<Play>();
+        var playsThatCanBePlayed = new PlaysList();
         foreach (var card in hand.Cards)
             if (card.Title == "Undertaker's Tombstone Piledriver")
                 CheckIfAddUndertakerTombstone(card, playsThatCanBePlayed, player.Fortitude);
@@ -22,7 +22,7 @@ public static class PlayerUtils
         return card.Fortitude <= player.Fortitude && meetsPrecondition;
     }
 
-    private static void AddPlayablePlays(Card card, List<Play> playsThatCanBePlayed)
+    private static void AddPlayablePlays(Card card, PlaysList playsThatCanBePlayed)
     {
         foreach (var type in card.Types)
         {
@@ -32,7 +32,7 @@ public static class PlayerUtils
         }
     }
 
-    private static void CheckIfAddUndertakerTombstone(Card card, List<Play> playsThatCanBePlayed,
+    private static void CheckIfAddUndertakerTombstone(Card card, PlaysList playsThatCanBePlayed,
         int fortitude)
     {
         if (fortitude >= 0) playsThatCanBePlayed.Add(new Play(card, "Action"));

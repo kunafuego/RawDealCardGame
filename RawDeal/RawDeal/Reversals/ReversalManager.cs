@@ -107,7 +107,7 @@ public class ReversalManager
     }
 
 
-    private int AskUserToSelectReversal(List<Play> reversalPlays)
+    private int AskUserToSelectReversal(PlaysList reversalPlays)
     {
         var reversalPlaysString = reversalPlays.Select(play => play.ToString()).ToList();
         var usersChoice = _view.AskUserToSelectAReversal(_playerNotPlayingRound.GetSuperstarName(),

@@ -173,7 +173,7 @@ public class Player
         return cardsToCheck.CheckIfHasMoreThanOneCard();
     }
 
-    public List<Play> GetAvailablePlays()
+    public PlaysList GetAvailablePlays()
     {
         return PlayerUtils.GetAvailablePlays(this);
     }

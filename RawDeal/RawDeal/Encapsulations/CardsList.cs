@@ -92,33 +92,3 @@ public class CardsList : IEnumerable<Card>
     }
     
 }
-
-public class PlaysList : IEnumerable<Play>
-{
-    private List<Play> plays;
-
-    public PlaysList()
-    {
-        plays = new List<Play>();
-    }
-
-    public void Add(Play play)
-    {
-        plays.Add(play);
-    }
-
-    public void Remove(Play play)
-    {
-        plays.Remove(play);
-    }
-
-    public IEnumerator<Play> GetEnumerator()
-    {
-        return plays.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-}
