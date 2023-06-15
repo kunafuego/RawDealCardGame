@@ -49,9 +49,9 @@ public class DeckCreator
         return deckObject;
     }
 
-    private List<Card> CreateCards(List<string> deckListNamesWithCardNames)
+    private CardsList CreateCards(List<string> deckListNamesWithCardNames)
     {
-        var deckCards = new List<Card>();
+        var deckCards = new CardsList();
         var listWithDeserializedCards = _cardLoader.LoadCards();
 
         foreach (var card in deckListNamesWithCardNames)

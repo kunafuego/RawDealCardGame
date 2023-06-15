@@ -67,8 +67,8 @@ public class ReversalManager
         }
     }
 
-    private List<Card> GetReversalCardsThatPlayerCanPlayOnThisCard(
-        List<Card> reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
+    private CardsList GetReversalCardsThatPlayerCanPlayOnThisCard(
+        CardsList reversalCardsThatPlayerCanPlay, Play playOpponentIsTryingToMake)
     {
         var actualLastPlay = _lastPlayInstance.LastPlayPlayed;
         var actualDamage = _lastPlayInstance.ActualDamageMade;
@@ -94,11 +94,10 @@ public class ReversalManager
             currentPlay.PlayedAs == "MANEUVER" && lastCard.Title == "Irish Whip";
     }
 
-    private List<Card> FilterPlayableReversalCards(List<Card> reversalCards)
+    private CardsList FilterPlayableReversalCards(CardsList reversalCards)
     {
         return reversalCards
-            .Where(card => CheckIfCardMeetsPrecondition(card, "Hand"))
-            .ToList();
+            .FilterCards(card => CheckIfCardMeetsPrecondition(card, "Hand"));
     }
 
     private void RestoreLastPlayInstance(Play lastPlay, int actualDamage)

@@ -25,7 +25,7 @@ internal class ChrisJerichoAbility : SuperstarAbility
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 
-    private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
+    private List<string> GetCardsToShowAsString(CardsList cardsObjectsToShow)
     {
         var stringsOfCards = new List<string>();
         foreach (var card in cardsObjectsToShow) stringsOfCards.Add(card.ToString());

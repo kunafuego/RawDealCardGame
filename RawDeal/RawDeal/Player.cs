@@ -6,10 +6,10 @@ namespace RawDeal;
 
 public class Player
 {
-    private Deck _arsenal = new(new List<Card>());
+    private Deck _arsenal = new(new CardsList());
     private readonly Dictionary<CardSet, Deck> _cardSetToDeck;
-    private readonly Deck _ringArea = new(new List<Card>());
-    private readonly Deck _ringSide = new(new List<Card>());
+    private readonly Deck _ringArea = new(new CardsList());
+    private readonly Deck _ringSide = new(new CardsList());
 
     public Player()
     {
@@ -24,7 +24,7 @@ public class Player
 
     public Superstar Superstar { get; private set; }
 
-    public Deck Hand { get; } = new(new List<Card>());
+    public Deck Hand { get; } = new(new CardsList());
 
     public int Fortitude { get; private set; }
 
@@ -43,20 +43,19 @@ public class Player
         return Superstar.Name;
     }
 
-    public List<Card> GetReversalCardsThatPlayerCanPlay(BonusManager bonusManager,
+    public CardsList GetReversalCardsThatPlayerCanPlay(BonusManager bonusManager,
         Card cardOpponentIsTryingToPlay)
     {
         var reversalCards = Hand.GetReversalCards();
         var reversalCardsThatCanBePlayed =
-            reversalCards.Where(card =>
-                    Fortitude >= bonusManager.GetPlayFortitude(cardOpponentIsTryingToPlay, card))
-                .ToList();
+            reversalCards.FilterCards(card =>
+                    Fortitude >= bonusManager.GetPlayFortitude(cardOpponentIsTryingToPlay, card));
         if (cardOpponentIsTryingToPlay.Title is "Tree of Woe" or "Austin Elbow Smash"
             or "Leaping Knee to the Face") reversalCardsThatCanBePlayed.Clear();
         return reversalCardsThatCanBePlayed;
     }
 
-    public void UpdateFortitude()
+    private void UpdateFortitude()
     {
         Fortitude = 0;
         foreach (var card in _ringArea.Cards)
@@ -70,9 +69,9 @@ public class Player
 
     public void DrawCardsFromArsenalToHandAtStart()
     {
-        var removableCards = new List<Card>();
+        var removableCards = new CardsList();
         var arsenalCards = _arsenal.Cards;
-        for (var i = arsenalCards.Count; i > arsenalCards.Count - Superstar.HandSize; i--)
+        for (var i = arsenalCards.Count(); i > arsenalCards.Count() - Superstar.HandSize; i--)
         {
             var cardToPass = _arsenal.Cards[i - 1];
             removableCards.Add(cardToPass);
@@ -81,7 +80,7 @@ public class Player
         MoveManyCardsFromArsenalToHand(removableCards);
     }
 
-    private void MoveManyCardsFromArsenalToHand(List<Card> removableCards)
+    private void MoveManyCardsFromArsenalToHand(CardsList removableCards)
     {
         foreach (var card in removableCards)
         {
@@ -100,14 +99,14 @@ public class Player
     public PlayerInfo GetInfo()
     {
         var info = new PlayerInfo(Superstar.Name, Fortitude,
-            Hand.Cards.Count,
-            _arsenal.Cards.Count);
+            Hand.Cards.Count(),
+            _arsenal.Cards.Count());
         return info;
     }
 
-    public List<Card> GetCardsToShow(CardSet cardSetChosenForShowing)
+    public CardsList GetCardsToShow(CardSet cardSetChosenForShowing)
     {
-        var cardsToShow = new List<Card>();
+        var cardsToShow = new CardsList();
         if (cardSetChosenForShowing == CardSet.Hand)
             cardsToShow = Hand.Cards;
         else if (cardSetChosenForShowing == CardSet.RingArea ||

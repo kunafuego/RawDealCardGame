@@ -5,7 +5,7 @@ namespace RawDeal.Reversals;
 
 public static class ReversalUtils
 {
-    public static List<Play> GetPlaysOfAvailablesCards(List<Card> reversalCardThatPlayerCanPlay)
+    public static List<Play> GetPlaysOfAvailablesCards(CardsList reversalCardThatPlayerCanPlay)
     {
         List<Play> playsToReturn = new();
         foreach (var card in reversalCardThatPlayerCanPlay)

@@ -27,7 +27,7 @@ public class MoveFromRingsidePileToArsenal : Effect
         }
     }
 
-    private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
+    private List<string> GetCardsToShowAsString(CardsList cardsObjectsToShow)
     {
         var stringsOfRingsidePileCards = new List<string>();
         foreach (var card in cardsObjectsToShow) stringsOfRingsidePileCards.Add(card.ToString());

@@ -2,12 +2,12 @@ namespace RawDeal;
 
 public class Deck
 {
-    public Deck(List<Card> cards)
+    public Deck(CardsList cards)
     {
         Cards = cards;
     }
 
-    public List<Card> Cards { get; }
+    public CardsList Cards { get; }
 
     public void AddCard(Card card)
     {
@@ -36,9 +36,9 @@ public class Deck
         return false;
     }
 
-    public List<Card> GetReversalCards()
+    public CardsList GetReversalCards()
     {
-        return Cards.Where(card => card.HasReversalType()).ToList();
+        return Cards.FilterCards(card => card.HasReversalType());
     }
 
     public Card GetCardOnTop()

@@ -18,7 +18,7 @@ public class CardsShower
     public void ManageShowingCards()
     {
         var cardSetChosenForShowing = _view.AskUserWhatSetOfCardsHeWantsToSee();
-        var cardsObjectsToShow = new List<Card>();
+        var cardsObjectsToShow = new CardsList();
         if (cardSetChosenForShowing.ToString().Contains("Opponents"))
             cardsObjectsToShow = _playerNotPlayingRound.GetCardsToShow(cardSetChosenForShowing);
         else
@@ -27,7 +27,7 @@ public class CardsShower
         _view.ShowCards(cardsStringsToShow);
     }
 
-    private List<string> GetCardsAsStringForShowing(List<Card> cardsObjectsToShow)
+    private List<string> GetCardsAsStringForShowing(CardsList cardsObjectsToShow)
     {
         var cardsStringsToShow = new List<string>();
         foreach (var card in cardsObjectsToShow) cardsStringsToShow.Add(card.ToString());
