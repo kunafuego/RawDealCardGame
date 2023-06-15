@@ -8,12 +8,13 @@ namespace RawDeal;
 public class CardFactory
 {
     private LastPlay _lastPlayInstance;
+
     public CardFactory(LastPlay lastPlayInstance, BonusManager bonusManager, View view)
     {
         PreconditionCatalog.SetPreconditionCatalog(lastPlayInstance);
         EffectCatalog.SetEffectCatalog(lastPlayInstance, bonusManager, view);
     }
-    
+
     public Card CreateCard(DeserializedCards deserializedCard)
     {
         return new Card(deserializedCard,

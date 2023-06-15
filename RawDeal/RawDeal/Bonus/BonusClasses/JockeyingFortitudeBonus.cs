@@ -3,10 +3,6 @@ namespace RawDeal.Bonus.BonusClasses;
 public class JockeyingFortitudeBonus : FortitudeBonus
 {
     private const int BonusAmount = 8;
-    public JockeyingFortitudeBonus()
-    {
-        
-    }
 
     public override int GetBonusAmount()
     {

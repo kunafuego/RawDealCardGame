@@ -1,9 +1,10 @@
 using RawDeal.Preconditions.PreconditionClasses;
+
 namespace RawDeal.Preconditions;
 
 public static class PreconditionCatalog
 {
-    private static Dictionary<string, Precondition> _preconditionsCatalog = new Dictionary<string, Precondition>();
+    private static readonly Dictionary<string, Precondition> _preconditionsCatalog = new();
 
     public static void SetPreconditionCatalog(LastPlay lastPlayInstance)
     {
@@ -20,7 +21,8 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Back Body Drop"] = new AfterPlayingIrishWhip(lastPlayInstance);
 
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
-        _preconditionsCatalog["Shoulder Block"] = new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, false);
+        _preconditionsCatalog["Shoulder Block"] =
+            new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, false);
 
         // TODO:When successfully played, you must take the top card of your Arsenal and put it into your Ringside pile.
         _preconditionsCatalog["Kick"] = new NoPrecondition();
@@ -35,7 +37,8 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Running Elbow Smash"] = new NoPrecondition();
 
         // TODO:May only reverse the maneuver titled Drop Kick.
-        _preconditionsCatalog["Drop Kick"] = new ReverseSpecificTitle("Drop Kick", lastPlayInstance);
+        _preconditionsCatalog["Drop Kick"] =
+            new ReverseSpecificTitle("Drop Kick", lastPlayInstance);
 
         // TODO:Reversals to this maneuver are +2D.
         _preconditionsCatalog["Discus Punch"] = new NoPrecondition();
@@ -47,7 +50,8 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Spinning Heel Kick"] = new NoPrecondition();
 
         // TODO:May only reverse a maneuver played after the card titled Irish Whip.
-        _preconditionsCatalog["Spear"] = new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, false);
+        _preconditionsCatalog["Spear"] =
+            new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, false);
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
         _preconditionsCatalog["Clothesline"] = new NoPrecondition();
@@ -71,16 +75,19 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Headlock Takedown"] = new NoPrecondition();
 
         // TODO:May only reverse the maneuver titled Belly to Belly Suplex.
-        _preconditionsCatalog["Belly to Belly Suplex"] = new ReverseSpecificTitle("Belly to Belly Suplex", lastPlayInstance);
+        _preconditionsCatalog["Belly to Belly Suplex"] =
+            new ReverseSpecificTitle("Belly to Belly Suplex", lastPlayInstance);
 
         // TODO:When successfully played, if your next card played this turn is a maneuver it is +2D.
         _preconditionsCatalog["Atomic Drop"] = new NoPrecondition();
 
         // TODO:May only reverse the maneuver titled Vertical Suplex.
-        _preconditionsCatalog["Vertical Suplex"] = new ReverseSpecificTitle("Vertical Suplex", lastPlayInstance);
+        _preconditionsCatalog["Vertical Suplex"] =
+            new ReverseSpecificTitle("Vertical Suplex", lastPlayInstance);
 
         // TODO:May only reverse the maneuver titled Belly to Back Suplex.
-        _preconditionsCatalog["Belly to Back Suplex"] = new ReverseSpecificTitle("Belly to Back Suplex", lastPlayInstance);
+        _preconditionsCatalog["Belly to Back Suplex"] =
+            new ReverseSpecificTitle("Belly to Back Suplex", lastPlayInstance);
 
         // TODO:When successfully played, opponent must discard 2 cards.
         _preconditionsCatalog["Pump Handle Slam"] = new NoPrecondition();
@@ -162,10 +169,12 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Escape Move"] = new ReverseAnyManeuverGrapple(lastPlayInstance);
 
         // TODO:Reverse any Submission maneuver and end your opponent's turn.
-        _preconditionsCatalog["Break the Hold"] = new ReverseAnyManeuverSubmission(lastPlayInstance);
+        _preconditionsCatalog["Break the Hold"] =
+            new ReverseAnyManeuverSubmission(lastPlayInstance);
 
         // TODO:Can only reverse a Grapple that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
-        _preconditionsCatalog["Rolling Takedown"] = new ReverseGrappleWithLessThan7(lastPlayInstance);
+        _preconditionsCatalog["Rolling Takedown"] =
+            new ReverseGrappleWithLessThan7(lastPlayInstance);
 
         // TODO:Can only reverse a Strike that does 7D or less. End your opponent's turn. # = D of maneuver card being reversed. Read as 0 when in your Ring area.
         _preconditionsCatalog["Knee to the Gut"] = new ReverseStrikeWithLessThan7(lastPlayInstance);
@@ -199,10 +208,12 @@ public static class PreconditionCatalog
 
         // TODO:As an action, if your next card played is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be 
         // +8F. As a reversal, may only reverse the card titled Jockeying for Position. If so, you end opponent's turn; and if your next card played on your turn is a Grapple maneuver, declare whether it will be +4D or your opponent's reversal to it will be +8F.
-        _preconditionsCatalog["Jockeying for Position"] = new ReverseSpecificTitle("Jockeying for Position", lastPlayInstance);
+        _preconditionsCatalog["Jockeying for Position"] =
+            new ReverseSpecificTitle("Jockeying for Position", lastPlayInstance);
 
         // TODO:As an action, if your next card played is a Strike maneuver it is +5D. As a reversal, may only reverse the card titled Irish Whip. If so, you end opponent's turn; and if your next card played on your turn is a Strike maneuver it is +5D.
-        _preconditionsCatalog["Irish Whip"] = new ReverseSpecificTitle("Irish Whip", lastPlayInstance);
+        _preconditionsCatalog["Irish Whip"] =
+            new ReverseSpecificTitle("Irish Whip", lastPlayInstance);
 
         // TODO:Draw 1 card. Look at opponent's hand, and then make him discard all HEEL cards.
         _preconditionsCatalog["Flash in the Pan"] = new NoPrecondition();
@@ -263,10 +274,12 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Pat & Gerry"] = new NoPrecondition();
 
         // TODO:May not be reversed. Can only be played after a maneuver that does 5D or greater.
-        _preconditionsCatalog["Austin Elbow Smash"] = new AfterXDOrGreaterManeuver(lastPlayInstance, 5);
+        _preconditionsCatalog["Austin Elbow Smash"] =
+            new AfterXDOrGreaterManeuver(lastPlayInstance, 5);
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 1 card.
-        _preconditionsCatalog["Lou Thesz Press"] = new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, true);
+        _preconditionsCatalog["Lou Thesz Press"] =
+            new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, true);
 
         // TODO:Reverse any Strike, Grapple or Submission maneuver. End your opponent's turn. If played from your hand, opponent must discard 2 cards, 
         // then take the top 2 cards from his Arsenal and put them into his Ringside pile.
@@ -295,7 +308,8 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Have a Nice Day!"] = new NoPrecondition();
 
         // TODO:May only reverse the maneuver titled Back Body Drop.
-        _preconditionsCatalog["Double Arm DDT"] = new ReverseSpecificTitle("Back Body Drop", lastPlayInstance);
+        _preconditionsCatalog["Double Arm DDT"] =
+            new ReverseSpecificTitle("Back Body Drop", lastPlayInstance);
 
         // TODO:May not be reversed. When successfully played, opponent must discard 2 cards.
         _preconditionsCatalog["Tree of Woe"] = new NoPrecondition();
@@ -307,10 +321,12 @@ public static class PreconditionCatalog
         _preconditionsCatalog["Mr. Socko"] = new NoPrecondition();
 
         // TODO:May not be reversed. You must play the card titled Irish Whip before playing this card. When successfully played, opponent discards 1 card.
-        _preconditionsCatalog["Leaping Knee to the Face"] = new AfterPlayingIrishWhip(lastPlayInstance);
+        _preconditionsCatalog["Leaping Knee to the Face"] =
+            new AfterPlayingIrishWhip(lastPlayInstance);
 
         // TODO:If played from your hand, may reverse a maneuver played after the card titled Irish Whip. End your opponent's turn. You may draw 2 cards.
-        _preconditionsCatalog["Facebuster"] = new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, true);
+        _preconditionsCatalog["Facebuster"] =
+            new ReverseManeuverPlayAfterIrishWhip(lastPlayInstance, true);
 
         // TODO:All your maneuvers are +3D for the rest of this turn. Draw 2 cards, or force opponent to discard 2 cards.
         _preconditionsCatalog["I Am the Game"] = new NoPrecondition();
@@ -369,13 +385,8 @@ public static class PreconditionCatalog
 
     public static Precondition GetPrecondition(string cardTitle)
     {
-        if (_preconditionsCatalog.ContainsKey(cardTitle))
-        {
-            return _preconditionsCatalog[cardTitle];
-        }
+        if (_preconditionsCatalog.ContainsKey(cardTitle)) return _preconditionsCatalog[cardTitle];
 
         return new NoPrecondition();
     }
 }
-
-

@@ -1,96 +1,71 @@
-namespace RawDeal;
-using RawDealView.Formatters;
 using RawDeal.Effects;
 using RawDeal.Preconditions;
+using RawDealView.Formatters;
+
+namespace RawDeal;
+
 public class Card : IViewableCardInfo
 {
-    private readonly string _title;
-    private readonly List<string> _types;
-    private readonly List<string> _subTypes;
-    private readonly int _fortitude;
-    private readonly string _damage;
-    private int _reversalDamage;
-    private readonly int _stunValue;
-    private readonly string _cardEffectString;
-    private List<Effect> _effectObject;
-    private Precondition _precondition;
+    public Card(DeserializedCards deserializedCard, Precondition preconditionObject,
+        List<Effect> effectsList)
+    {
+        Title = deserializedCard.Title;
+        Types = deserializedCard.Types;
+        SubTypes = deserializedCard.Subtypes;
+        Fortitude = Convert.ToInt16(deserializedCard.Fortitude);
+        Damage = deserializedCard.Damage;
+        StunValue = Convert.ToInt16(deserializedCard.StunValue);
+        CardEffect = deserializedCard.CardEffect;
+        ReversalDamage = 0;
+        Precondition = preconditionObject;
+        EffectObject = effectsList;
+    }
 
-    public List<string> SubTypes
-    {
-        get { return _subTypes; }
-    }
+    public List<string> SubTypes { get; }
 
-    public string Damage
-    {
-        get { return _damage; }
-    }
-    public string Title{
-        get {return _title ;}
-    }
-    public List<string> Subtypes {
-        get { return _subTypes; }
-    }
-    public string CardEffect
-    {
-        get { return _cardEffectString; }
-    }
-    public int Fortitude
-    { get { return  _fortitude;} } 
-    public int StunValue
-    { get { return  _stunValue;} } 
-    public List<string> Types
-    { get { return  _types;} }
-    public List<Effect> EffectObject
-    { get { return  _effectObject;} }
-    
-    public Precondition Precondition
-    { get { return  _precondition;} }
+    public List<Effect> EffectObject { get; }
 
-    public int ReversalDamage
-    {
-        get { return _reversalDamage; }
-        set { _reversalDamage = value; }
-    }
-    public Card(DeserializedCards deserializedCard, Precondition preconditionObject, List<Effect> effectsList)
-    {
-        _title = deserializedCard.Title;
-        _types = deserializedCard.Types;
-        _subTypes = deserializedCard.Subtypes;
-        _fortitude = Convert.ToInt16(deserializedCard.Fortitude);
-        _damage = deserializedCard.Damage;
-        _stunValue = Convert.ToInt16(deserializedCard.StunValue);
-        _cardEffectString = deserializedCard.CardEffect;
-        _reversalDamage = 0;
-        _precondition = preconditionObject;
-        _effectObject = effectsList;
-    }
-    
+    public Precondition Precondition { get; }
+
+    public int ReversalDamage { get; set; }
+
+    public string Damage { get; }
+
+    public string Title { get; }
+
+    public List<string> Subtypes => SubTypes;
+
+    public string CardEffect { get; }
+
+    public int Fortitude { get; }
+
+    public int StunValue { get; }
+
+    public List<string> Types { get; }
+
     public int GetDamage()
     {
-        if (_damage == "#")
+        if (Damage == "#")
         {
-            if (_reversalDamage == 0)
-            {
-                return  0;
-            }
-            return _reversalDamage;
+            if (ReversalDamage == 0) return 0;
+            return ReversalDamage;
         }
-        return Convert.ToInt16(_damage);
-    } 
+
+        return Convert.ToInt16(Damage);
+    }
 
     public bool HasReversalType()
     {
-        return _types.Contains("Reversal");
+        return Types.Contains("Reversal");
     }
 
     public bool CheckIfSubtypesContain(string subtype)
     {
-        return _subTypes.Contains(subtype);
+        return SubTypes.Contains(subtype);
     }
 
     public override string ToString()
     {
         return Formatter.CardToString(this);
     }
-
 }

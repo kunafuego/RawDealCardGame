@@ -1,12 +1,15 @@
-using RawDealView.Options;
 using RawDealView;
+using RawDealView.Options;
+
 namespace RawDeal;
 
-class TheUndertakerAbility : SuperstarAbility
+internal class TheUndertakerAbility : SuperstarAbility
 {
     private const int AmountOfCardsToDiscard = 2;
 
-    public TheUndertakerAbility(View view) : base(view) {}
+    public TheUndertakerAbility(View view) : base(view)
+    {
+    }
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
@@ -16,39 +19,40 @@ class TheUndertakerAbility : SuperstarAbility
 
     private void DiscardTwoCards(Player playerThatWillDiscardCards)
     {
-        for (int numberOfCardsLeftToDiscard = AmountOfCardsToDiscard; numberOfCardsLeftToDiscard > 0; numberOfCardsLeftToDiscard--)
-        {
+        for (var numberOfCardsLeftToDiscard = AmountOfCardsToDiscard;
+             numberOfCardsLeftToDiscard > 0;
+             numberOfCardsLeftToDiscard--)
             DiscardCard(numberOfCardsLeftToDiscard, playerThatWillDiscardCards);
-        }
     }
 
     private void DiscardCard(int numberOfCardDiscarding, Player playerThatWillDiscardCard)
     {
-        List<Card> handCardsObjectsToShow = playerThatWillDiscardCard.GetCardsToShow(CardSet.Hand);
-        List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, 
-            playerThatWillDiscardCard.GetSuperstarName(), 
-            playerThatWillDiscardCard.GetSuperstarName(), 
+        var handCardsObjectsToShow = playerThatWillDiscardCard.GetCardsToShow(CardSet.Hand);
+        var stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
+        var handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards,
+            playerThatWillDiscardCard.GetSuperstarName(),
+            playerThatWillDiscardCard.GetSuperstarName(),
             numberOfCardDiscarding);
         playerThatWillDiscardCard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 
     private void GetCardFromRingSidePile(Player playerThatWillGetCardBack)
     {
-        List<Card> ringsideCardsObjectsToShow = playerThatWillGetCardBack.GetCardsToShow(CardSet.RingsidePile);
-        List<string> stringsOfRingsideCards = GetCardsToShowAsString(ringsideCardsObjectsToShow);
-        int ringsideCardIndex = View.AskPlayerToSelectCardsToPutInHisHand(playerThatWillGetCardBack.GetSuperstarName(), 1, stringsOfRingsideCards);
-        playerThatWillGetCardBack.MoveCardFromRingsideToHand(ringsideCardsObjectsToShow[ringsideCardIndex]); 
+        var ringsideCardsObjectsToShow =
+            playerThatWillGetCardBack.GetCardsToShow(CardSet.RingsidePile);
+        var stringsOfRingsideCards = GetCardsToShowAsString(ringsideCardsObjectsToShow);
+        var ringsideCardIndex =
+            View.AskPlayerToSelectCardsToPutInHisHand(playerThatWillGetCardBack.GetSuperstarName(),
+                1, stringsOfRingsideCards);
+        playerThatWillGetCardBack.MoveCardFromRingsideToHand(
+            ringsideCardsObjectsToShow[ringsideCardIndex]);
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
     {
-        List<string> stringsOfCards = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            stringsOfCards.Add(card.ToString());
-        }
-        
+        var stringsOfCards = new List<string>();
+        foreach (var card in cardsObjectsToShow) stringsOfCards.Add(card.ToString());
+
         return stringsOfCards;
     }
 

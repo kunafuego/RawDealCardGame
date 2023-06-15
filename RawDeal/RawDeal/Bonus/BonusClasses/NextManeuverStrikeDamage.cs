@@ -1,12 +1,11 @@
 using RawDeal;
 using RawDeal.Bonus;
-using RawDeal.Effects;
-using RawDeal.Effects.EffectsClasses;
 
 public class NextManeuverStrikeDamage : Bonus
 {
+    private readonly LastPlay _lastPlayInstance;
     private int _playsThatHavePassed;
-    private LastPlay _lastPlayInstance;
+
     public NextManeuverStrikeDamage(int bonusAmount, LastPlay lastPlayInstance)
     {
         BonusAmount = bonusAmount;
@@ -19,13 +18,13 @@ public class NextManeuverStrikeDamage : Bonus
     {
         _playsThatHavePassed += 1;
         return _playsThatHavePassed == 2;
-        
     }
 
-    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
+    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed,
+        Player opponent)
     {
-        Card cardBeingPlayed = playThatIsTryingToBePlayed.Card;
+        var cardBeingPlayed = playThatIsTryingToBePlayed.Card;
         if (_lastPlayInstance.WasItASuccesfulReversal) return false;
-        return cardBeingPlayed.CheckIfSubtypesContain("Strike") && _playsThatHavePassed >= 1;    
+        return cardBeingPlayed.CheckIfSubtypesContain("Strike") && _playsThatHavePassed >= 1;
     }
 }

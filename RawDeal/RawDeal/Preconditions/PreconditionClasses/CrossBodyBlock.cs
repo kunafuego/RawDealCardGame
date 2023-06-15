@@ -2,25 +2,26 @@ namespace RawDeal.Preconditions.PreconditionClasses;
 
 public class CrossBodyBlock : Precondition
 {
-    private LastPlay _lastPlayInstance;
-    
+    private readonly LastPlay _lastPlayInstance;
+
     public CrossBodyBlock(LastPlay lastPlayInstance)
     {
         _lastPlayInstance = lastPlayInstance;
     }
-    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard, string askedFromDeskOrHand)
+
+    public override bool DoesMeetPrecondition(Player playerTryingToPlayCard,
+        string askedFromDeskOrHand)
     {
         if (askedFromDeskOrHand == "Checking To Play Action")
         {
-            AfterPlayingIrishWhip precondition = new AfterPlayingIrishWhip(_lastPlayInstance);
+            var precondition = new AfterPlayingIrishWhip(_lastPlayInstance);
             return precondition.DoesMeetPrecondition(playerTryingToPlayCard, askedFromDeskOrHand);
         }
         else
         {
-            ReverseManeuverPlayAfterIrishWhip precondition =
+            var precondition =
                 new ReverseManeuverPlayAfterIrishWhip(_lastPlayInstance, false);
             return precondition.DoesMeetPrecondition(playerTryingToPlayCard, askedFromDeskOrHand);
         }
     }
-
 }

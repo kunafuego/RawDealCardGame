@@ -1,22 +1,18 @@
 using RawDeal.Bonus;
-using RawDeal.Bonus.BonusClasses;
-using RawDeal.Effects;
-using RawDeal.Preconditions;
 using RawDealView;
-using RawDealView.Options;
+
 namespace RawDeal;
 
 public class CardPlayer
 {
-    private readonly View _view;
-    private readonly Player _playerPlayingRound;
     private readonly Player _playerNotPlayingRound;
-    private BonusManager _bonusManager;
-    private LastPlay _lastPlayInstance;
-    private bool _turnEnded;
-    private bool _gameShouldEnd;
+    private readonly Player _playerPlayingRound;
+    private readonly View _view;
+    private readonly BonusManager _bonusManager;
+    private readonly LastPlay _lastPlayInstance;
 
-    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound, LastPlay lastPlayInstance, BonusManager bonusManager)
+    public CardPlayer(View view, Player playerPlayingRound, Player playerNotPlayingRound,
+        LastPlay lastPlayInstance, BonusManager bonusManager)
     {
         _view = view;
         _playerPlayingRound = playerPlayingRound;
@@ -26,21 +22,15 @@ public class CardPlayer
     }
 
 
+    public bool TurnEnded { get; private set; }
 
-    public bool TurnEnded
-    {
-        get { return _turnEnded; }
-    }
-    
-    public bool GameShouldEnd
-    {
-        get { return _gameShouldEnd; }
-    }
+    public bool GameShouldEnd { get; private set; }
+
     public void ManagePlayingCards()
     {
-        List<Play> playsToShow = _playerPlayingRound.GetAvailablePlays();
-        List<string> availablePlaysInStringFormat = GetStringsOfPlays(playsToShow);
-        int chosenPlay = _view.AskUserToSelectAPlay(availablePlaysInStringFormat);
+        var playsToShow = _playerPlayingRound.GetAvailablePlays();
+        var availablePlaysInStringFormat = GetStringsOfPlays(playsToShow);
+        var chosenPlay = _view.AskUserToSelectAPlay(availablePlaysInStringFormat);
         if (chosenPlay == -1) return;
         try
         {
@@ -51,25 +41,25 @@ public class CardPlayer
         {
             ManageReversalError(error);
             _lastPlayInstance.WasItASuccesfulReversal = true;
-
         }
         catch (GameEndedBecauseOfCollateralDamage error)
         {
-            _turnEnded = true;
-            _gameShouldEnd = true;
+            TurnEnded = true;
+            GameShouldEnd = true;
         }
     }
 
     private void ManageLastPlay(Play playThatWasJustPlayed)
     {
-        Play lastPlay = _lastPlayInstance.LastPlayPlayed;
+        var lastPlay = _lastPlayInstance.LastPlayPlayed;
         _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip = false;
         if (lastPlay != null)
         {
-            Card lastCard = lastPlay.Card;
+            var lastCard = lastPlay.Card;
             _lastPlayInstance.WasThisLastPlayAManeuverPlayedAfterIrishWhip =
                 playThatWasJustPlayed.PlayedAs == "MANEUVER" && lastCard.Title == "Irish Whip";
         }
+
         _lastPlayInstance.LastPlayPlayed = playThatWasJustPlayed;
         _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = true;
         _lastPlayInstance.WasItASuccesfulReversal = false;
@@ -82,23 +72,22 @@ public class CardPlayer
             _bonusManager.CheckIfFortitudeBonusExpire();
             _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
         }
-        _turnEnded = true;
+
+        TurnEnded = true;
     }
 
     private List<string> GetStringsOfPlays(List<Play> availablePlays)
     {
-        List<string> playsToShow = new List<string>();
-        foreach (Play playObject in availablePlays)
-        {
-            playsToShow.Add(playObject.ToString());
-        }
+        var playsToShow = new List<string>();
+        foreach (var playObject in availablePlays) playsToShow.Add(playObject.ToString());
         return playsToShow;
     }
 
     private void TryToPlayCard(Play chosenPlay)
     {
-        Card cardPlayed = chosenPlay.Card;
-        _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(), chosenPlay.ToString());
+        var cardPlayed = chosenPlay.Card;
+        _view.SayThatPlayerIsTryingToPlayThisCard(_playerPlayingRound.GetSuperstarName(),
+            chosenPlay.ToString());
         TryToReversePlay(chosenPlay);
         _view.SayThatPlayerSuccessfullyPlayedACard();
         ManageCardEffect(chosenPlay);
@@ -115,48 +104,44 @@ public class CardPlayer
 
     private void TryToReversePlay(Play playOpponentIsTryingToMake)
     {
-        ReversalManager reversalPerformer = new ReversalManager(_view, _playerPlayingRound, _playerNotPlayingRound, _bonusManager, _lastPlayInstance);
+        var reversalPerformer = new ReversalManager(_view, _playerPlayingRound,
+            _playerNotPlayingRound, _bonusManager, _lastPlayInstance);
         reversalPerformer.TryToReversePlayFromHand(playOpponentIsTryingToMake);
     }
 
     private void ManageCardEffect(Play chosenPlay)
     {
-        Card cardToPlay = chosenPlay.Card;
-        Precondition cardEffectPrecondition = cardToPlay.Precondition;
-        bool meetsPrecondition = cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound, "Checking To Play Action");
-        if (meetsPrecondition)
-        {
-            PerformCardEffect(chosenPlay);
-        }
+        var cardToPlay = chosenPlay.Card;
+        var cardEffectPrecondition = cardToPlay.Precondition;
+        var meetsPrecondition =
+            cardEffectPrecondition.DoesMeetPrecondition(_playerPlayingRound,
+                "Checking To Play Action");
+        if (meetsPrecondition) PerformCardEffect(chosenPlay);
     }
 
     private void PerformCardEffect(Play playSuccesfulyPlayed)
     {
-        Card cardPlayed = playSuccesfulyPlayed.Card;
-        List<Effect> cardEffects = cardPlayed.EffectObject;
-        foreach (Effect effect in cardEffects)
-        {
+        var cardPlayed = playSuccesfulyPlayed.Card;
+        var cardEffects = cardPlayed.EffectObject;
+        foreach (var effect in cardEffects)
             effect.Apply(playSuccesfulyPlayed, _playerPlayingRound, _playerNotPlayingRound);
-        }
     }
 
     private void PlayManeuver(Card cardPlayed)
     {
-        ManeuverPlayer maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound, 
+        var maneuverPlayer = new ManeuverPlayer(_view, _playerPlayingRound,
             _playerNotPlayingRound, _lastPlayInstance, _bonusManager);
         maneuverPlayer.PlayManeuver(cardPlayed);
-        _turnEnded = maneuverPlayer.TurnEnded;
-        _gameShouldEnd = maneuverPlayer.GameShouldEnd;
+        TurnEnded = maneuverPlayer.TurnEnded;
+        GameShouldEnd = maneuverPlayer.GameShouldEnd;
     }
 
     private void MoveActionCard(Card cardPlayed)
     {
-        List<Effect> cardEffects = cardPlayed.EffectObject;
-        bool alreadyMoveCard = cardEffects.Any(obj => obj is DiscardCardToDrawOne);
+        var cardEffects = cardPlayed.EffectObject;
+        var alreadyMoveCard = cardEffects.Any(obj => obj is DiscardCardToDrawOne);
         if (cardPlayed.Title == "Jockeying for Position" || !alreadyMoveCard)
-        {
             _playerPlayingRound.MoveCardFromHandToRingArea(cardPlayed);
-        }
         if (cardPlayed.Title != "Jockeying for Position" && cardPlayed.Title != "Irish Whip")
         {
             _bonusManager.CheckIfFortitudeBonusExpire();
@@ -165,5 +150,4 @@ public class CardPlayer
 
         _lastPlayInstance.ActualDamageMade = 0;
     }
-
 }

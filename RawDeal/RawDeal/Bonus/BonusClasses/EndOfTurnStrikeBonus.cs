@@ -14,9 +14,10 @@ public class EndOfTurnStrikeBonus : Bonus
         return false;
     }
 
-    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
+    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed,
+        Player opponent)
     {
-        Card cardTryingToBePlayed = playThatIsTryingToBePlayed.Card;
+        var cardTryingToBePlayed = playThatIsTryingToBePlayed.Card;
         return cardTryingToBePlayed.CheckIfSubtypesContain("Strike");
     }
 }

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using RawDeal.Bonus;
 using RawDealView;
 
@@ -6,10 +5,10 @@ namespace RawDeal;
 
 public class DeckCreator
 {
-    private Superstar _superstar;
-    private readonly CardLoader _cardLoader;
     private readonly CardFactory _cardFactory;
+    private readonly CardLoader _cardLoader;
     private readonly SuperstarFactory _superstarFactory;
+    private Superstar _superstar;
 
     public DeckCreator(LastPlay lastPlayInstance, BonusManager bonusManager, View view)
     {
@@ -22,46 +21,46 @@ public class DeckCreator
     {
         return _superstar;
     }
-    
+
     public Deck InitializeDeck(List<string> namesOfCardsInDeck)
     {
         InitializeSuperstar(namesOfCardsInDeck);
         RemoveSuperstarFromListOfDecksCards(namesOfCardsInDeck);
-        Deck deck = CreateDeckObject(namesOfCardsInDeck);
+        var deck = CreateDeckObject(namesOfCardsInDeck);
         return deck;
-    } 
-    
+    }
+
     private void InitializeSuperstar(List<string> listOfStringsWithDeckContent)
     {
-        string superstarName = listOfStringsWithDeckContent[0];
+        var superstarName = listOfStringsWithDeckContent[0];
         _superstar = _superstarFactory.CreateSuperstar(superstarName);
     }
-    
+
     private void RemoveSuperstarFromListOfDecksCards(List<string> namesOfCardsInDeck)
     {
         namesOfCardsInDeck.RemoveAt(0);
     }
-    
+
     private Deck CreateDeckObject(List<string> deckContent)
     {
-        List<string> deckListWithCardsNames = new List<string>(deckContent);
-        List<Card> deckCards = CreateCards(deckListWithCardsNames);
-        Deck deckObject = new Deck(deckCards);
+        var deckListWithCardsNames = new List<string>(deckContent);
+        var deckCards = CreateCards(deckListWithCardsNames);
+        var deckObject = new Deck(deckCards);
         return deckObject;
     }
-    
+
     private List<Card> CreateCards(List<string> deckListNamesWithCardNames)
     {
-        List<Card> deckCards = new List<Card>();
-        List<DeserializedCards> listWithDeserializedCards = _cardLoader.LoadCards();
-        
+        var deckCards = new List<Card>();
+        var listWithDeserializedCards = _cardLoader.LoadCards();
+
         foreach (var card in deckListNamesWithCardNames)
         {
-            DeserializedCards deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
-            Card cardObject = _cardFactory.CreateCard(deserializedCard);
+            var deserializedCard = listWithDeserializedCards.Find(x => x.Title == card);
+            var cardObject = _cardFactory.CreateCard(deserializedCard);
             deckCards.Add(cardObject);
         }
-        
+
         return deckCards;
     }
 }

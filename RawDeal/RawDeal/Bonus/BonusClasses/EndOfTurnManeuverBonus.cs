@@ -15,7 +15,8 @@ public class EndOfTurnManeuverBonus : Bonus
         return false;
     }
 
-    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed, Player opponent)
+    public override bool CheckIfBonusCanApplyToPlay(Play playThatIsTryingToBePlayed,
+        Player opponent)
     {
         return playThatIsTryingToBePlayed.PlayedAs == "MANEUVER";
     }

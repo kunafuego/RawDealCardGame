@@ -1,22 +1,22 @@
 using RawDeal.Bonus;
-using RawDealView.Options;
 using RawDealView;
+using RawDealView.Options;
+
 namespace RawDeal;
 
 public class RoundManager
 {
-    private bool _gameShouldEnd;
+    private readonly BonusManager _bonusManager;
+    private readonly LastPlay _lastPlayInstance;
+    private readonly Player _playerNotPlayingRound;
+    private readonly Player _playerPlayingRound;
     private bool _turnEnded;
-    private Player _playerPlayingRound;
-    private Player _playerNotPlayingRound;
-    private View _view;
-    private LastPlay _lastPlayInstance;
-    private BonusManager _bonusManager;
-    
-    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view, 
+    private readonly View _view;
+
+    public RoundManager(Player playerPlayingRound, Player playerNotPlayingRound, View view,
         LastPlay lastPlayInstance, BonusManager bonusManager)
     {
-        _gameShouldEnd = false;
+        GameShouldEnd = false;
         _turnEnded = false;
         _playerPlayingRound = playerPlayingRound;
         _playerNotPlayingRound = playerNotPlayingRound;
@@ -25,31 +25,25 @@ public class RoundManager
         _bonusManager = bonusManager;
     }
 
-    public bool GameShouldEnd
-    {
-        get { return _gameShouldEnd; }
-    }
-    
+    public bool GameShouldEnd { get; private set; }
+
     public void PlayRound()
     {
         _turnEnded = false;
         _view.SayThatATurnBegins(_playerPlayingRound.GetSuperstarName());
         AbilitiesManager.ManageAbilityBeforeDraw(_playerPlayingRound, _playerNotPlayingRound);
         PlayerDrawCards();
-        bool effectUsed = false;
+        var effectUsed = false;
         do
         {
             NextPlay nextPlayOptionChosen;
             _view.ShowGameInfo(_playerPlayingRound.GetInfo(), _playerNotPlayingRound.GetInfo());
-            if (!effectUsed && AbilitiesManager.CheckIfUserCanUseAbilityDuringTurn(_playerPlayingRound))
-            {
+            if (!effectUsed &&
+                AbilitiesManager.CheckIfUserCanUseAbilityDuringTurn(_playerPlayingRound))
                 nextPlayOptionChosen = _view.AskUserWhatToDoWhenUsingHisAbilityIsPossible();
-            }
             else
-            {
                 nextPlayOptionChosen = _view.AskUserWhatToDoWhenHeCannotUseHisAbility();
-            }
-            effectUsed |= (nextPlayOptionChosen == NextPlay.UseAbility);
+            effectUsed |= nextPlayOptionChosen == NextPlay.UseAbility;
             ManageChosenOption(nextPlayOptionChosen);
         } while (!_turnEnded);
 
@@ -58,20 +52,20 @@ public class RoundManager
             _bonusManager.CheckIfBonusExpire(ExpireOptions.EndOfTurn);
             _bonusManager.CheckIfFortitudeBonusExpire();
         }
-        _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay = _lastPlayInstance.WasItASuccesfulReversal;
+
+        _lastPlayInstance.WasItPlayedOnSameTurnThanActualPlay =
+            _lastPlayInstance.WasItASuccesfulReversal;
     }
-    
+
     private void PlayerDrawCards()
     {
-        bool userCanUseAbility = AbilitiesManager.CheckIfUserCanUseAbilityDuringDrawSection(_playerPlayingRound);
-        if(userCanUseAbility)
-        {
-            AbilitiesManager.UseAbilityDuringDrawSegment(_playerPlayingRound, _playerNotPlayingRound);
-        }
+        var userCanUseAbility =
+            AbilitiesManager.CheckIfUserCanUseAbilityDuringDrawSection(_playerPlayingRound);
+        if (userCanUseAbility)
+            AbilitiesManager.UseAbilityDuringDrawSegment(_playerPlayingRound,
+                _playerNotPlayingRound);
         else
-        {
             _playerPlayingRound.DrawSingleCard();
-        }
     }
 
     private void ManageChosenOption(NextPlay optionChosen)
@@ -98,16 +92,17 @@ public class RoundManager
 
     private void ManageShowingCards()
     {
-        CardsShower cardsShower = new CardsShower(_view, _playerPlayingRound, _playerNotPlayingRound);
+        var cardsShower = new CardsShower(_view, _playerPlayingRound, _playerNotPlayingRound);
         cardsShower.ManageShowingCards();
     }
 
     private void ManagePlayingCards()
     {
-        CardPlayer cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound, _lastPlayInstance, _bonusManager);
+        var cardPlayer = new CardPlayer(_view, _playerPlayingRound, _playerNotPlayingRound,
+            _lastPlayInstance, _bonusManager);
         cardPlayer.ManagePlayingCards();
         _turnEnded = cardPlayer.TurnEnded;
-        _gameShouldEnd = cardPlayer.GameShouldEnd;
+        GameShouldEnd = cardPlayer.GameShouldEnd;
     }
 
     private void UseAbilityDuringTurn()
@@ -123,24 +118,18 @@ public class RoundManager
     private void GiveUp()
     {
         _turnEnded = true;
-        _gameShouldEnd = true;
+        GameShouldEnd = true;
     }
 
     public void CheckIfGameShouldEnd()
     {
         if (!_playerPlayingRound.HasCardsInArsenal() || !_playerNotPlayingRound.HasCardsInArsenal())
-        {
-            _gameShouldEnd = true;
-        }
+            GameShouldEnd = true;
     }
 
     public Player GetGameWinner()
     {
-        if (!_playerNotPlayingRound.HasCardsInArsenal())
-        {
-            return _playerPlayingRound;
-        }
+        if (!_playerNotPlayingRound.HasCardsInArsenal()) return _playerPlayingRound;
         return _playerNotPlayingRound;
     }
-    
 }

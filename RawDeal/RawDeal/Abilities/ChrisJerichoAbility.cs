@@ -1,10 +1,13 @@
-using RawDealView.Options;
 using RawDealView;
+using RawDealView.Options;
+
 namespace RawDeal;
 
-class ChrisJerichoAbility : SuperstarAbility
+internal class ChrisJerichoAbility : SuperstarAbility
 {
-    public ChrisJerichoAbility(View view) : base(view) {}
+    public ChrisJerichoAbility(View view) : base(view)
+    {
+    }
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
@@ -14,22 +17,19 @@ class ChrisJerichoAbility : SuperstarAbility
 
     private void DiscardCard(Player playerThatHasToDiscard)
     {
-        List<Card> handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
-        List<string> stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
-        int handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards, 
-            playerThatHasToDiscard.GetSuperstarName(), 
+        var handCardsObjectsToShow = playerThatHasToDiscard.GetCardsToShow(CardSet.Hand);
+        var stringsOfHandCards = GetCardsToShowAsString(handCardsObjectsToShow);
+        var handCardIndex = View.AskPlayerToSelectACardToDiscard(stringsOfHandCards,
+            playerThatHasToDiscard.GetSuperstarName(),
             playerThatHasToDiscard.GetSuperstarName(), 1);
         playerThatHasToDiscard.MoveCardFromHandToRingside(handCardsObjectsToShow[handCardIndex]);
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
     {
-        List<string> stringsOfCards = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            stringsOfCards.Add(card.ToString());
-        }
-        
+        var stringsOfCards = new List<string>();
+        foreach (var card in cardsObjectsToShow) stringsOfCards.Add(card.ToString());
+
         return stringsOfCards;
     }
 

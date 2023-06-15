@@ -1,4 +1,3 @@
-using RawDealView;
 namespace RawDeal.Effects;
 
 public abstract class Effect

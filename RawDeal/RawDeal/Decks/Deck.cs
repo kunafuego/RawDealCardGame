@@ -1,68 +1,63 @@
 namespace RawDeal;
+
 public class Deck
 {
-    private readonly  List<Card> _cards;
-
     public Deck(List<Card> cards)
     {
-        _cards = cards;
+        Cards = cards;
     }
 
-    public List<Card> Cards
-    {
-        get { return _cards; }
-    }
+    public List<Card> Cards { get; }
 
     public void AddCard(Card card)
     {
-        _cards.Add(card);
+        Cards.Add(card);
     }
 
     public void RemoveCard(Card card)
     {
-        _cards.Remove(card);
+        Cards.Remove(card);
     }
+
     public bool CheckIfDeckIsValid(string superstarLogo)
     {
-        DeckValidator deckValidator = new DeckValidator(superstarLogo, _cards);
+        var deckValidator = new DeckValidator(superstarLogo, Cards);
         return deckValidator.CheckIfDeckIsValid();
     }
 
     public bool CheckIfHasReversalCard()
     {
-        foreach (Card card in _cards)
+        foreach (var card in Cards)
         {
-            List<string> types = card.Types;
-            if (types.Contains("Reversal"))
-            {
-                return true;
-            }
+            var types = card.Types;
+            if (types.Contains("Reversal")) return true;
         }
+
         return false;
     }
 
     public List<Card> GetReversalCards()
     {
-        return _cards.Where(card => card.HasReversalType()).ToList();
+        return Cards.Where(card => card.HasReversalType()).ToList();
     }
 
     public Card GetCardOnTop()
     {
-        return _cards.Last();
+        return Cards.Last();
     }
 
     public void AddCardAtBottom(Card cardToInsert)
     {
-        _cards.Insert(0, cardToInsert);   
+        Cards.Insert(0, cardToInsert);
     }
 
     public bool CheckIfHasCards()
     {
-        return _cards.Any();
+        return Cards.Any();
     }
 
     public bool CheckIfHasMoreThanOneCard()
     {
-        return _cards.Count() > 1;
+        return Cards.Count() > 1;
     }
 }

@@ -1,15 +1,17 @@
 using RawDeal.Bonus;
 using RawDealView;
+
 namespace RawDeal;
 
 public class DeckSelectionManager
 {
-    private readonly View _view;
     private readonly string _deckFolder;
-    private LastPlay _lastPlayInstance;
-    private BonusManager _bonusManager;
+    private readonly View _view;
+    private readonly BonusManager _bonusManager;
+    private readonly LastPlay _lastPlayInstance;
 
-    public DeckSelectionManager(View view, string deckFolder, LastPlay lastPlayInstance, BonusManager bonusManager)
+    public DeckSelectionManager(View view, string deckFolder, LastPlay lastPlayInstance,
+        BonusManager bonusManager)
     {
         _view = view;
         _deckFolder = deckFolder;
@@ -19,10 +21,10 @@ public class DeckSelectionManager
 
     public void SelectDeck(Player player)
     {
-        List<string> listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
-        DeckCreator deckCreator = new DeckCreator(_lastPlayInstance, _bonusManager, _view);
-        Deck deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
-        Superstar superstar = deckCreator.GetDeckSuperstar();
+        var listOfStringsWithNamesOfCardsInDeck = AskPlayerToSelectDeck();
+        var deckCreator = new DeckCreator(_lastPlayInstance, _bonusManager, _view);
+        var deck = deckCreator.InitializeDeck(listOfStringsWithNamesOfCardsInDeck);
+        var superstar = deckCreator.GetDeckSuperstar();
         ValidateDeck(deck, superstar);
         AssignDeckToPlayer(player, deck);
         AssignSuperstarToPlayer(player, superstar);
@@ -31,19 +33,17 @@ public class DeckSelectionManager
 
     private List<string> AskPlayerToSelectDeck()
     {
-        string deckPath = _view.AskUserToSelectDeck(_deckFolder);
-        string[] deckText = File.ReadAllLines(deckPath);
+        var deckPath = _view.AskUserToSelectDeck(_deckFolder);
+        var deckText = File.ReadAllLines(deckPath);
         return new List<string>(deckText);
     }
 
     private void ValidateDeck(Deck deck, Superstar superstar)
     {
         if (!deck.CheckIfDeckIsValid(superstar.Logo))
-        {
             throw new InvalidDeckException("Invalid deck selected!");
-        }
     }
-    
+
     private void AssignDeckToPlayer(Player player, Deck deck)
     {
         player.AssignArsenal(deck);

@@ -1,10 +1,13 @@
-using RawDealView.Options;
 using RawDealView;
+using RawDealView.Options;
+
 namespace RawDeal;
 
-class TheRockAbility : SuperstarAbility
+internal class TheRockAbility : SuperstarAbility
 {
-    public TheRockAbility(View view) : base(view) {}
+    public TheRockAbility(View view) : base(view)
+    {
+    }
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
@@ -13,19 +16,17 @@ class TheRockAbility : SuperstarAbility
 
     private void RecoverCard(Player playerThatWillRecoverCard)
     {
-        List<Card> cardsObjectsToShow = playerThatWillRecoverCard.GetCardsToShow(CardSet.RingsidePile);
-        List<string> stringsOfRingsidePileCards = GetCardsToShowAsString(cardsObjectsToShow);
-        int cardIndex = View.AskPlayerToSelectCardsToRecover(playerThatWillRecoverCard.GetSuperstarName(), 1, stringsOfRingsidePileCards);
+        var cardsObjectsToShow = playerThatWillRecoverCard.GetCardsToShow(CardSet.RingsidePile);
+        var stringsOfRingsidePileCards = GetCardsToShowAsString(cardsObjectsToShow);
+        var cardIndex = View.AskPlayerToSelectCardsToRecover(
+            playerThatWillRecoverCard.GetSuperstarName(), 1, stringsOfRingsidePileCards);
         playerThatWillRecoverCard.MoveCardFromRingsideToArsenal(cardsObjectsToShow[cardIndex]);
     }
 
     private List<string> GetCardsToShowAsString(List<Card> cardsObjectsToShow)
     {
-        List<string> stringsOfRingsidePileCards = new List<string>();
-        foreach (Card card in cardsObjectsToShow)
-        {
-            stringsOfRingsidePileCards.Add(card.ToString());
-        }
+        var stringsOfRingsidePileCards = new List<string>();
+        foreach (var card in cardsObjectsToShow) stringsOfRingsidePileCards.Add(card.ToString());
 
         return stringsOfRingsidePileCards;
     }
@@ -34,5 +35,4 @@ class TheRockAbility : SuperstarAbility
     {
         return player.HasCards(CardSet.RingsidePile);
     }
-
 }

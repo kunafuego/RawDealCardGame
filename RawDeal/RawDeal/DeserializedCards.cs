@@ -8,5 +8,5 @@ public class DeserializedCards
     public string Fortitude { get; set; }
     public string Damage { get; set; }
     public string StunValue { get; set; }
-    public string CardEffect { get; set; }    
+    public string CardEffect { get; set; }
 }

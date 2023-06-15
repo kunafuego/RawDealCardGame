@@ -1,23 +1,23 @@
-using RawDealView.Options;
 using RawDealView;
+
 namespace RawDeal;
 
-class KaneAbility : SuperstarAbility
+internal class KaneAbility : SuperstarAbility
 {
-    public KaneAbility(View view) : base(view) {}
+    public KaneAbility(View view) : base(view)
+    {
+    }
 
     public override void UseAbility(Player playerPlayingRound, Player playerNotPlayingRound)
     {
         View.SayThatSuperstarWillTakeSomeDamage(playerNotPlayingRound.GetSuperstarName(), 1);
         playerNotPlayingRound.MoveArsenalTopCardToRingside();
-        Card cardThatWentToRingside = playerNotPlayingRound.GetCardOnTopOfRingside();
+        var cardThatWentToRingside = playerNotPlayingRound.GetCardOnTopOfRingside();
         View.ShowCardOverturnByTakingDamage(cardThatWentToRingside.ToString(), 1, 1);
     }
 
     public override bool MeetsTheRequirementsForUsingEffect(Player player)
     {
         return true;
-
     }
-
 }
